@@ -1,0 +1,17 @@
+INFO:     Will watch for changes in these directories: ['/media/ibadat/NewVolume/DATA SCIENCE/ML/DATASCIENCE PROJECTS/Demand Sales Walmart Forecasting/ml-forecast-saas/backend']
+INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+INFO:     Started reloader process [238199] using StatReload
+2026-02-08 20:39:07,039 - app.ml.hyperparameter_optimizer - WARNING - Optuna not installed. Using simple grid search instead.
+2026-02-08 20:39:07,953 - app.api.analysis - INFO - Loaded 25 jobs from disk. Total in memory: 25 (was 0)
+2026-02-08 20:39:08,076 - app.main - WARNING - Static directory not found at /media/ibadat/NewVolume/DATA SCIENCE/ML/DATASCIENCE PROJECTS/Demand Sales Walmart Forecasting/ml-forecast-saas/backend/app/static. Frontend will not be served.
+INFO:     Started server process [238201]
+INFO:     Waiting for application startup.
+2026-02-08 20:39:08,078 - app.main - INFO - 🚀 Starting ML Forecast SaaS v2.0.0
+2026-02-08 20:39:08,079 - app.main - INFO - 📦 Environment: development
+2026-02-08 20:39:08,079 - app.main - INFO - 🌐 CORS Origins: ['http://localhost:3000', 'http://localhost:5173', 'http://localhost:5174', 'https://*.vercel.app']
+2026-02-08 20:39:08,090 - app.main - INFO - ✅ Local SQLite database initialized
+INFO:     Application startup complete.
+2026-02-08 20:57:41,276 - app.api.analysis - INFO - 📥 Upload request received: Filename=test_nan.csv, Content-Type=application/octet-stream
+2026-02-08 20:57:41,285 - app.api.analysis - INFO - 📤 New upload session created: 29ff4248-a082-4a83-be08-dc31cb410bc7 (test_nan.csv)
+2026-02-08 20:57:44,163 - app.api.analysis - INFO - ✅ Session 29ff4248-a082-4a83-be08-dc31cb410bc7 saved successfully. Total sessions: 26
+INFO:     127.0.0.1:51180 - "POST /api/analysis/upload HTTP/1.1" 200 OK
