@@ -237,6 +237,27 @@ async def profile_dataset(session_id: str, request: DataProfileRequest):
     logger.info(f"✅ Session {session_id} found. Status: {job['status']}, Rows: {job['rows']}")
     df = pd.DataFrame(job['data'])
     
+    # --- Date Synthesis Logic (for Warehouse_and_Retail_Sales.csv) ---
+    # If date_col is not found, check for component columns (Year/Month)
+    if request.date_col not in df.columns:
+        # Check for YEAR/MONTH variations
+        year_col = next((c for c in df.columns if c.upper() == 'YEAR'), None)
+        month_col = next((c for c in df.columns if c.upper() == 'MONTH'), None)
+        
+        if year_col and month_col:
+            try:
+                logger.info(f"📅 Detected Year/Month columns ({year_col}, {month_col}). Synthesizing Date column...")
+                # Create synthetic date (Day 1 of each month)
+                df['Date'] = pd.to_datetime(dict(year=df[year_col], month=df[month_col], day=1))
+                request.date_col = 'Date' # Switch target to new column
+                
+                # Update stored job data with new column
+                job['data'] = df.to_dict('records') # Update rows
+                job['columns'] = list(df.columns)   # Update columns list
+                save_jobs()
+            except Exception as e:
+                logger.warning(f"Failed to synthesize date: {e}")
+
     profile = {
         'dimensions': {
             'rows': len(df),
@@ -245,7 +266,8 @@ async def profile_dataset(session_id: str, request: DataProfileRequest):
         'columns': [],
         'data_quality': {},
         'statistics': {},
-        'time_series_info': {}
+        'time_series_info': {},
+        'businessInsights': [] # CRITICAL FIX: Ensure array exists
     }
     
     # Column analysis
@@ -283,22 +305,44 @@ async def profile_dataset(session_id: str, request: DataProfileRequest):
     if request.date_col in df.columns:
         try:
             df[request.date_col] = pd.to_datetime(df[request.date_col])
+            # Calculate time metrics
+            min_date = df[request.date_col].min()
+            max_date = df[request.date_col].max()
+            duration_days = (max_date - min_date).days
+            
             profile['time_series_info'] = {
-                'date_range_start': df[request.date_col].min().strftime('%Y-%m-%d'),
-                'date_range_end': df[request.date_col].max().strftime('%Y-%m-%d'),
-                'total_days': (df[request.date_col].max() - df[request.date_col].min()).days,
+                'date_range_start': min_date.strftime('%Y-%m-%d'),
+                'date_range_end': max_date.strftime('%Y-%m-%d'),
+                'total_days': duration_days,
                 'frequency': 'Daily' if df[request.date_col].diff().median().days == 1 else 'Variable'
             }
-        except:
+            
+            # Add to Business Insights
+            profile['businessInsights'].append(f"Time range: {min_date.strftime('%Y-%m-%d')} to {max_date.strftime('%Y-%m-%d')} ({duration_days} days)")
+            profile['dimensions']['timeSpanDays'] = duration_days # Ensure frontend compatibility
+            
+        except Exception as e:
+            logger.warning(f"Date parsing error: {e}")
             profile['time_series_info'] = {'error': 'Could not parse date column'}
     
     # Target variable statistics
     if request.target_col in df.columns and df[request.target_col].dtype in ['int64', 'float64']:
-        profile['statistics'] = {
-            'target_mean': round(float(df[request.target_col].mean()), 2),
-            'target_std': round(float(df[request.target_col].std()), 2),
-            'target_total': round(float(df[request.target_col].sum()), 2)
-        }
+        try:
+            target_mean = float(df[request.target_col].mean())
+            target_sum = float(df[request.target_col].sum())
+            
+            profile['statistics'] = {
+                'target_mean': round(target_mean, 2),
+                'target_std': round(float(df[request.target_col].std()), 2),
+                'target_total': round(target_sum, 2)
+            }
+            
+            # Add to Business Insights
+            profile['businessInsights'].append(f"Average {request.target_col}: {target_mean:,.2f}")
+            profile['businessInsights'].append(f"Total {request.target_col}: {target_sum:,.2f}")
+            
+        except Exception as e:
+            logger.warning(f"Target stats error: {e}")
     
     # Forecasting readiness assessment
     readiness_score = 0
@@ -476,6 +520,19 @@ async def run_training(
         # Model comparison (Ensemble)
         if hasattr(model, 'get_model_comparison'):
             training_jobs[job_id]['metrics']['model_comparison'] = model.get_model_comparison()
+        
+        # --- Generate Business Insights ---
+        try:
+            from app.services.business_intelligence import generate_business_insights
+            insights = generate_business_insights(
+                training_jobs[job_id]['forecast'],
+                training_jobs[job_id]['metrics'],
+                training_jobs[session_id].get('data') # Pass raw data if available
+            )
+            training_jobs[job_id]['insights'] = insights
+        except Exception as e:
+            logger.error(f"Failed to generate business insights: {e}")
+            training_jobs[job_id]['insights'] = {"error": "Insights generation failed"}
         
         logger.info(f"Training completed for job {job_id}")
         save_jobs()

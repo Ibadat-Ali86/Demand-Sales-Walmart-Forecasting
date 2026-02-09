@@ -32,6 +32,10 @@ async def lifespan(app: FastAPI):
             from app.database import engine, Base
             Base.metadata.create_all(bind=engine)
             logger.info("✅ Local SQLite database initialized")
+            
+            # Initialize default data
+            from app.utils.init_db import init_default_user
+            init_default_user()
     except Exception as e:
         logger.warning(f"⚠️ Database initialization: {e}")
     
@@ -50,13 +54,30 @@ app = FastAPI(
 )
 
 # CORS Configuration
+origins = settings.ALLOWED_ORIGINS + [
+    "http://127.0.0.1:3000",
+    "http://127.0.0.1:5173", 
+    "http://127.0.0.1:5174"
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.ALLOWED_ORIGINS,
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+@app.middleware("http")
+async def log_requests(request: Request, call_next):
+    logger.info(f"👉 Request: {request.method} {request.url} | Origin: {request.headers.get('origin')}")
+    try:
+        response = await call_next(request)
+        logger.info(f"👈 Response: {response.status_code}")
+        return response
+    except Exception as e:
+        logger.error(f"❌ Request failed: {str(e)}")
+        raise e
 
 # Include routers
 from app.api import auth, dashboard, sales, forecasts, analysis, monitoring
@@ -65,7 +86,7 @@ app.include_router(dashboard.router, prefix="/api/dashboard", tags=["Dashboard"]
 app.include_router(sales.router, prefix="/api/sales", tags=["Sales Data"])
 app.include_router(forecasts.router, prefix="/api/forecasts", tags=["Forecasts"])
 app.include_router(analysis.router, prefix="/api/analysis", tags=["Analysis"])
-app.include_router(analysis.router, prefix="/api/analysis", tags=["Analysis"])
+# app.include_router(monitoring.router, prefix="/api/monitoring", tags=["ML Monitoring"]) - Uncomment when module exists
 app.include_router(monitoring.router, prefix="/api/monitoring", tags=["ML Monitoring"])
 
 # Mount static files (Frontend)

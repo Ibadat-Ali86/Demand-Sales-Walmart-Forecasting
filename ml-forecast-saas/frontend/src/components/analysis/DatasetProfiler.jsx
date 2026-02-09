@@ -80,7 +80,7 @@ const DatasetProfiler = ({ data, onProfileComplete, externalProfile }) => {
                     Key Business Insights
                 </h3>
                 <div className="space-y-3">
-                    {profile.businessInsights.map((insight, idx) => (
+                    {(profile.businessInsights || []).map((insight, idx) => (
                         <motion.div
                             key={idx}
                             initial={{ opacity: 0, x: -20 }}
@@ -258,8 +258,14 @@ const DatasetProfiler = ({ data, onProfileComplete, externalProfile }) => {
                     whileTap={{ scale: 0.98 }}
                     onClick={async () => {
                         setIsProcessing(true);
-                        const success = await onProfileComplete(profile);
-                        if (success !== true) {
+                        try {
+                            const success = await onProfileComplete(profile);
+                            if (!success) {
+                                console.warn("Profile completion returned false");
+                            }
+                        } catch (error) {
+                            console.error("Profile completion error:", error);
+                        } finally {
                             setIsProcessing(false);
                         }
                     }}

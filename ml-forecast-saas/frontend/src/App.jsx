@@ -6,6 +6,7 @@ import ProtectedRoute from './components/common/ProtectedRoute'
 import Landing from './pages/Landing'
 import Login from './pages/Login'
 import Register from './pages/Register'
+import { AuthPage } from './pages/auth'
 import Dashboard from './pages/Dashboard'
 import DataUpload from './pages/DataUpload'
 import ForecastExplorer from './pages/ForecastExplorer'
@@ -14,6 +15,7 @@ import Reports from './pages/Reports'
 import AnalysisDashboard from './pages/AnalysisDashboard'
 import ExecutiveDashboard from './pages/ExecutiveDashboard'
 import ScenarioPlanningStudio from './pages/ScenarioPlanningStudio'
+
 
 function App() {
   return (
@@ -25,6 +27,7 @@ function App() {
               <Route path="/" element={<Landing />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
+              <Route path="/auth" element={<AuthPage />} />
               <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
               <Route path="/upload" element={<ProtectedRoute><DataUpload /></ProtectedRoute>} />
               <Route path="/analysis" element={<ProtectedRoute><AnalysisDashboard /></ProtectedRoute>} />

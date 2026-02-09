@@ -1,17 +1,190 @@
 INFO:     Will watch for changes in these directories: ['/media/ibadat/NewVolume/DATA SCIENCE/ML/DATASCIENCE PROJECTS/Demand Sales Walmart Forecasting/ml-forecast-saas/backend']
-INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
-INFO:     Started reloader process [238199] using StatReload
-2026-02-08 20:39:07,039 - app.ml.hyperparameter_optimizer - WARNING - Optuna not installed. Using simple grid search instead.
-2026-02-08 20:39:07,953 - app.api.analysis - INFO - Loaded 25 jobs from disk. Total in memory: 25 (was 0)
-2026-02-08 20:39:08,076 - app.main - WARNING - Static directory not found at /media/ibadat/NewVolume/DATA SCIENCE/ML/DATASCIENCE PROJECTS/Demand Sales Walmart Forecasting/ml-forecast-saas/backend/app/static. Frontend will not be served.
-INFO:     Started server process [238201]
+INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+INFO:     Started reloader process [437088] using StatReload
+2026-02-09 07:24:23,529 - app.ml.hyperparameter_optimizer - WARNING - Optuna not installed. Using simple grid search instead.
+2026-02-09 07:24:27,220 - app.api.analysis - ERROR - JSON decode error in jobs file: Expecting ':' delimiter: line 3184898 column 27 (char 92337630)
+2026-02-09 07:24:27,296 - app.main - WARNING - Static directory not found at /media/ibadat/NewVolume/DATA SCIENCE/ML/DATASCIENCE PROJECTS/Demand Sales Walmart Forecasting/ml-forecast-saas/backend/app/static. Frontend will not be served.
+INFO:     Started server process [437090]
 INFO:     Waiting for application startup.
-2026-02-08 20:39:08,078 - app.main - INFO - 🚀 Starting ML Forecast SaaS v2.0.0
-2026-02-08 20:39:08,079 - app.main - INFO - 📦 Environment: development
-2026-02-08 20:39:08,079 - app.main - INFO - 🌐 CORS Origins: ['http://localhost:3000', 'http://localhost:5173', 'http://localhost:5174', 'https://*.vercel.app']
-2026-02-08 20:39:08,090 - app.main - INFO - ✅ Local SQLite database initialized
+2026-02-09 07:24:27,297 - app.main - INFO - 🚀 Starting ML Forecast SaaS v2.0.0
+2026-02-09 07:24:27,297 - app.main - INFO - 📦 Environment: development
+2026-02-09 07:24:27,298 - app.main - INFO - 🌐 CORS Origins: ['http://localhost:3000', 'http://localhost:5173', 'http://localhost:5174', 'https://*.vercel.app']
+2026-02-09 07:24:27,311 - app.main - INFO - ✅ Local SQLite database initialized
+2026-02-09 07:24:27,327 - app.utils.init_db - INFO - ✅ Default admin user already exists.
 INFO:     Application startup complete.
-2026-02-08 20:57:41,276 - app.api.analysis - INFO - 📥 Upload request received: Filename=test_nan.csv, Content-Type=application/octet-stream
-2026-02-08 20:57:41,285 - app.api.analysis - INFO - 📤 New upload session created: 29ff4248-a082-4a83-be08-dc31cb410bc7 (test_nan.csv)
-2026-02-08 20:57:44,163 - app.api.analysis - INFO - ✅ Session 29ff4248-a082-4a83-be08-dc31cb410bc7 saved successfully. Total sessions: 26
-INFO:     127.0.0.1:51180 - "POST /api/analysis/upload HTTP/1.1" 200 OK
+2026-02-09 07:24:28,841 - app.main - INFO - 👉 Request: OPTIONS http://localhost:8000/api/auth/me | Origin: http://localhost:5173
+2026-02-09 07:24:28,843 - app.main - INFO - 👈 Response: 200
+INFO:     127.0.0.1:57406 - "OPTIONS /api/auth/me HTTP/1.1" 200 OK
+2026-02-09 07:24:28,848 - app.main - INFO - 👉 Request: OPTIONS http://localhost:8000/api/auth/me | Origin: http://localhost:5173
+2026-02-09 07:24:28,849 - app.main - INFO - 👉 Request: GET http://localhost:8000/api/auth/me | Origin: http://localhost:5173
+2026-02-09 07:24:28,849 - app.main - INFO - 👈 Response: 200
+INFO:     127.0.0.1:57420 - "OPTIONS /api/auth/me HTTP/1.1" 200 OK
+2026-02-09 07:24:28,889 - app.main - INFO - 👈 Response: 200
+INFO:     127.0.0.1:57406 - "GET /api/auth/me HTTP/1.1" 200 OK
+2026-02-09 07:24:28,892 - app.main - INFO - 👉 Request: GET http://localhost:8000/api/auth/me | Origin: http://localhost:5173
+2026-02-09 07:24:28,897 - app.main - INFO - 👈 Response: 200
+INFO:     127.0.0.1:57420 - "GET /api/auth/me HTTP/1.1" 200 OK
+2026-02-09 07:25:07,075 - app.main - INFO - 👉 Request: GET http://localhost:8000/api/auth/me | Origin: http://localhost:5173
+2026-02-09 07:25:07,084 - app.main - INFO - 👈 Response: 200
+INFO:     127.0.0.1:49242 - "GET /api/auth/me HTTP/1.1" 200 OK
+2026-02-09 07:25:07,098 - app.main - INFO - 👉 Request: GET http://localhost:8000/api/auth/me | Origin: http://localhost:5173
+2026-02-09 07:25:07,107 - app.main - INFO - 👈 Response: 200
+INFO:     127.0.0.1:49242 - "GET /api/auth/me HTTP/1.1" 200 OK
+2026-02-09 07:26:49,360 - app.main - INFO - 👉 Request: OPTIONS http://localhost:8000/api/auth/login | Origin: http://localhost:5173
+2026-02-09 07:26:49,364 - app.main - INFO - 👈 Response: 200
+INFO:     127.0.0.1:40768 - "OPTIONS /api/auth/login HTTP/1.1" 200 OK
+2026-02-09 07:26:49,378 - app.main - INFO - 👉 Request: POST http://localhost:8000/api/auth/login | Origin: http://localhost:5173
+2026-02-09 07:26:49,394 - app.api.auth - INFO - 🔑 Login attempt for user: admin@forecast.ai
+2026-02-09 07:26:49,487 - app.api.auth - INFO - ✅ Login successful for: admin@forecast.ai
+2026-02-09 07:26:49,493 - app.main - INFO - 👈 Response: 200
+INFO:     127.0.0.1:40768 - "POST /api/auth/login HTTP/1.1" 200 OK
+2026-02-09 07:29:57,312 - app.main - INFO - 👉 Request: OPTIONS http://localhost:8000/api/analysis/profile/751d0285-1286-40b4-9eb5-408bc1dcbf7b | Origin: http://localhost:5173
+2026-02-09 07:29:57,313 - app.main - INFO - 👈 Response: 200
+INFO:     127.0.0.1:51488 - "OPTIONS /api/analysis/profile/751d0285-1286-40b4-9eb5-408bc1dcbf7b HTTP/1.1" 200 OK
+2026-02-09 07:29:57,318 - app.main - INFO - 👉 Request: POST http://localhost:8000/api/analysis/profile/751d0285-1286-40b4-9eb5-408bc1dcbf7b | Origin: http://localhost:5173
+2026-02-09 07:29:57,329 - app.api.analysis - INFO - 🔍 Profile request for session: 751d0285-1286-40b4-9eb5-408bc1dcbf7b
+2026-02-09 07:29:57,330 - app.api.analysis - WARNING - ⚠️ Session 751d0285-1286-40b4-9eb5-408bc1dcbf7b not in memory, attempting to load from disk
+2026-02-09 07:29:59,534 - app.api.analysis - ERROR - JSON decode error in jobs file: Expecting ':' delimiter: line 3184898 column 27 (char 92337630)
+2026-02-09 07:29:59,559 - app.api.analysis - ERROR - ❌ Session 751d0285-1286-40b4-9eb5-408bc1dcbf7b not found even after loading from disk!
+2026-02-09 07:29:59,560 - app.api.analysis - ERROR - Available sessions (0): []...
+2026-02-09 07:29:59,562 - app.main - INFO - 👈 Response: 404
+INFO:     127.0.0.1:51488 - "POST /api/analysis/profile/751d0285-1286-40b4-9eb5-408bc1dcbf7b HTTP/1.1" 404 Not Found
+2026-02-09 07:30:00,123 - app.main - INFO - 👉 Request: POST http://localhost:8000/api/analysis/profile/751d0285-1286-40b4-9eb5-408bc1dcbf7b | Origin: http://localhost:5173
+2026-02-09 07:30:00,126 - app.api.analysis - INFO - 🔍 Profile request for session: 751d0285-1286-40b4-9eb5-408bc1dcbf7b
+2026-02-09 07:30:00,127 - app.api.analysis - WARNING - ⚠️ Session 751d0285-1286-40b4-9eb5-408bc1dcbf7b not in memory, attempting to load from disk
+2026-02-09 07:30:02,084 - app.api.analysis - ERROR - JSON decode error in jobs file: Expecting ':' delimiter: line 3184898 column 27 (char 92337630)
+2026-02-09 07:30:02,099 - app.api.analysis - ERROR - ❌ Session 751d0285-1286-40b4-9eb5-408bc1dcbf7b not found even after loading from disk!
+2026-02-09 07:30:02,101 - app.api.analysis - ERROR - Available sessions (0): []...
+2026-02-09 07:30:02,102 - app.main - INFO - 👈 Response: 404
+INFO:     127.0.0.1:51488 - "POST /api/analysis/profile/751d0285-1286-40b4-9eb5-408bc1dcbf7b HTTP/1.1" 404 Not Found
+2026-02-09 07:30:03,224 - app.main - INFO - 👉 Request: POST http://localhost:8000/api/analysis/profile/751d0285-1286-40b4-9eb5-408bc1dcbf7b | Origin: http://localhost:5173
+2026-02-09 07:30:03,228 - app.api.analysis - INFO - 🔍 Profile request for session: 751d0285-1286-40b4-9eb5-408bc1dcbf7b
+2026-02-09 07:30:03,229 - app.api.analysis - WARNING - ⚠️ Session 751d0285-1286-40b4-9eb5-408bc1dcbf7b not in memory, attempting to load from disk
+2026-02-09 07:30:05,458 - app.api.analysis - ERROR - JSON decode error in jobs file: Expecting ':' delimiter: line 3184898 column 27 (char 92337630)
+2026-02-09 07:30:05,478 - app.api.analysis - ERROR - ❌ Session 751d0285-1286-40b4-9eb5-408bc1dcbf7b not found even after loading from disk!
+2026-02-09 07:30:05,478 - app.api.analysis - ERROR - Available sessions (0): []...
+2026-02-09 07:30:05,480 - app.main - INFO - 👈 Response: 404
+INFO:     127.0.0.1:51488 - "POST /api/analysis/profile/751d0285-1286-40b4-9eb5-408bc1dcbf7b HTTP/1.1" 404 Not Found
+2026-02-09 07:39:03,987 - app.main - INFO - 👉 Request: OPTIONS http://localhost:8000/api/auth/me | Origin: http://localhost:5173
+2026-02-09 07:39:03,988 - app.main - INFO - 👉 Request: OPTIONS http://localhost:8000/api/auth/me | Origin: http://localhost:5173
+2026-02-09 07:39:03,989 - app.main - INFO - 👈 Response: 200
+INFO:     127.0.0.1:33744 - "OPTIONS /api/auth/me HTTP/1.1" 200 OK
+2026-02-09 07:39:03,990 - app.main - INFO - 👈 Response: 200
+INFO:     127.0.0.1:33750 - "OPTIONS /api/auth/me HTTP/1.1" 200 OK
+2026-02-09 07:39:03,998 - app.main - INFO - 👉 Request: GET http://localhost:8000/api/auth/me | Origin: http://localhost:5173
+2026-02-09 07:39:04,008 - app.main - INFO - 👈 Response: 200
+INFO:     127.0.0.1:33750 - "GET /api/auth/me HTTP/1.1" 200 OK
+2026-02-09 07:39:04,012 - app.main - INFO - 👉 Request: GET http://localhost:8000/api/auth/me | Origin: http://localhost:5173
+2026-02-09 07:39:04,023 - app.main - INFO - 👈 Response: 200
+INFO:     127.0.0.1:33744 - "GET /api/auth/me HTTP/1.1" 200 OK
+2026-02-09 07:42:42,785 - app.main - INFO - 👉 Request: GET http://localhost:8000/api/auth/me | Origin: http://localhost:5173
+2026-02-09 07:42:42,790 - app.main - INFO - 👈 Response: 200
+INFO:     127.0.0.1:56256 - "GET /api/auth/me HTTP/1.1" 200 OK
+2026-02-09 07:42:42,793 - app.main - INFO - 👉 Request: GET http://localhost:8000/api/auth/me | Origin: http://localhost:5173
+2026-02-09 07:42:42,796 - app.main - INFO - 👈 Response: 200
+INFO:     127.0.0.1:56256 - "GET /api/auth/me HTTP/1.1" 200 OK
+2026-02-09 07:51:02,440 - app.main - INFO - 👉 Request: OPTIONS http://localhost:8000/api/auth/login | Origin: http://localhost:5173
+2026-02-09 07:51:02,442 - app.main - INFO - 👈 Response: 200
+INFO:     127.0.0.1:41850 - "OPTIONS /api/auth/login HTTP/1.1" 200 OK
+2026-02-09 07:51:02,449 - app.main - INFO - 👉 Request: POST http://localhost:8000/api/auth/login | Origin: http://localhost:5173
+2026-02-09 07:51:02,455 - app.api.auth - INFO - 🔑 Login attempt for user: testuser_verifier@exadmin@forecast.aiample.com
+2026-02-09 07:51:02,459 - app.api.auth - WARNING - ❌ Login failed: Invalid credentials for testuser_verifier@exadmin@forecast.aiample.com
+2026-02-09 07:51:02,461 - app.main - INFO - 👈 Response: 401
+INFO:     127.0.0.1:41850 - "POST /api/auth/login HTTP/1.1" 401 Unauthorized
+2026-02-09 07:51:26,319 - app.main - INFO - 👉 Request: POST http://localhost:8000/api/auth/login | Origin: http://localhost:5173
+2026-02-09 07:51:26,322 - app.api.auth - INFO - 🔑 Login attempt for user: admin@forecast.ai
+2026-02-09 07:51:26,354 - app.api.auth - INFO - ✅ Login successful for: admin@forecast.ai
+2026-02-09 07:51:26,356 - app.main - INFO - 👈 Response: 200
+INFO:     127.0.0.1:38580 - "POST /api/auth/login HTTP/1.1" 200 OK
+2026-02-09 08:05:15,205 - app.main - INFO - 👉 Request: POST http://localhost:8000/api/analysis/upload | Origin: http://localhost:5173
+2026-02-09 08:05:15,212 - app.api.analysis - INFO - 📥 Upload request received: Filename=test_data.csv, Content-Type=text/csv
+2026-02-09 08:05:15,212 - app.api.analysis - INFO - Successfully decoded file using utf-8 encoding
+2026-02-09 08:05:15,217 - app.api.analysis - INFO - 📤 New upload session created: 298d5ab5-49f7-451b-8ac9-ea4a05ba5ee7 (test_data.csv)
+2026-02-09 08:05:15,252 - app.api.analysis - INFO - ✅ Session 298d5ab5-49f7-451b-8ac9-ea4a05ba5ee7 saved successfully. Total sessions: 1
+2026-02-09 08:05:15,264 - app.main - INFO - 👈 Response: 200
+INFO:     127.0.0.1:47198 - "POST /api/analysis/upload HTTP/1.1" 200 OK
+2026-02-09 08:05:40,038 - app.main - INFO - 👉 Request: OPTIONS http://localhost:8000/api/auth/me | Origin: http://localhost:5173
+2026-02-09 08:05:40,038 - app.main - INFO - 👈 Response: 200
+INFO:     127.0.0.1:46574 - "OPTIONS /api/auth/me HTTP/1.1" 200 OK
+2026-02-09 08:05:40,044 - app.main - INFO - 👉 Request: GET http://localhost:8000/api/auth/me | Origin: http://localhost:5173
+2026-02-09 08:05:40,049 - app.main - INFO - 👈 Response: 200
+INFO:     127.0.0.1:46574 - "GET /api/auth/me HTTP/1.1" 200 OK
+2026-02-09 08:05:40,053 - app.main - INFO - 👉 Request: GET http://localhost:8000/api/auth/me | Origin: http://localhost:5173
+2026-02-09 08:05:40,061 - app.main - INFO - 👈 Response: 200
+INFO:     127.0.0.1:46586 - "GET /api/auth/me HTTP/1.1" 200 OK
+2026-02-09 08:05:40,213 - app.main - INFO - 👉 Request: POST http://127.0.0.1:8000/api/analysis/upload | Origin: http://localhost:5173
+2026-02-09 08:05:40,215 - app.api.analysis - INFO - 📥 Upload request received: Filename=test_data.csv, Content-Type=text/csv
+2026-02-09 08:05:40,215 - app.api.analysis - INFO - Successfully decoded file using utf-8 encoding
+2026-02-09 08:05:40,217 - app.api.analysis - INFO - 📤 New upload session created: 709c8c90-2fe3-480d-91e7-e38c9dc805b2 (test_data.csv)
+2026-02-09 08:05:40,226 - app.api.analysis - INFO - ✅ Session 709c8c90-2fe3-480d-91e7-e38c9dc805b2 saved successfully. Total sessions: 2
+2026-02-09 08:05:40,233 - app.main - INFO - 👈 Response: 200
+INFO:     127.0.0.1:46600 - "POST /api/analysis/upload HTTP/1.1" 200 OK
+2026-02-09 08:06:17,439 - app.main - INFO - 👉 Request: OPTIONS http://localhost:8000/api/analysis/profile/709c8c90-2fe3-480d-91e7-e38c9dc805b2 | Origin: http://localhost:5173
+2026-02-09 08:06:17,441 - app.main - INFO - 👈 Response: 200
+INFO:     127.0.0.1:34316 - "OPTIONS /api/analysis/profile/709c8c90-2fe3-480d-91e7-e38c9dc805b2 HTTP/1.1" 200 OK
+2026-02-09 08:06:17,445 - app.main - INFO - 👉 Request: POST http://localhost:8000/api/analysis/profile/709c8c90-2fe3-480d-91e7-e38c9dc805b2 | Origin: http://localhost:5173
+2026-02-09 08:06:17,447 - app.api.analysis - INFO - 🔍 Profile request for session: 709c8c90-2fe3-480d-91e7-e38c9dc805b2
+2026-02-09 08:06:17,450 - app.api.analysis - INFO - ✅ Session 709c8c90-2fe3-480d-91e7-e38c9dc805b2 found. Status: uploaded, Rows: 5
+2026-02-09 08:06:17,474 - app.main - INFO - 👈 Response: 200
+INFO:     127.0.0.1:34316 - "POST /api/analysis/profile/709c8c90-2fe3-480d-91e7-e38c9dc805b2 HTTP/1.1" 200 OK
+2026-02-09 08:08:49,448 - app.main - INFO - 👉 Request: GET http://localhost:8000/api/auth/me | Origin: http://localhost:5173
+2026-02-09 08:08:49,454 - app.main - INFO - 👈 Response: 200
+INFO:     127.0.0.1:54240 - "GET /api/auth/me HTTP/1.1" 200 OK
+2026-02-09 08:08:49,459 - app.main - INFO - 👉 Request: GET http://localhost:8000/api/auth/me | Origin: http://localhost:5173
+2026-02-09 08:08:49,474 - app.main - INFO - 👈 Response: 200
+INFO:     127.0.0.1:54240 - "GET /api/auth/me HTTP/1.1" 200 OK
+2026-02-09 08:09:00,200 - app.main - INFO - 👉 Request: POST http://localhost:8000/api/analysis/upload | Origin: http://localhost:5173
+2026-02-09 08:09:00,206 - app.api.analysis - INFO - 📥 Upload request received: Filename=sales_data_sample.csv, Content-Type=text/csv
+2026-02-09 08:09:00,207 - app.api.analysis - INFO - Successfully decoded file using latin-1 encoding
+2026-02-09 08:09:00,230 - app.api.analysis - INFO - 📤 New upload session created: 244e119c-fa71-4483-b760-50f5f92970f9 (sales_data_sample.csv)
+2026-02-09 08:09:00,671 - app.api.analysis - INFO - ✅ Session 244e119c-fa71-4483-b760-50f5f92970f9 saved successfully. Total sessions: 3
+2026-02-09 08:09:00,703 - app.main - INFO - 👈 Response: 200
+INFO:     127.0.0.1:53214 - "POST /api/analysis/upload HTTP/1.1" 200 OK
+2026-02-09 08:09:03,417 - app.main - INFO - 👉 Request: OPTIONS http://localhost:8000/api/analysis/profile/244e119c-fa71-4483-b760-50f5f92970f9 | Origin: http://localhost:5173
+2026-02-09 08:09:03,417 - app.main - INFO - 👈 Response: 200
+INFO:     127.0.0.1:53214 - "OPTIONS /api/analysis/profile/244e119c-fa71-4483-b760-50f5f92970f9 HTTP/1.1" 200 OK
+2026-02-09 08:09:03,423 - app.main - INFO - 👉 Request: POST http://localhost:8000/api/analysis/profile/244e119c-fa71-4483-b760-50f5f92970f9 | Origin: http://localhost:5173
+2026-02-09 08:09:03,424 - app.api.analysis - INFO - 🔍 Profile request for session: 244e119c-fa71-4483-b760-50f5f92970f9
+2026-02-09 08:09:03,424 - app.api.analysis - INFO - ✅ Session 244e119c-fa71-4483-b760-50f5f92970f9 found. Status: uploaded, Rows: 2823
+2026-02-09 08:09:03,975 - app.main - INFO - 👈 Response: 200
+INFO:     127.0.0.1:53214 - "POST /api/analysis/profile/244e119c-fa71-4483-b760-50f5f92970f9 HTTP/1.1" 200 OK
+2026-02-09 08:09:06,012 - app.main - INFO - 👉 Request: OPTIONS http://localhost:8000/api/analysis/train/244e119c-fa71-4483-b760-50f5f92970f9 | Origin: http://localhost:5173
+2026-02-09 08:09:06,014 - app.main - INFO - 👈 Response: 200
+INFO:     127.0.0.1:53214 - "OPTIONS /api/analysis/train/244e119c-fa71-4483-b760-50f5f92970f9 HTTP/1.1" 200 OK
+2026-02-09 08:09:06,029 - app.main - INFO - 👉 Request: OPTIONS http://localhost:8000/api/analysis/train/244e119c-fa71-4483-b760-50f5f92970f9 | Origin: http://localhost:5173
+2026-02-09 08:09:06,033 - app.main - INFO - 👈 Response: 200
+INFO:     127.0.0.1:53214 - "OPTIONS /api/analysis/train/244e119c-fa71-4483-b760-50f5f92970f9 HTTP/1.1" 200 OK
+2026-02-09 08:09:06,036 - app.main - INFO - 👉 Request: POST http://localhost:8000/api/analysis/train/244e119c-fa71-4483-b760-50f5f92970f9 | Origin: http://localhost:5173
+2026-02-09 08:09:06,039 - app.api.analysis - INFO - 🚂 Training request for session: 244e119c-fa71-4483-b760-50f5f92970f9, model: ensemble
+2026-02-09 08:09:06,040 - app.api.analysis - INFO - 📋 Created training job: 8fd886c3-e8ce-4831-a037-128bf2866202
+2026-02-09 08:09:06,461 - app.main - INFO - 👈 Response: 200
+INFO:     127.0.0.1:55504 - "POST /api/analysis/train/244e119c-fa71-4483-b760-50f5f92970f9 HTTP/1.1" 200 OK
+2026-02-09 08:09:06,506 - app.ml.sarima_model - WARNING - Statsmodels not installed, using simulation mode
+2026-02-09 08:09:06,509 - app.ml.prophet_model - WARNING - Prophet not installed, using simulation mode
+2026-02-09 08:09:06,515 - app.ml.ensemble_model - ERROR - Failed to train prophet: "None of [Index(['Date', 'Sales'], dtype='str')] are in the [columns]"
+2026-02-09 08:09:06,657 - app.ml.ensemble_model - ERROR - Failed to train xgboost: 'Sales'
+2026-02-09 08:09:06,659 - app.ml.ensemble_model - INFO - Ensemble training complete. Models: ['sarima'], Weights: {'sarima': 1.0}
+2026-02-09 08:09:06,669 - app.api.analysis - INFO - Training completed for job 8fd886c3-e8ce-4831-a037-128bf2866202
+2026-02-09 08:09:07,054 - app.main - INFO - 👉 Request: POST http://localhost:8000/api/analysis/train/244e119c-fa71-4483-b760-50f5f92970f9 | Origin: http://localhost:5173
+2026-02-09 08:09:07,055 - app.api.analysis - INFO - 🚂 Training request for session: 244e119c-fa71-4483-b760-50f5f92970f9, model: ensemble
+2026-02-09 08:09:07,055 - app.api.analysis - INFO - 📋 Created training job: 4c9ca5b9-a9ed-4f7a-8ff0-d4d88a3bde58
+2026-02-09 08:09:07,443 - app.main - INFO - 👈 Response: 200
+INFO:     127.0.0.1:55508 - "POST /api/analysis/train/244e119c-fa71-4483-b760-50f5f92970f9 HTTP/1.1" 200 OK
+2026-02-09 08:09:07,493 - app.ml.sarima_model - WARNING - Statsmodels not installed, using simulation mode
+2026-02-09 08:09:07,497 - app.ml.ensemble_model - ERROR - Failed to train xgboost: 'Sales'
+2026-02-09 08:09:07,498 - app.ml.prophet_model - WARNING - Prophet not installed, using simulation mode
+2026-02-09 08:09:07,501 - app.ml.ensemble_model - ERROR - Failed to train prophet: "None of [Index(['Date', 'Sales'], dtype='str')] are in the [columns]"
+2026-02-09 08:09:07,505 - app.ml.ensemble_model - INFO - Ensemble training complete. Models: ['sarima'], Weights: {'sarima': 1.0}
+2026-02-09 08:09:07,508 - app.api.analysis - INFO - Training completed for job 4c9ca5b9-a9ed-4f7a-8ff0-d4d88a3bde58
+2026-02-09 08:09:07,924 - app.main - INFO - 👉 Request: GET http://localhost:8000/api/analysis/status/8fd886c3-e8ce-4831-a037-128bf2866202 | Origin: http://localhost:5173
+2026-02-09 08:09:07,927 - app.main - INFO - 👈 Response: 200
+INFO:     127.0.0.1:55508 - "GET /api/analysis/status/8fd886c3-e8ce-4831-a037-128bf2866202 HTTP/1.1" 200 OK
+2026-02-09 08:09:07,982 - app.main - INFO - 👉 Request: GET http://localhost:8000/api/analysis/results/8fd886c3-e8ce-4831-a037-128bf2866202 | Origin: http://localhost:5173
+2026-02-09 08:09:07,986 - app.main - INFO - 👈 Response: 200
+INFO:     127.0.0.1:55508 - "GET /api/analysis/results/8fd886c3-e8ce-4831-a037-128bf2866202 HTTP/1.1" 200 OK
+2026-02-09 08:09:08,458 - app.main - INFO - 👉 Request: GET http://localhost:8000/api/analysis/status/4c9ca5b9-a9ed-4f7a-8ff0-d4d88a3bde58 | Origin: http://localhost:5173
+2026-02-09 08:09:08,464 - app.main - INFO - 👈 Response: 200
+INFO:     127.0.0.1:55508 - "GET /api/analysis/status/4c9ca5b9-a9ed-4f7a-8ff0-d4d88a3bde58 HTTP/1.1" 200 OK
+2026-02-09 08:09:08,485 - app.main - INFO - 👉 Request: GET http://localhost:8000/api/analysis/results/4c9ca5b9-a9ed-4f7a-8ff0-d4d88a3bde58 | Origin: http://localhost:5173
+2026-02-09 08:09:08,489 - app.main - INFO - 👈 Response: 200
+INFO:     127.0.0.1:55508 - "GET /api/analysis/results/4c9ca5b9-a9ed-4f7a-8ff0-d4d88a3bde58 HTTP/1.1" 200 OK

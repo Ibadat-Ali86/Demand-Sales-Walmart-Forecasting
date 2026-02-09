@@ -191,22 +191,40 @@ npm run dev
 
 ## 📂 Project Structure
 
+This project follows a hybrid **SaaS + Data Science** structure, ensuring both production readiness and scientific reproducibility.
+
 ```bash
 ml-forecast-saas/
-├── backend/
+├── 📂 backend/               # FastAPI Application (Microservice)
 │   ├── app/
-│   │   ├── api/          # API Endpoints (Auth, Analysis, Sales)
-│   │   ├── ml/           # Model logic (XGBoost, Training, Prediction)
-│   │   ├── models/       # Database Models
-│   │   └── services/     # Business Logic
+│   │   ├── api/          # REST API Endpoints
+│   │   ├── ml/           # Production ML Engine (XGBoost/ARIMA)
+│   │   └── services/     # Business Logic Layer
 │   └── requirements.txt
-├── frontend/
+│
+├── 📂 frontend/              # React + Vite Application
 │   ├── src/
-│   │   ├── components/   # UI Components (Charts, Layout)
-│   │   ├── context/      # Auth & Theme State
-│   │   └── pages/        # Dashboard, Analysis, Login
+│   │   ├── components/   # Dashboard & Charts
+│   │   └── pages/        # Analysis Pipeline UI
 │   └── vite.config.js
-└── Dockerfile            # Deployment Config
+│
+├── 📂 data/                  # Data Registry (Git-ignored)
+│   ├── raw/              # Immutable original data
+│   └── processed/        # Cleaned/Feature-engineered data
+│
+├── 📂 notebooks/             # Jupyter Notebooks for Experimentation
+│   ├── 01_exploration.ipynb
+│   └── 02_modeling_experiments.ipynb
+│
+├── 📂 reports/               # Generated Analysis & Figures
+│   └── figures/          # Saved plots for documentation
+│
+├── 📂 models/                # Serialized Model Artifacts
+│   └── xgboost_v1.json
+│
+├── 📂 docs/                  # Project Documentation
+├── Dockerfile                # Containerization Config
+└── README.md                 # Entry point
 ```
 
 ---
