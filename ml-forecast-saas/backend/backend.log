@@ -156,3 +156,18 @@ INFO:     127.0.0.1:34772 - "GET /api/auth/me HTTP/1.1" 200 OK
 2026-02-17 01:51:14,528 - app.main - INFO - 👉 Request: GET http://localhost:8000/api/auth/me | Origin: http://localhost:5174
 2026-02-17 01:51:14,539 - app.main - INFO - 👈 Response: 200
 INFO:     127.0.0.1:34772 - "GET /api/auth/me HTTP/1.1" 200 OK
+2026-02-17 01:52:58,334 - app.main - INFO - 👉 Request: OPTIONS http://localhost:8000/api/auth/login | Origin: http://localhost:5174
+2026-02-17 01:52:58,335 - app.main - INFO - 👈 Response: 200
+INFO:     127.0.0.1:50750 - "OPTIONS /api/auth/login HTTP/1.1" 200 OK
+2026-02-17 01:52:58,340 - app.main - INFO - 👉 Request: POST http://localhost:8000/api/auth/login | Origin: http://localhost:5174
+2026-02-17 01:52:58,344 - app.api.auth - INFO - 🔑 Login attempt for user: admin@forecast.ai
+2026-02-17 01:52:58,376 - app.api.auth - INFO - ✅ Login successful for: admin@forecast.ai
+2026-02-17 01:52:58,378 - app.main - INFO - 👈 Response: 200
+INFO:     127.0.0.1:50756 - "POST /api/auth/login HTTP/1.1" 200 OK
+2026-02-17 01:53:09,489 - app.main - INFO - 👉 Request: POST http://localhost:8000/api/analysis/upload | Origin: http://localhost:5174
+2026-02-17 01:53:09,492 - app.api.analysis - INFO - 📥 Upload request received: Filename=market_sales.csv, Content-Type=text/csv
+2026-02-17 01:53:09,493 - app.api.analysis - INFO - Successfully decoded file using utf-8 encoding
+2026-02-17 01:53:09,497 - app.api.analysis - INFO - 📤 New upload session created: 20829c9a-ab4f-4bbb-8073-da403a37c119 (market_sales.csv)
+2026-02-17 01:53:10,497 - app.api.analysis - INFO - ✅ Session 20829c9a-ab4f-4bbb-8073-da403a37c119 saved successfully. Total sessions: 20
+2026-02-17 01:53:10,503 - app.main - INFO - 👈 Response: 200
+INFO:     127.0.0.1:47924 - "POST /api/analysis/upload HTTP/1.1" 200 OK
