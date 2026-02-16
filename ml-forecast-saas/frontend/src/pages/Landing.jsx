@@ -2,15 +2,28 @@ import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { TrendingUp, BarChart3, Sliders, Shield, Zap, Users, ArrowRight, CheckCircle, Play, ChevronDown, Building2, Award, Clock } from 'lucide-react';
 import { useState, useEffect } from 'react';
+import { useSmoothScroll } from '../hooks/useSmoothScroll';
+import LandingFloatingOrbs from '../components/landing/LandingFloatingOrbs';
+import GradientText from '../components/landing/GradientText';
+import ShimmerCard from '../components/landing/ShimmerCard';
+import PulseRing from '../components/landing/PulseRing';
+import NavigationUnderline from '../components/landing/NavigationUnderline';
 
 const Landing = () => {
     const [scrolled, setScrolled] = useState(false);
+    useSmoothScroll(); // Enable smooth scrolling
 
     useEffect(() => {
         const handleScroll = () => setScrolled(window.scrollY > 20);
         window.addEventListener('scroll', handleScroll);
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
+
+    const navItems = [
+        { label: 'Features', href: '#features' },
+        { label: 'Results', href: '#stats' },
+        { label: 'Pricing', href: '#cta' },
+    ];
 
     const stats = [
         { value: 98.77, label: 'Forecast Accuracy', suffix: '%', prefix: '' },
@@ -102,13 +115,17 @@ const Landing = () => {
                             <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-gradient-to-br from-primary-500 to-secondary-500">
                                 <TrendingUp className="w-6 h-6 text-white" />
                             </div>
-                            <span className="text-xl font-bold font-display text-gray-900">ForecastAI</span>
+                            <span className="text-xl font-bold font-display text-gray-900">AdaptIQ</span>
                         </Link>
 
-                        <div className="hidden lg:flex items-center gap-8">
-                            <a href="#features" className="text-gray-600 hover:text-primary-600 font-medium transition-colors">Features</a>
-                            <a href="#stats" className="text-gray-600 hover:text-primary-600 font-medium transition-colors">Results</a>
-                            <a href="#cta" className="text-gray-600 hover:text-primary-600 font-medium transition-colors">Pricing</a>
+                        <div className="hidden lg:flex items-center">
+                            <NavigationUnderline
+                                items={navItems}
+                                onItemClick={(index, item) => {
+                                    const element = document.querySelector(item.href);
+                                    element?.scrollIntoView({ behavior: 'smooth' });
+                                }}
+                            />
                         </div>
 
                         <div className="flex items-center gap-3">
@@ -126,13 +143,8 @@ const Landing = () => {
 
             {/* Hero Section - Light Mode */}
             <section className="pt-32 sm:pt-40 pb-20 sm:pb-28 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
-                {/* Subtle background gradients */}
-                <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                    <div className="absolute -top-40 -right-40 w-[600px] h-[600px] rounded-full opacity-30"
-                        style={{ background: 'radial-gradient(circle, rgba(59, 130, 246, 0.15) 0%, transparent 70%)' }} />
-                    <div className="absolute top-1/2 -left-40 w-[500px] h-[500px] rounded-full opacity-20"
-                        style={{ background: 'radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, transparent 70%)' }} />
-                </div>
+                {/* Floating orbs background */}
+                <LandingFloatingOrbs count={5} className="opacity-60" />
 
                 <div className="max-w-7xl mx-auto relative z-10">
                     <div className="grid lg:grid-cols-2 gap-16 items-center">
@@ -157,9 +169,14 @@ const Landing = () => {
 
                             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold font-display text-gray-900 mb-6 leading-tight">
                                 Transform Sales Data Into{' '}
-                                <span className="bg-gradient-to-r from-primary-600 to-secondary-600 bg-clip-text text-transparent">
+                                <GradientText
+                                    from="from-primary-600"
+                                    via="via-secondary-500"
+                                    to="to-primary-600"
+                                    animate={true}
+                                >
                                     Accurate Forecasts
-                                </span>
+                                </GradientText>
                             </h1>
 
                             <p className="text-lg sm:text-xl text-gray-600 mb-10 leading-relaxed max-w-xl mx-auto lg:mx-0">
@@ -167,10 +184,12 @@ const Landing = () => {
                             </p>
 
                             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-                                <Link to="/register" className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-primary-500 text-white rounded-lg font-semibold hover:bg-primary-600 transition-all shadow-md hover:shadow-lg group">
-                                    <span>Start Free Trial</span>
-                                    <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
-                                </Link>
+                                <PulseRing pulseColor="rgba(59, 130, 246, 0.4)">
+                                    <Link to="/register" className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-primary-500 text-white rounded-lg font-semibold hover:bg-primary-600 transition-all shadow-md hover:shadow-lg group">
+                                        <span>Start Free Trial</span>
+                                        <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
+                                    </Link>
+                                </PulseRing>
                                 <button className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-white text-gray-700 rounded-lg font-semibold border-2 border-gray-300 hover:border-primary-500 hover:bg-gray-50 transition-all">
                                     <Play className="w-5 h-5" />
                                     <span>Watch Demo</span>
@@ -312,7 +331,14 @@ const Landing = () => {
                             </span>
                             <h2 className="text-3xl sm:text-4xl font-bold font-display text-gray-900 mb-4">
                                 Everything you need for{' '}
-                                <span className="bg-gradient-to-r from-primary-600 to-secondary-600 bg-clip-text text-transparent">intelligent forecasting</span>
+                                <GradientText
+                                    from="from-primary-600"
+                                    via="via-secondary-500"
+                                    to="to-primary-600"
+                                    animate={true}
+                                >
+                                    intelligent forecasting
+                                </GradientText>
                             </h2>
                             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
                                 Advanced ML models combined with intuitive dashboards and real-time insights
@@ -322,13 +348,10 @@ const Landing = () => {
 
                     <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
                         {features.map((feature, index) => (
-                            <motion.div
+                            <ShimmerCard
                                 key={index}
-                                initial={{ opacity: 0, y: 30 }}
-                                whileInView={{ opacity: 1, y: 0 }}
-                                viewport={{ once: true }}
-                                transition={{ delay: index * 0.1 }}
-                                className="bg-white rounded-xl p-8 border border-gray-200 shadow-sm hover:shadow-lg hover:border-gray-300 transition-all duration-300 group"
+                                delay={index * 0.1}
+                                className="bg-white rounded-xl p-8 border border-gray-200 shadow-sm hover:shadow-lg hover:border-gray-300 transition-all duration-300"
                             >
                                 <div className={`w-14 h-14 rounded-xl flex items-center justify-center mb-6 ${feature.iconBg} transition-transform group-hover:scale-110`}>
                                     <feature.icon className={`w-7 h-7 ${feature.iconColor}`} />
@@ -337,7 +360,7 @@ const Landing = () => {
                                     {feature.title}
                                 </h3>
                                 <p className="text-gray-600">{feature.description}</p>
-                            </motion.div>
+                            </ShimmerCard>
                         ))}
                     </div>
                 </div>
@@ -362,10 +385,12 @@ const Landing = () => {
                         <p className="text-xl text-white/80 mb-10">
                             Join 500+ companies using AI to optimize their supply chain
                         </p>
-                        <Link to="/register" className="inline-flex items-center gap-2 px-8 py-4 bg-white text-primary-600 rounded-lg font-semibold hover:bg-gray-100 transition-colors shadow-lg text-lg">
-                            Start Free Trial
-                            <ArrowRight className="w-5 h-5" />
-                        </Link>
+                        <PulseRing pulseColor="rgba(255, 255, 255, 0.5)">
+                            <Link to="/register" className="inline-flex items-center gap-2 px-8 py-4 bg-white text-primary-600 rounded-lg font-semibold hover:bg-gray-100 transition-colors shadow-lg text-lg">
+                                Start Free Trial
+                                <ArrowRight className="w-5 h-5" />
+                            </Link>
+                        </PulseRing>
                     </motion.div>
                 </div>
             </section>
@@ -377,7 +402,7 @@ const Landing = () => {
                         <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-gradient-to-br from-primary-500 to-secondary-500">
                             <TrendingUp className="w-4 h-4 text-white" />
                         </div>
-                        <span className="font-bold">ForecastAI</span>
+                        <span className="font-bold">AdaptIQ</span>
                     </div>
                     <div className="flex items-center gap-6">
                         <a href="#" className="text-sm text-gray-400 hover:text-white transition-colors">Privacy</a>
@@ -385,7 +410,7 @@ const Landing = () => {
                         <a href="#" className="text-sm text-gray-400 hover:text-white transition-colors">Contact</a>
                     </div>
                     <p className="text-sm text-gray-400">
-                        © 2026 ForecastAI. All rights reserved.
+                        © 2026 AdaptIQ. All rights reserved.
                     </p>
                 </div>
             </footer>

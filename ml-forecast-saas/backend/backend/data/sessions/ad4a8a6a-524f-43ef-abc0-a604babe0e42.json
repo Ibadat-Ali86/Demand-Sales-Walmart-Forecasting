@@ -1,0 +1,100 @@
+{
+  "session_id": "ad4a8a6a-524f-43ef-abc0-a604babe0e42",
+  "status": "uploaded",
+  "data": [
+    {
+      "Date": "2023-01-01",
+      "Store": "Store A",
+      "Product": "Widget X",
+      "Sales": 100,
+      "Quantity": 10,
+      "Category": "Electronics"
+    },
+    {
+      "Date": "2023-01-02",
+      "Store": "Store A",
+      "Product": "Widget Y",
+      "Sales": 150,
+      "Quantity": 15,
+      "Category": "Electronics"
+    },
+    {
+      "Date": "2023-01-03",
+      "Store": "Store B",
+      "Product": "Widget X",
+      "Sales": 200,
+      "Quantity": 20,
+      "Category": "Electronics"
+    }
+  ],
+  "filename": "sample_upload.csv",
+  "rows": 3,
+  "columns": [
+    "Date",
+    "Store",
+    "Product",
+    "Sales",
+    "Quantity",
+    "Category"
+  ],
+  "uploaded_at": "2026-02-16T03:03:57.900280",
+  "schema_analysis": {
+    "mapped_schema": {
+      "date": "Date",
+      "product_id": "Product",
+      "quantity": "Quantity",
+      "price": "Sales",
+      "category": "Category",
+      "store": "Store"
+    },
+    "confidence_scores": {
+      "date": 100.0,
+      "product_id": 100.0,
+      "quantity": 100.0,
+      "price": 100.0,
+      "category": 100.0,
+      "store": 100.0
+    },
+    "overall_confidence": 100.0,
+    "missing_required": [],
+    "domain": "Retail / Supply Chain",
+    "validation_mappings": {
+      "date": "Date",
+      "identifier": "Store",
+      "value": "Sales"
+    }
+  },
+  "quality_report": {
+    "issues": [],
+    "row_count": 3,
+    "completeness": 100.0,
+    "missing_cells": 0,
+    "duplicate_rows": 0,
+    "preview": [
+      {
+        "Date": "2023-01-01",
+        "Store": "Store A",
+        "Product": "Widget X",
+        "Sales": "100",
+        "Quantity": "10",
+        "Category": "Electronics"
+      },
+      {
+        "Date": "2023-01-02",
+        "Store": "Store A",
+        "Product": "Widget Y",
+        "Sales": "150",
+        "Quantity": "15",
+        "Category": "Electronics"
+      },
+      {
+        "Date": "2023-01-03",
+        "Store": "Store B",
+        "Product": "Widget X",
+        "Sales": "200",
+        "Quantity": "20",
+        "Category": "Electronics"
+      }
+    ]
+  }
+}

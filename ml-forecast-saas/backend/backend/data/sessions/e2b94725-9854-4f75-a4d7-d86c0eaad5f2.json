@@ -1,0 +1,975 @@
+{
+  "session_id": "e2b94725-9854-4f75-a4d7-d86c0eaad5f2",
+  "status": "completed",
+  "data": [
+    {
+      "date": "2023-01-01",
+      "sales": 1000,
+      "is_holiday": 0,
+      "is_weekend": 0,
+      "promotion_active": 0,
+      "temperature": 25.0,
+      "fuel_price": 3.5
+    },
+    {
+      "date": "2023-01-02",
+      "sales": 1000,
+      "is_holiday": 0,
+      "is_weekend": 0,
+      "promotion_active": 0,
+      "temperature": 25.0,
+      "fuel_price": 3.5
+    },
+    {
+      "date": "2023-01-03",
+      "sales": 1000,
+      "is_holiday": 0,
+      "is_weekend": 0,
+      "promotion_active": 0,
+      "temperature": 25.0,
+      "fuel_price": 3.5
+    },
+    {
+      "date": "2023-01-04",
+      "sales": 1000,
+      "is_holiday": 0,
+      "is_weekend": 0,
+      "promotion_active": 0,
+      "temperature": 25.0,
+      "fuel_price": 3.5
+    },
+    {
+      "date": "2023-01-05",
+      "sales": 1000,
+      "is_holiday": 0,
+      "is_weekend": 0,
+      "promotion_active": 0,
+      "temperature": 25.0,
+      "fuel_price": 3.5
+    },
+    {
+      "date": "2023-01-06",
+      "sales": 1000,
+      "is_holiday": 0,
+      "is_weekend": 0,
+      "promotion_active": 0,
+      "temperature": 25.0,
+      "fuel_price": 3.5
+    },
+    {
+      "date": "2023-01-07",
+      "sales": 1000,
+      "is_holiday": 0,
+      "is_weekend": 0,
+      "promotion_active": 0,
+      "temperature": 25.0,
+      "fuel_price": 3.5
+    },
+    {
+      "date": "2023-01-08",
+      "sales": 1000,
+      "is_holiday": 0,
+      "is_weekend": 0,
+      "promotion_active": 0,
+      "temperature": 25.0,
+      "fuel_price": 3.5
+    },
+    {
+      "date": "2023-01-09",
+      "sales": 1000,
+      "is_holiday": 0,
+      "is_weekend": 0,
+      "promotion_active": 0,
+      "temperature": 25.0,
+      "fuel_price": 3.5
+    },
+    {
+      "date": "2023-01-10",
+      "sales": 1000,
+      "is_holiday": 0,
+      "is_weekend": 0,
+      "promotion_active": 0,
+      "temperature": 25.0,
+      "fuel_price": 3.5
+    },
+    {
+      "date": "2023-01-11",
+      "sales": 1000,
+      "is_holiday": 0,
+      "is_weekend": 0,
+      "promotion_active": 0,
+      "temperature": 25.0,
+      "fuel_price": 3.5
+    },
+    {
+      "date": "2023-01-12",
+      "sales": 1000,
+      "is_holiday": 0,
+      "is_weekend": 0,
+      "promotion_active": 0,
+      "temperature": 25.0,
+      "fuel_price": 3.5
+    },
+    {
+      "date": "2023-01-13",
+      "sales": 1000,
+      "is_holiday": 0,
+      "is_weekend": 0,
+      "promotion_active": 0,
+      "temperature": 25.0,
+      "fuel_price": 3.5
+    },
+    {
+      "date": "2023-01-14",
+      "sales": 1000,
+      "is_holiday": 0,
+      "is_weekend": 0,
+      "promotion_active": 0,
+      "temperature": 25.0,
+      "fuel_price": 3.5
+    },
+    {
+      "date": "2023-01-15",
+      "sales": 1000,
+      "is_holiday": 0,
+      "is_weekend": 0,
+      "promotion_active": 0,
+      "temperature": 25.0,
+      "fuel_price": 3.5
+    },
+    {
+      "date": "2023-01-16",
+      "sales": 1000,
+      "is_holiday": 0,
+      "is_weekend": 0,
+      "promotion_active": 0,
+      "temperature": 25.0,
+      "fuel_price": 3.5
+    },
+    {
+      "date": "2023-01-17",
+      "sales": 1000,
+      "is_holiday": 0,
+      "is_weekend": 0,
+      "promotion_active": 0,
+      "temperature": 25.0,
+      "fuel_price": 3.5
+    },
+    {
+      "date": "2023-01-18",
+      "sales": 1000,
+      "is_holiday": 0,
+      "is_weekend": 0,
+      "promotion_active": 0,
+      "temperature": 25.0,
+      "fuel_price": 3.5
+    },
+    {
+      "date": "2023-01-19",
+      "sales": 1000,
+      "is_holiday": 0,
+      "is_weekend": 0,
+      "promotion_active": 0,
+      "temperature": 25.0,
+      "fuel_price": 3.5
+    },
+    {
+      "date": "2023-01-20",
+      "sales": 1000,
+      "is_holiday": 0,
+      "is_weekend": 0,
+      "promotion_active": 0,
+      "temperature": 25.0,
+      "fuel_price": 3.5
+    },
+    {
+      "date": "2023-01-21",
+      "sales": 1000,
+      "is_holiday": 0,
+      "is_weekend": 0,
+      "promotion_active": 0,
+      "temperature": 25.0,
+      "fuel_price": 3.5
+    },
+    {
+      "date": "2023-01-22",
+      "sales": 1000,
+      "is_holiday": 0,
+      "is_weekend": 0,
+      "promotion_active": 0,
+      "temperature": 25.0,
+      "fuel_price": 3.5
+    },
+    {
+      "date": "2023-01-23",
+      "sales": 1000,
+      "is_holiday": 0,
+      "is_weekend": 0,
+      "promotion_active": 0,
+      "temperature": 25.0,
+      "fuel_price": 3.5
+    },
+    {
+      "date": "2023-01-24",
+      "sales": 1000,
+      "is_holiday": 0,
+      "is_weekend": 0,
+      "promotion_active": 0,
+      "temperature": 25.0,
+      "fuel_price": 3.5
+    },
+    {
+      "date": "2023-01-25",
+      "sales": 1000,
+      "is_holiday": 0,
+      "is_weekend": 0,
+      "promotion_active": 0,
+      "temperature": 25.0,
+      "fuel_price": 3.5
+    },
+    {
+      "date": "2023-01-26",
+      "sales": 1000,
+      "is_holiday": 0,
+      "is_weekend": 0,
+      "promotion_active": 0,
+      "temperature": 25.0,
+      "fuel_price": 3.5
+    },
+    {
+      "date": "2023-01-27",
+      "sales": 1000,
+      "is_holiday": 0,
+      "is_weekend": 0,
+      "promotion_active": 0,
+      "temperature": 25.0,
+      "fuel_price": 3.5
+    },
+    {
+      "date": "2023-01-28",
+      "sales": 1000,
+      "is_holiday": 0,
+      "is_weekend": 0,
+      "promotion_active": 0,
+      "temperature": 25.0,
+      "fuel_price": 3.5
+    },
+    {
+      "date": "2023-01-29",
+      "sales": 1000,
+      "is_holiday": 0,
+      "is_weekend": 0,
+      "promotion_active": 0,
+      "temperature": 25.0,
+      "fuel_price": 3.5
+    },
+    {
+      "date": "2023-01-30",
+      "sales": 1000,
+      "is_holiday": 0,
+      "is_weekend": 0,
+      "promotion_active": 0,
+      "temperature": 25.0,
+      "fuel_price": 3.5
+    },
+    {
+      "date": "2023-02-01",
+      "sales": 1200,
+      "is_holiday": 0,
+      "is_weekend": 0,
+      "promotion_active": 1,
+      "temperature": 22.0,
+      "fuel_price": 3.6
+    },
+    {
+      "date": "2023-02-02",
+      "sales": 1200,
+      "is_holiday": 0,
+      "is_weekend": 0,
+      "promotion_active": 1,
+      "temperature": 22.0,
+      "fuel_price": 3.6
+    },
+    {
+      "date": "2023-02-03",
+      "sales": 1200,
+      "is_holiday": 0,
+      "is_weekend": 0,
+      "promotion_active": 1,
+      "temperature": 22.0,
+      "fuel_price": 3.6
+    },
+    {
+      "date": "2023-02-04",
+      "sales": 1200,
+      "is_holiday": 0,
+      "is_weekend": 0,
+      "promotion_active": 1,
+      "temperature": 22.0,
+      "fuel_price": 3.6
+    },
+    {
+      "date": "2023-02-05",
+      "sales": 1200,
+      "is_holiday": 0,
+      "is_weekend": 0,
+      "promotion_active": 1,
+      "temperature": 22.0,
+      "fuel_price": 3.6
+    },
+    {
+      "date": "2023-02-06",
+      "sales": 1200,
+      "is_holiday": 0,
+      "is_weekend": 0,
+      "promotion_active": 1,
+      "temperature": 22.0,
+      "fuel_price": 3.6
+    },
+    {
+      "date": "2023-02-07",
+      "sales": 1200,
+      "is_holiday": 0,
+      "is_weekend": 0,
+      "promotion_active": 1,
+      "temperature": 22.0,
+      "fuel_price": 3.6
+    },
+    {
+      "date": "2023-02-08",
+      "sales": 1200,
+      "is_holiday": 0,
+      "is_weekend": 0,
+      "promotion_active": 1,
+      "temperature": 22.0,
+      "fuel_price": 3.6
+    },
+    {
+      "date": "2023-02-09",
+      "sales": 1200,
+      "is_holiday": 0,
+      "is_weekend": 0,
+      "promotion_active": 1,
+      "temperature": 22.0,
+      "fuel_price": 3.6
+    },
+    {
+      "date": "2023-02-10",
+      "sales": 1200,
+      "is_holiday": 0,
+      "is_weekend": 0,
+      "promotion_active": 1,
+      "temperature": 22.0,
+      "fuel_price": 3.6
+    },
+    {
+      "date": "2023-02-11",
+      "sales": 1200,
+      "is_holiday": 0,
+      "is_weekend": 0,
+      "promotion_active": 1,
+      "temperature": 22.0,
+      "fuel_price": 3.6
+    },
+    {
+      "date": "2023-02-12",
+      "sales": 1200,
+      "is_holiday": 0,
+      "is_weekend": 0,
+      "promotion_active": 1,
+      "temperature": 22.0,
+      "fuel_price": 3.6
+    },
+    {
+      "date": "2023-02-13",
+      "sales": 1200,
+      "is_holiday": 0,
+      "is_weekend": 0,
+      "promotion_active": 1,
+      "temperature": 22.0,
+      "fuel_price": 3.6
+    },
+    {
+      "date": "2023-02-14",
+      "sales": 1200,
+      "is_holiday": 0,
+      "is_weekend": 0,
+      "promotion_active": 1,
+      "temperature": 22.0,
+      "fuel_price": 3.6
+    },
+    {
+      "date": "2023-02-15",
+      "sales": 1200,
+      "is_holiday": 0,
+      "is_weekend": 0,
+      "promotion_active": 1,
+      "temperature": 22.0,
+      "fuel_price": 3.6
+    },
+    {
+      "date": "2023-02-16",
+      "sales": 1200,
+      "is_holiday": 0,
+      "is_weekend": 0,
+      "promotion_active": 1,
+      "temperature": 22.0,
+      "fuel_price": 3.6
+    },
+    {
+      "date": "2023-02-17",
+      "sales": 1200,
+      "is_holiday": 0,
+      "is_weekend": 0,
+      "promotion_active": 1,
+      "temperature": 22.0,
+      "fuel_price": 3.6
+    },
+    {
+      "date": "2023-02-18",
+      "sales": 1200,
+      "is_holiday": 0,
+      "is_weekend": 0,
+      "promotion_active": 1,
+      "temperature": 22.0,
+      "fuel_price": 3.6
+    },
+    {
+      "date": "2023-02-19",
+      "sales": 1200,
+      "is_holiday": 0,
+      "is_weekend": 0,
+      "promotion_active": 1,
+      "temperature": 22.0,
+      "fuel_price": 3.6
+    },
+    {
+      "date": "2023-02-20",
+      "sales": 1200,
+      "is_holiday": 0,
+      "is_weekend": 0,
+      "promotion_active": 1,
+      "temperature": 22.0,
+      "fuel_price": 3.6
+    }
+  ],
+  "filename": "test_upload.csv",
+  "rows": 50,
+  "columns": [
+    "date",
+    "sales",
+    "is_holiday",
+    "is_weekend",
+    "promotion_active",
+    "temperature",
+    "fuel_price"
+  ],
+  "uploaded_at": "2026-02-16T04:35:46.801766",
+  "schema_analysis": {
+    "mapped_schema": {
+      "date": "date",
+      "price": "sales",
+      "quantity": "is_holiday"
+    },
+    "confidence_scores": {
+      "date": 100.0,
+      "price": 100.0,
+      "quantity": 61.5
+    },
+    "overall_confidence": 72.8,
+    "missing_required": [
+      "product_id"
+    ],
+    "domain": "Sales Transaction",
+    "validation_mappings": {
+      "date": "date",
+      "identifier": "is_holiday",
+      "value": "sales"
+    }
+  },
+  "quality_report": {
+    "issues": [],
+    "row_count": 50,
+    "completeness": 100.0,
+    "missing_cells": 0,
+    "duplicate_rows": 0,
+    "preview": [
+      {
+        "date": "2023-01-01",
+        "sales": "1000",
+        "is_holiday": "0",
+        "is_weekend": "0",
+        "promotion_active": "0",
+        "temperature": "25.0",
+        "fuel_price": "3.5"
+      },
+      {
+        "date": "2023-01-02",
+        "sales": "1000",
+        "is_holiday": "0",
+        "is_weekend": "0",
+        "promotion_active": "0",
+        "temperature": "25.0",
+        "fuel_price": "3.5"
+      },
+      {
+        "date": "2023-01-03",
+        "sales": "1000",
+        "is_holiday": "0",
+        "is_weekend": "0",
+        "promotion_active": "0",
+        "temperature": "25.0",
+        "fuel_price": "3.5"
+      },
+      {
+        "date": "2023-01-04",
+        "sales": "1000",
+        "is_holiday": "0",
+        "is_weekend": "0",
+        "promotion_active": "0",
+        "temperature": "25.0",
+        "fuel_price": "3.5"
+      },
+      {
+        "date": "2023-01-05",
+        "sales": "1000",
+        "is_holiday": "0",
+        "is_weekend": "0",
+        "promotion_active": "0",
+        "temperature": "25.0",
+        "fuel_price": "3.5"
+      }
+    ]
+  },
+  "profile": {
+    "dimensions": {
+      "rows": 50,
+      "columns": 7,
+      "timeSpanDays": 50
+    },
+    "statisticalSummary": [
+      {
+        "column": "date",
+        "type": "string",
+        "missing": 0,
+        "missing_pct": 0.0,
+        "unique": 50
+      },
+      {
+        "column": "sales",
+        "type": "number",
+        "missing": 0,
+        "missing_pct": 0.0,
+        "unique": 2,
+        "mean": 1080.0,
+        "std": 98.97,
+        "min": 1000.0,
+        "max": 1200.0,
+        "median": 1000.0
+      },
+      {
+        "column": "is_holiday",
+        "type": "number",
+        "missing": 0,
+        "missing_pct": 0.0,
+        "unique": 1,
+        "mean": 0.0,
+        "std": 0.0,
+        "min": 0.0,
+        "max": 0.0,
+        "median": 0.0
+      },
+      {
+        "column": "is_weekend",
+        "type": "number",
+        "missing": 0,
+        "missing_pct": 0.0,
+        "unique": 1,
+        "mean": 0.0,
+        "std": 0.0,
+        "min": 0.0,
+        "max": 0.0,
+        "median": 0.0
+      },
+      {
+        "column": "promotion_active",
+        "type": "number",
+        "missing": 0,
+        "missing_pct": 0.0,
+        "unique": 2,
+        "mean": 0.4,
+        "std": 0.49,
+        "min": 0.0,
+        "max": 1.0,
+        "median": 0.0
+      },
+      {
+        "column": "temperature",
+        "type": "number",
+        "missing": 0,
+        "missing_pct": 0.0,
+        "unique": 2,
+        "mean": 23.8,
+        "std": 1.48,
+        "min": 22.0,
+        "max": 25.0,
+        "median": 25.0
+      },
+      {
+        "column": "fuel_price",
+        "type": "number",
+        "missing": 0,
+        "missing_pct": 0.0,
+        "unique": 2,
+        "mean": 3.54,
+        "std": 0.05,
+        "min": 3.5,
+        "max": 3.6,
+        "median": 3.5
+      }
+    ],
+    "dataQuality": {
+      "completeness": 100.0,
+      "missingCount": 0,
+      "missingByColumn": {},
+      "duplicate_rows": 0
+    },
+    "time_series_info": {
+      "start_date": "2023-01-01T00:00:00",
+      "end_date": "2023-02-20T00:00:00",
+      "duration_days": 50,
+      "frequency": "Daily"
+    },
+    "businessInsights": [],
+    "validation": {
+      "passed": true,
+      "log": [
+        "\u2713 Data completeness: 100.0%.",
+        "\u2713 Found date column 'date' (daily frequency).",
+        "\u2713 Target column 'sales': 50 valid values."
+      ]
+    },
+    "domain_analysis": {
+      "detected_domain": "Sales Forecasting",
+      "confidence": 0.62,
+      "all_scores": {
+        "Sales Forecasting": 0.6166666666666666,
+        "HR Analytics": 0.4666666666666666,
+        "Financial Metrics": 0.2333333333333333,
+        "Inventory Management": 0.2333333333333333,
+        "Marketing Analytics": 0.2333333333333333
+      },
+      "gap_analysis": {
+        "domain": "Sales Forecasting",
+        "description": "Historical sales data for demand forecasting.",
+        "kpis": [
+          "Total Revenue",
+          "Units Sold",
+          "Growth Rate"
+        ],
+        "missing_required": [
+          "Qty"
+        ],
+        "missing_optional": [
+          "Product",
+          "Store"
+        ],
+        "proxy_suggestions": [],
+        "suggestions": [
+          "Critical: Missing Qty. Analysis may be limited.",
+          "Recommended: Add Product, Store for deeper insights."
+        ],
+        "status": "Incomplete"
+      },
+      "domain_kpis": [
+        {
+          "label": "Total Revenue",
+          "value": "$54,000",
+          "trend": "neutral",
+          "desc": "Gross Revenue"
+        }
+      ]
+    },
+    "enrichment_opportunities": [
+      {
+        "title": "US Holidays",
+        "description": "US Federal Holidays (New Year, Christmas, etc.)",
+        "benefit": "Explains demand spikes/drops around major holidays."
+      },
+      {
+        "title": "Macroeconomic Indicators",
+        "description": "CPI, Inflation, Unemployment Rate",
+        "benefit": "Helps adjust for long-term economic trends."
+      }
+    ],
+    "forecastingReadiness": {
+      "ready": true,
+      "message": "Your dataset meets the requirements for accurate demand forecasting.",
+      "strengths": [
+        "Sufficient historical data points",
+        "Time series data detected",
+        "Excellent data completeness"
+      ],
+      "recommendations": []
+    },
+    "model_recommendation": {
+      "primary": "ensemble",
+      "reason": "Rich dataset (50 rows, 6 features). Using Ensemble (Prophet+XGBoost+SARIMA).",
+      "fallback": [
+        "xgboost",
+        "prophet",
+        "naive"
+      ],
+      "estimated_complexity": "simple"
+    }
+  },
+  "resolved_date_col": "date",
+  "resolved_target_col": "sales",
+  "model_type": "auto",
+  "progress": 100,
+  "current_step": "Training complete!",
+  "started_at": "2026-02-16T04:35:46.848792",
+  "metrics": {
+    "mape": 0.17,
+    "rmse": 2.71,
+    "mae": 3.11,
+    "r2": 0.015,
+    "training_samples": 40,
+    "validation_samples": 10,
+    "training_time": 2.2,
+    "accuracy_rating": "Excellent",
+    "model_comparison": {
+      "prophet": {
+        "mape": 6.3,
+        "rmse": 108.37,
+        "mae": 160.72,
+        "r2": 0.9192,
+        "weight": 0.0155,
+        "training_time": 2.83
+      },
+      "sarima": {
+        "mape": 10.0,
+        "rmse": 154.93,
+        "mae": 120.01,
+        "r2": 0.0,
+        "weight": 0.0097,
+        "training_time": 1.31
+      },
+      "xgboost": {
+        "mape": 0.0,
+        "rmse": 0.0,
+        "mae": 0.0,
+        "r2": 0.0,
+        "weight": 0.9748,
+        "training_time": 2.2
+      }
+    }
+  },
+  "forecast": {
+    "dates": [
+      "2023-02-21",
+      "2023-02-22",
+      "2023-02-23",
+      "2023-02-24",
+      "2023-02-25",
+      "2023-02-26",
+      "2023-02-27",
+      "2023-02-28",
+      "2023-03-01",
+      "2023-03-02",
+      "2023-03-03",
+      "2023-03-04",
+      "2023-03-05",
+      "2023-03-06",
+      "2023-03-07",
+      "2023-03-08",
+      "2023-03-09",
+      "2023-03-10",
+      "2023-03-11",
+      "2023-03-12",
+      "2023-03-13",
+      "2023-03-14",
+      "2023-03-15",
+      "2023-03-16",
+      "2023-03-17",
+      "2023-03-18",
+      "2023-03-19",
+      "2023-03-20",
+      "2023-03-21",
+      "2023-03-22"
+    ],
+    "predictions": [
+      1200.170361907905,
+      1196.5294099138341,
+      1197.6945570944354,
+      1199.0285414396808,
+      1202.4185002247632,
+      1203.8797000367194,
+      1199.4352740097834,
+      1202.079604631783,
+      1202.4491028737777,
+      1199.8132540691943,
+      1202.0845906802715,
+      1205.9422434322641,
+      1203.1283573109033,
+      1200.8562248171934,
+      1200.6452404669371,
+      1198.9721813822637,
+      1201.6673752536035,
+      1199.256957491245,
+      1207.335837146944,
+      1205.6802702262323,
+      1202.7247251595,
+      1202.2077188256228,
+      1201.2097415310868,
+      1204.2235263604982,
+      1203.9637559580908,
+      1207.475947730864,
+      1205.03446308102,
+      1202.979728526841,
+      1203.908048703957,
+      1202.6878358744136
+    ],
+    "lower_bound": [
+      967.2889708440842,
+      1193.138712707266,
+      1193.8770823685165,
+      1194.7985188938885,
+      1197.7838256156772,
+      1198.8566288865388,
+      1194.9232561112383,
+      1197.026102676862,
+      1197.2041444674328,
+      1194.835010829243,
+      1196.6432724078336,
+      1199.8053357579292,
+      1197.3013836374942,
+      1195.2621586906046,
+      1194.6855945842162,
+      1192.9084534867081,
+      1194.8753873423384,
+      1192.526654225352,
+      1199.404262244585,
+      1197.7326304104004,
+      1194.9696039660264,
+      1194.291035717887,
+      1193.2138309140566,
+      1195.5556115806883,
+      1195.1228758042532,
+      1197.9034700655434,
+      1195.6299718602158,
+      1193.6911325856543,
+      1194.06663157555,
+      1192.6388359513683
+    ],
+    "upper_bound": [
+      1433.0516934746556,
+      1199.9201071204022,
+      1201.5120318203544,
+      1203.2585639854728,
+      1207.0531748338492,
+      1208.9027711869,
+      1203.9472919083282,
+      1207.1331065867043,
+      1207.6940612801227,
+      1204.7914973091456,
+      1207.5259089527096,
+      1212.079151106599,
+      1208.9553309843125,
+      1206.4502909437822,
+      1206.6048863496583,
+      1205.035909277819,
+      1208.4593631648684,
+      1205.9872607571376,
+      1215.2674120493027,
+      1213.6279100420643,
+      1210.4798463529735,
+      1210.1244019333585,
+      1209.2056521481168,
+      1212.8914411403084,
+      1212.8046361119286,
+      1217.0484253961843,
+      1214.4389543018244,
+      1212.2683244680277,
+      1213.7494658323644,
+      1212.7368357974592
+    ],
+    "confidence_level": 95.0
+  },
+  "config": {
+    "target_col": "sales",
+    "date_col": "date"
+  },
+  "completed_at": "2026-02-16T04:35:49.642541",
+  "model_used": "Ensemble",
+  "routing_decision": {
+    "primary": "ensemble",
+    "reason": "Rich dataset (50 rows, 6 features). Using Ensemble (Prophet+XGBoost+SARIMA).",
+    "fallback_chain": [
+      "xgboost",
+      "prophet",
+      "naive"
+    ],
+    "data_profile": {
+      "row_count": 50,
+      "has_datetime": true,
+      "has_features": true,
+      "has_seasonality": true,
+      "complexity": "simple"
+    }
+  },
+  "validation_log": [
+    "\u2713 MAPE 0.2% \u2013 forecast quality is acceptable.",
+    "\u2713 Predictions are within expected historical range."
+  ],
+  "insights": {
+    "executive_summary": {
+      "headline": "Forecast predicts Stable demand trend with projected revenue of $1,622,947.",
+      "key_takeaway": "Primary attention required: None identified. Key opportunity: Lean Inventory Opportunity.",
+      "trend_direction": "Stable",
+      "confidence_level": "High"
+    },
+    "financial_metrics": {
+      "projected_revenue": "$1,622,947",
+      "projected_cogs": "$901,637",
+      "gross_margin": "$721,310",
+      "margin_percent": "44.4%"
+    },
+    "risks": [],
+    "opportunities": [
+      {
+        "id": "opp_lean_inventory",
+        "type": "Cost Saving",
+        "title": "Lean Inventory Opportunity",
+        "description": "Stable demand patterns allow for reduced safety stock.",
+        "value": "Medium",
+        "action": "Reduce safety stock coverage by 1 week."
+      }
+    ],
+    "action_plan": {
+      "immediate": [
+        "Review inventory levels for next 14 days",
+        "Share forecast with key suppliers"
+      ],
+      "short_term": [
+        "Adjust marketing spend based on projected peaks",
+        "Plan workforce staffing for identified high-volume weeks"
+      ],
+      "strategic": [
+        "Evaluate supplier performance matches",
+        "Consider contract renegotiation based on volume projections"
+      ]
+    },
+    "inventory_recommendations": {
+      "recommended_safety_stock": "11 units",
+      "stock_cover_days": "14 days",
+      "reorder_trigger": "Weekly"
+    },
+    "generated_at": "2026-02-16T04:35:49.646625",
+    "summary": "Forecast predicts Stable demand trend with projected revenue of $1,622,947.",
+    "trends": [
+      "Stable demand patterns allow for reduced safety stock."
+    ],
+    "risks_old": []
+  }
+}

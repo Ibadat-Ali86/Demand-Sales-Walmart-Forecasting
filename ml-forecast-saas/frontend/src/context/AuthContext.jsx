@@ -172,6 +172,29 @@ export const AuthProvider = ({ children }) => {
         }
     }, []);
 
+    // Login with existing token (for OAuth callback)
+    const loginWithToken = useCallback(async (accessToken) => {
+        setLoading(true);
+        try {
+            localStorage.setItem('token', accessToken);
+            setToken(accessToken);
+
+            // Verify token and get user data
+            const response = await api.get('/api/auth/me');
+            setUser(response.data);
+            return { success: true };
+        } catch (err) {
+            console.error('Token login failed:', err);
+            localStorage.removeItem('token');
+            setToken(null);
+            setUser(null);
+            setError('Authentication failed');
+            return { success: false, error: 'Authentication failed' };
+        } finally {
+            setLoading(false);
+        }
+    }, []);
+
     // Logout function
     const logout = useCallback(async () => {
         try {
@@ -196,6 +219,7 @@ export const AuthProvider = ({ children }) => {
         login,
         register,
         loginWithProvider,
+        loginWithToken,
         logout,
     };
 

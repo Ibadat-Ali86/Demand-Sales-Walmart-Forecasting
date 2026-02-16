@@ -237,6 +237,14 @@ async def profile_dataset(session_id: str, request: DataProfileRequest):
     logger.info(f"✅ Session {session_id} found. Status: {job['status']}, Rows: {job['rows']}")
     df = pd.DataFrame(job['data'])
     
+    # GATE 3: Profiling Validation
+    from ..services.pipeline_validator import PipelineValidator
+    profile_validation = PipelineValidator.validate_profiling(df)
+    if not profile_validation['valid']:
+        # We don't block profiling but we warn heavily
+        logger.warning(f"Profiling Data Quality Issues: {profile_validation['issues']}")
+        # We could potentially inject these issues into the profile result
+    
     # --- Date Synthesis Logic (for Warehouse_and_Retail_Sales.csv) ---
     # If date_col is not found, check for component columns (Year/Month)
     if request.date_col not in df.columns:
@@ -454,7 +462,6 @@ async def run_training(
         training_jobs[job_id]['current_step'] = 'Loading data...'
         
         # Get data
-        # Ensure we are using the correct session data
         if session_id not in training_jobs:
              raise ValueError(f"Session {session_id} not found for data access")
              
@@ -463,29 +470,73 @@ async def run_training(
         training_jobs[job_id]['progress'] = 20
         training_jobs[job_id]['current_step'] = 'Preparing features...'
         
-        # Select model
+        # Initialize Model Router
+        from app.services.model_router import ModelRouter
+        from app.ml.baseline_models import NaiveForecaster, MovingAverageForecaster
+        
+        router = ModelRouter()
+        
+        # Determine model candidates
+        candidates = []
+        if model_type == 'auto' or model_type == 'ensemble':
+            # Use Router recommendation
+            candidates = router.route_model(df, target_col, date_col)
+        else:
+            # User selected specific model, but we add fallbacks
+            candidates = [model_type, 'naive']
+            
+        logger.info(f"Model selection strategy: {candidates}")
+        
+        # Model Registry
         model_classes = {
             'prophet': ProphetForecaster,
             'xgboost': XGBoostForecaster,
             'sarima': SARIMAForecaster,
-            'ensemble': EnsembleForecaster
+            'ensemble': EnsembleForecaster,
+            'naive': NaiveForecaster,
+            'moving_average': MovingAverageForecaster
         }
         
-        if model_type not in model_classes:
-            raise ValueError(f"Unknown model type: {model_type}")
+        trained_model = None
+        metrics = None
+        used_model_name = None
         
-        training_jobs[job_id]['progress'] = 30
-        training_jobs[job_id]['current_step'] = f'Training {model_type} model...'
+        # Iterate through candidates (Fallback Loop)
+        for candidate in candidates:
+            if candidate not in model_classes:
+                continue
+                
+            try:
+                training_jobs[job_id]['current_step'] = f'Training {candidate}...'
+                logger.info(f"Attempting to train {candidate}...")
+                
+                model_instance = model_classes[candidate]()
+                metrics_result = model_instance.train(df, target_col, date_col)
+                
+                # Check for validity (basic check)
+                if metrics_result.mape is None or np.isnan(metrics_result.mape):
+                    raise ValueError("Model returned invalid metrics")
+                
+                # Success!
+                trained_model = model_instance
+                metrics = metrics_result
+                used_model_name = candidate
+                logger.info(f"Successfully trained {candidate} (MAPE: {metrics.mape}%)")
+                break
+                
+            except Exception as e:
+                logger.warning(f"Training failed for {candidate}: {e}")
+                continue
         
-        # Train model
-        model = model_classes[model_type]()
-        metrics = model.train(df, target_col, date_col)
-        
+        if trained_model is None:
+            raise ValueError("All model candidates failed training.")
+            
+        training_jobs[job_id]['model_type'] = used_model_name # Update actual used model
         training_jobs[job_id]['progress'] = 70
         training_jobs[job_id]['current_step'] = 'Generating forecasts...'
         
         # Generate forecast
-        forecast = model.predict(forecast_periods, confidence_level)
+        forecast = trained_model.predict(forecast_periods, confidence_level)
         
         training_jobs[job_id]['progress'] = 90
         training_jobs[job_id]['current_step'] = 'Finalizing results...'
@@ -503,7 +554,8 @@ async def run_training(
             'training_samples': metrics.training_samples,
             'validation_samples': metrics.validation_samples,
             'training_time': metrics.training_time_seconds,
-            'accuracy_rating': model.get_accuracy_rating(metrics.mape)
+            'accuracy_rating': trained_model.get_accuracy_rating(metrics.mape),
+            'used_model': used_model_name # Explicitly correct model name
         }
         training_jobs[job_id]['forecast'] = {
             'dates': forecast.dates,
@@ -514,25 +566,45 @@ async def run_training(
         }
         
         # Feature importance (XGBoost)
-        if hasattr(model, 'feature_importance') and model.feature_importance:
-            training_jobs[job_id]['metrics']['feature_importance'] = model.feature_importance
+        if hasattr(trained_model, 'feature_importance') and trained_model.feature_importance:
+            training_jobs[job_id]['metrics']['feature_importance'] = trained_model.feature_importance
         
         # Model comparison (Ensemble)
-        if hasattr(model, 'get_model_comparison'):
-            training_jobs[job_id]['metrics']['model_comparison'] = model.get_model_comparison()
+        if hasattr(trained_model, 'models') and trained_model.models:
+             # It's an ensemble
+             training_jobs[job_id]['metrics']['model_comparison'] = trained_model.get_model_comparison()
         
         # --- Generate Business Insights ---
         try:
-            from app.services.business_intelligence import generate_business_insights
-            insights = generate_business_insights(
-                training_jobs[job_id]['forecast'],
-                training_jobs[job_id]['metrics'],
-                training_jobs[session_id].get('data') # Pass raw data if available
+            from app.services.business_translator import BusinessTranslator
+            
+            translator = BusinessTranslator()
+            
+            # Prepare data for translator
+            forecast_data = pd.DataFrame({
+                'predictions': training_jobs[job_id]['forecast']['predictions'],
+                'dates': training_jobs[job_id]['forecast']['dates']
+            })
+            
+            historical_df = pd.DataFrame(training_jobs[session_id].get('data', []))
+            
+            # Translate to business insights
+            business_insights = translator.translate_forecast_results(
+                forecasts=training_jobs[job_id]['forecast'],  # Pass dict directly
+                historical_data=historical_df,
+                metrics=metrics.__dict__ if hasattr(metrics, '__dict__') else {
+                    'mape': metrics.mape,
+                    'rmse': metrics.rmse,
+                    'r2': metrics.r2
+                },
+                product_info=None  # Can be enhanced with real product data later
             )
-            training_jobs[job_id]['insights'] = insights
+            
+            training_jobs[job_id]['business_insights'] = business_insights
+            
         except Exception as e:
             logger.error(f"Failed to generate business insights: {e}")
-            training_jobs[job_id]['insights'] = {"error": "Insights generation failed"}
+            training_jobs[job_id]['business_insights'] = {"error": "Insights generation failed"}
         
         logger.info(f"Training completed for job {job_id}")
         save_jobs()

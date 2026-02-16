@@ -1,17 +1,34 @@
+/**
+ * Enhanced Login Page
+ * Exceptional authentication with 3D effects, particles, tab switching, and GSAP animations
+ */
+
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { TrendingUp, Mail, Lock, Eye, EyeOff, ArrowRight, AlertCircle, Shield, Zap, BarChart3, CheckCircle } from 'lucide-react';
+import { gsap } from 'gsap';
+import { Mail, Lock, Eye, EyeOff, ArrowRight, AlertCircle } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import AuthLayout from '../components/auth/AuthLayout';
 import SocialAuth from '../components/common/SocialAuth';
+import MagneticButton from '../components/auth/MagneticButton';
+import LoadingTheater from '../components/auth/LoadingTheater';
+import PasswordStrength from '../components/auth/PasswordStrength';
 
 const Login = () => {
-    const [formData, setFormData] = useState({ email: '', password: '', remember: false });
+    const [activeMode, setActiveMode] = useState('signin');
+    const [formData, setFormData] = useState({
+        name: '',
+        email: '',
+        password: '',
+        remember: false,
+        terms: false
+    });
     const [showPassword, setShowPassword] = useState(false);
-    const [isLoading, setIsLoading] = useState(false);
+    const [loadingStage, setLoadingStage] = useState(null);
     const [error, setError] = useState('');
     const navigate = useNavigate();
-    const { login } = useAuth();
+    const { login, register } = useAuth();
 
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
@@ -21,119 +38,104 @@ const Login = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setIsLoading(true);
+        setLoadingStage('loading');
+
         try {
-            await login(formData.email, formData.password);
-            navigate('/dashboard');
+            if (activeMode === 'signin') {
+                await login(formData.email, formData.password);
+            } else {
+                await register(formData.name, formData.email, formData.password);
+            }
+
+            // Show success animation
+            setLoadingStage('success');
+            setTimeout(() => {
+                navigate('/dashboard');
+            }, 1500);
         } catch (err) {
-            setError(err.response?.data?.detail || 'Invalid email or password');
-        } finally {
-            setIsLoading(false);
+            setLoadingStage(null);
+            setError(err.response?.data?.detail || 'An error occurred. Please try again.');
         }
     };
 
-    const benefits = [
-        { icon: BarChart3, text: '98.77% forecast accuracy' },
-        { icon: Zap, text: 'Real-time predictions' },
-        { icon: Shield, text: 'Enterprise-grade security' },
-    ];
+    const switchTab = (mode) => {
+        if (mode === activeMode) return;
+
+        const currentForm = document.getElementById(`${activeMode}-form`);
+        const nextForm = document.getElementById(`${mode}-form`);
+        const indicator = document.getElementById('tab-indicator');
+
+        // Animate tab indicator
+        indicator.style.transform = mode === 'signin' ? 'translateX(0)' : 'translateX(100%)';
+
+        // Animate form transition
+        gsap.to(currentForm, {
+            opacity: 0,
+            y: -20,
+            duration: 0.3,
+            onComplete: () => {
+                currentForm.classList.add('hidden');
+                nextForm.classList.remove('hidden');
+                gsap.fromTo(nextForm,
+                    { opacity: 0, y: 20 },
+                    { opacity: 1, y: 0, duration: 0.3 }
+                );
+            }
+        });
+
+        // Update titles
+        const titleElement = document.getElementById('welcome-title');
+        const subtitleElement = document.getElementById('welcome-subtitle');
+
+        if (mode === 'signin') {
+            titleElement.textContent = 'Welcome back';
+            subtitleElement.textContent = 'Enter your credentials to access your dashboard';
+        } else {
+            titleElement.textContent = 'Start your journey';
+            subtitleElement.textContent = 'Create your account to unlock intelligent forecasting';
+        }
+
+        setActiveMode(mode);
+        setError('');
+    };
 
     return (
-        <div className="min-h-screen flex bg-gray-50">
-            {/* Left Side - Branding & Info */}
-            <div className="hidden lg:flex lg:w-[45%] flex-col justify-between p-12 relative overflow-hidden bg-gradient-to-br from-primary-600 to-secondary-700">
-                {/* Decorative patterns */}
-                <div className="absolute inset-0 opacity-10">
-                    <div className="absolute top-0 left-0 w-96 h-96 bg-white rounded-full blur-3xl" />
-                    <div className="absolute bottom-0 right-0 w-80 h-80 bg-white rounded-full blur-3xl" />
-                </div>
+        <>
+            <LoadingTheater show={loadingStage !== null} stage={loadingStage} />
 
-                {/* Header */}
-                <div className="relative z-10">
-                    <Link to="/" className="flex items-center gap-3 group">
-                        <div className="w-12 h-12 rounded-2xl flex items-center justify-center bg-white/20 backdrop-blur-sm">
-                            <TrendingUp className="w-6 h-6 text-white" />
+            <AuthLayout mode={activeMode}>
+                <div className="w-full max-w-md">
+                    {/* Tab Switcher */}
+                    <div className="relative mb-8">
+                        <div className="flex bg-slate-200/50 rounded-xl p-1.5 relative">
+                            <div
+                                id="tab-indicator"
+                                className="absolute top-1.5 left-1.5 w-[calc(50%-6px)] h-[calc(100%-12px)] bg-white rounded-lg shadow-sm transition-transform duration-400 ease-out"
+                            />
+                            <button
+                                onClick={() => switchTab('signin')}
+                                className={`flex-1 relative z-10 py-3 text-sm font-semibold transition-colors ${activeMode === 'signin' ? 'text-slate-900' : 'text-slate-500'
+                                    }`}
+                            >
+                                Sign In
+                            </button>
+                            <button
+                                onClick={() => switchTab('register')}
+                                className={`flex-1 relative z-10 py-3 text-sm font-semibold transition-colors ${activeMode === 'register' ? 'text-slate-900' : 'text-slate-500'
+                                    }`}
+                            >
+                                Register
+                            </button>
                         </div>
-                        <span className="text-2xl font-bold text-white font-display">
-                            ForecastAI
-                        </span>
-                    </Link>
-                </div>
-
-                {/* Main Content */}
-                <div className="relative z-10 max-w-sm">
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.8 }}
-                    >
-                        <h1 className="text-4xl font-bold leading-tight mb-6 text-white font-display">
-                            Welcome back to <br />
-                            <span className="text-white/90">
-                                smarter forecasting
-                            </span>
-                        </h1>
-                        <p className="text-lg text-white/70 mb-10 leading-relaxed">
-                            Access your dashboard to view predictions and optimize your supply chain with our advanced ML models.
-                        </p>
-
-                        <div className="space-y-5">
-                            {benefits.map((benefit, index) => (
-                                <motion.div
-                                    key={index}
-                                    initial={{ opacity: 0, x: -20 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    transition={{ delay: 0.4 + index * 0.1 }}
-                                    className="flex items-center gap-4 group"
-                                >
-                                    <div className="w-12 h-12 rounded-xl bg-white/10 backdrop-blur-sm flex items-center justify-center border border-white/20">
-                                        <benefit.icon className="w-5 h-5 text-white" />
-                                    </div>
-                                    <span className="font-medium text-white/90">{benefit.text}</span>
-                                </motion.div>
-                            ))}
-                        </div>
-                    </motion.div>
-                </div>
-
-                {/* Footer Badges */}
-                <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 1 }}
-                    className="relative z-10 flex items-center gap-6 text-sm font-medium text-white/60"
-                >
-                    <div className="flex items-center gap-2">
-                        <div className="w-2 h-2 rounded-full bg-success-400 animate-pulse" />
-                        99.9% Uptime
                     </div>
-                    <div className="flex items-center gap-2">
-                        <CheckCircle className="w-4 h-4 text-success-400" />
-                        SOC 2 Compliant
-                    </div>
-                </motion.div>
-            </div>
 
-            {/* Right Side - Form */}
-            <div className="flex-1 flex items-center justify-center p-6 sm:p-12 bg-white">
-                <motion.div
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ duration: 0.5 }}
-                    className="w-full max-w-[420px]"
-                >
-                    {/* Mobile Logo */}
-                    <Link to="/" className="lg:hidden flex items-center gap-3 mb-10 justify-center">
-                        <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-gradient-to-br from-primary-500 to-secondary-500">
-                            <TrendingUp className="w-6 h-6 text-white" />
-                        </div>
-                        <span className="text-xl font-bold text-gray-900 font-display">ForecastAI</span>
-                    </Link>
-
-                    <div className="mb-8 text-center sm:text-left">
-                        <h2 className="text-3xl font-bold text-gray-900 font-display mb-2">Sign in</h2>
-                        <p className="text-gray-500">
-                            Welcome back! Please enter your details.
+                    {/* Welcome Text */}
+                    <div className="mb-8 text-center">
+                        <h2 id="welcome-title" className="font-display text-3xl font-bold text-slate-900 mb-2">
+                            Welcome back
+                        </h2>
+                        <p id="welcome-subtitle" className="text-slate-500">
+                            Enter your credentials to access your dashboard
                         </p>
                     </div>
 
@@ -144,43 +146,44 @@ const Login = () => {
                         </div>
                     )}
 
-                    {/* Social Auth Buttons */}
-                    <SocialAuth isLoading={isLoading} />
+                    {/* Social Auth */}
+                    <SocialAuth />
 
-                    <form onSubmit={handleSubmit} className="space-y-5">
-                        <div className="space-y-2">
-                            <label className="text-sm font-medium text-gray-700">Email</label>
+                    {/* Sign In Form */}
+                    <form id="signin-form" onSubmit={handleSubmit} className="space-y-5">
+                        <div className="space-y-1">
+                            <label className="block text-sm font-semibold text-slate-700 mb-1.5">Work Email</label>
                             <div className="relative">
-                                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
                                 <input
                                     type="email"
                                     name="email"
                                     value={formData.email}
                                     onChange={handleChange}
-                                    placeholder="you@company.com"
-                                    className="w-full bg-white border-2 border-gray-200 rounded-xl px-12 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all"
+                                    placeholder="name@company.com"
+                                    className="w-full pl-11 pr-4 py-3.5 bg-white border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-4 focus:ring-primary-500/10 focus:border-primary-500 transition-all duration-300 hover:border-slate-300"
                                     required
                                 />
                             </div>
                         </div>
 
-                        <div className="space-y-2">
-                            <label className="text-sm font-medium text-gray-700">Password</label>
+                        <div className="space-y-1">
+                            <label className="block text-sm font-semibold text-slate-700 mb-1.5">Password</label>
                             <div className="relative">
-                                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
                                 <input
                                     type={showPassword ? 'text' : 'password'}
                                     name="password"
                                     value={formData.password}
                                     onChange={handleChange}
-                                    placeholder="Enter password"
-                                    className="w-full bg-white border-2 border-gray-200 rounded-xl px-12 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all"
+                                    placeholder="••••••••"
+                                    className="w-full pl-11 pr-12 py-3.5 bg-white border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-4 focus:ring-primary-500/10 focus:border-primary-500 transition-all duration-300 hover:border-slate-300"
                                     required
                                 />
                                 <button
                                     type="button"
                                     onClick={() => setShowPassword(!showPassword)}
-                                    className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+                                    className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors"
                                 >
                                     {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                                 </button>
@@ -188,43 +191,124 @@ const Login = () => {
                         </div>
 
                         <div className="flex items-center justify-between">
-                            <label className="flex items-center gap-3 cursor-pointer">
+                            <label className="flex items-center cursor-pointer group">
                                 <input
                                     type="checkbox"
                                     name="remember"
                                     checked={formData.remember}
                                     onChange={handleChange}
-                                    className="w-4 h-4 rounded border-gray-300 text-primary-500 focus:ring-primary-500"
+                                    className="w-4 h-4 text-primary-600 border-slate-300 rounded focus:ring-primary-500 cursor-pointer"
                                 />
-                                <span className="text-sm text-gray-600">Remember me</span>
+                                <span className="ml-2 text-sm text-slate-600 group-hover:text-slate-800 transition-colors">
+                                    Remember me
+                                </span>
                             </label>
-                            <Link to="/forgot-password" className="text-sm font-medium text-primary-600 hover:text-primary-700">
+                            <Link to="/forgot-password" className="text-sm font-semibold text-primary-600 hover:text-primary-700 transition-colors">
                                 Forgot password?
                             </Link>
                         </div>
 
-                        <button
+                        <MagneticButton
                             type="submit"
-                            disabled={isLoading}
-                            className="w-full bg-primary-500 hover:bg-primary-600 text-white font-semibold py-3.5 rounded-xl shadow-md shadow-primary-500/25 flex items-center justify-center gap-2 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+                            className="w-full py-4 bg-gradient-to-r from-primary-600 to-indigo-600 text-white font-semibold rounded-xl shadow-lg shadow-primary-500/30 hover:shadow-xl hover:shadow-primary-500/40 transition-all duration-300 flex items-center justify-center space-x-2"
                         >
-                            {isLoading ? (
-                                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                            ) : (
-                                <>Sign in <ArrowRight className="w-5 h-5" /></>
-                            )}
-                        </button>
+                            <span>Sign In</span>
+                            <ArrowRight className="w-5 h-5" />
+                        </MagneticButton>
                     </form>
 
-                    <div className="mt-8 text-center text-sm text-gray-500">
-                        Don't have an account?{' '}
-                        <Link to="/register" className="font-medium text-primary-600 hover:text-primary-700">
-                            Sign up now
-                        </Link>
+                    {/* Register Form (Hidden by default) */}
+                    <form id="register-form" onSubmit={handleSubmit} className="space-y-5 hidden">
+                        <div className="space-y-1">
+                            <label className="block text-sm font-semibold text-slate-700 mb-1.5">Full Name</label>
+                            <div className="relative">
+                                <input
+                                    type="text"
+                                    name="name"
+                                    value={formData.name}
+                                    onChange={handleChange}
+                                    placeholder="John Doe"
+                                    className="w-full px-4 py-3.5 bg-white border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-4 focus:ring-primary-500/10 focus:border-primary-500 transition-all duration-300 hover:border-slate-300"
+                                    required
+                                />
+                            </div>
+                        </div>
+
+                        <div className="space-y-1">
+                            <label className="block text-sm font-semibold text-slate-700 mb-1.5">Work Email</label>
+                            <div className="relative">
+                                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+                                <input
+                                    type="email"
+                                    name="email"
+                                    value={formData.email}
+                                    onChange={handleChange}
+                                    placeholder="name@company.com"
+                                    className="w-full pl-11 pr-4 py-3.5 bg-white border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-4 focus:ring-primary-500/10 focus:border-primary-500 transition-all duration-300 hover:border-slate-300"
+                                    required
+                                />
+                            </div>
+                        </div>
+
+                        <div className="space-y-1">
+                            <label className="block text-sm font-semibold text-slate-700 mb-1.5">Password</label>
+                            <div className="relative">
+                                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+                                <input
+                                    type={showPassword ? 'text' : 'password'}
+                                    name="password"
+                                    value={formData.password}
+                                    onChange={handleChange}
+                                    placeholder="••••••••"
+                                    className="w-full pl-11 pr-12 py-3.5 bg-white border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-4 focus:ring-primary-500/10 focus:border-primary-500 transition-all duration-300 hover:border-slate-300"
+                                    required
+                                />
+                                <button
+                                    type="button"
+                                    onClick={() => setShowPassword(!showPassword)}
+                                    className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors"
+                                >
+                                    {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                                </button>
+                            </div>
+
+                            {/* Password Strength Meter */}
+                            <PasswordStrength password={formData.password} />
+                        </div>
+
+                        <div className="flex items-start">
+                            <input
+                                type="checkbox"
+                                name="terms"
+                                checked={formData.terms}
+                                onChange={handleChange}
+                                className="mt-1 w-4 h-4 text-primary-600 border-slate-300 rounded focus:ring-primary-500 cursor-pointer"
+                                required
+                            />
+                            <label className="ml-2 text-sm text-slate-600">
+                                I agree to the <Link to="/terms" className="text-primary-600 hover:text-primary-700 font-semibold">Terms of Service</Link> and <Link to="/privacy" className="text-primary-600 hover:text-primary-700 font-semibold">Privacy Policy</Link>
+                            </label>
+                        </div>
+
+                        <MagneticButton
+                            type="submit"
+                            className="w-full py-4 bg-gradient-to-r from-primary-600 to-indigo-600 text-white font-semibold rounded-xl shadow-lg shadow-primary-500/30 hover:shadow-xl hover:shadow-primary-500/40 transition-all duration-300 flex items-center justify-center space-x-2"
+                        >
+                            <span>Create Account</span>
+                            <ArrowRight className="w-5 h-5" />
+                        </MagneticButton>
+                    </form>
+
+                    {/* Footer */}
+                    <div className="mt-8 text-center">
+                        <p className="text-xs text-slate-500 leading-relaxed">
+                            By continuing, you agree to our <Link to="/terms" className="text-primary-600 hover:underline">Terms of Service</Link> and <Link to="/privacy" className="text-primary-600 hover:underline">Privacy Policy</Link>.<br />
+                            Protected by reCAPTCHA and subject to Google's Privacy Policy and Terms of Service.
+                        </p>
                     </div>
-                </motion.div>
-            </div>
-        </div>
+                </div>
+            </AuthLayout>
+        </>
     );
 };
 

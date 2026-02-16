@@ -15,4 +15,8 @@ python-dotenv>=1.0.0
 # prophet>=1.1.5
 statsmodels>=0.14.1
 # pmdarima>=2.0.4
-
+# Data Adapter Dependencies
+fuzzywuzzy>=0.18.0
+python-Levenshtein>=0.23.0
+python-dateutil>=2.8.2
+pandera>=0.18.0

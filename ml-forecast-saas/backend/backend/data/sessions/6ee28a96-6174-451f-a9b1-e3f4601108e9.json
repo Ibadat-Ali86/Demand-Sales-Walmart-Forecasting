@@ -1,0 +1,260 @@
+{
+  "session_id": "6ee28a96-6174-451f-a9b1-e3f4601108e9",
+  "status": "profiled",
+  "data": [
+    {
+      "date": "2024-01-01",
+      "product_id": "PROD-001",
+      "sales": 150
+    },
+    {
+      "date": "2024-01-02",
+      "product_id": "PROD-001",
+      "sales": 165
+    },
+    {
+      "date": "2024-01-03",
+      "product_id": "PROD-001",
+      "sales": 142
+    },
+    {
+      "date": "2024-01-04",
+      "product_id": "PROD-001",
+      "sales": 180
+    },
+    {
+      "date": "2024-01-05",
+      "product_id": "PROD-001",
+      "sales": 120
+    },
+    {
+      "date": "2024-01-06",
+      "product_id": "PROD-001",
+      "sales": 200
+    },
+    {
+      "date": "2024-01-07",
+      "product_id": "PROD-001",
+      "sales": 190
+    },
+    {
+      "date": "2024-01-01",
+      "product_id": "PROD-002",
+      "sales": 250
+    },
+    {
+      "date": "2024-01-02",
+      "product_id": "PROD-002",
+      "sales": 230
+    },
+    {
+      "date": "2024-01-03",
+      "product_id": "PROD-002",
+      "sales": 210
+    },
+    {
+      "date": "2024-01-04",
+      "product_id": "PROD-002",
+      "sales": 240
+    },
+    {
+      "date": "2024-01-05",
+      "product_id": "PROD-002",
+      "sales": 260
+    },
+    {
+      "date": "2024-01-06",
+      "product_id": "PROD-002",
+      "sales": 280
+    },
+    {
+      "date": "2024-01-07",
+      "product_id": "PROD-002",
+      "sales": 270
+    }
+  ],
+  "filename": "test_data.csv",
+  "rows": 14,
+  "columns": [
+    "date",
+    "product_id",
+    "sales"
+  ],
+  "uploaded_at": "2026-02-15T21:07:52.778206",
+  "schema_analysis": {
+    "mapped_schema": {
+      "date": "date",
+      "product_id": "product_id",
+      "price": "sales"
+    },
+    "confidence_scores": {
+      "date": 100.0,
+      "product_id": 100.0,
+      "price": 100.0
+    },
+    "overall_confidence": 76.7,
+    "missing_required": [
+      "quantity"
+    ],
+    "domain": "Generic Time-Series",
+    "validation_mappings": {
+      "date": "date",
+      "identifier": "product_id",
+      "value": "sales"
+    }
+  },
+  "quality_report": {
+    "issues": [],
+    "row_count": 14,
+    "completeness": 100.0,
+    "missing_cells": 0,
+    "duplicate_rows": 0,
+    "preview": [
+      {
+        "date": "2024-01-01",
+        "product_id": "PROD-001",
+        "sales": "150"
+      },
+      {
+        "date": "2024-01-02",
+        "product_id": "PROD-001",
+        "sales": "165"
+      },
+      {
+        "date": "2024-01-03",
+        "product_id": "PROD-001",
+        "sales": "142"
+      },
+      {
+        "date": "2024-01-04",
+        "product_id": "PROD-001",
+        "sales": "180"
+      },
+      {
+        "date": "2024-01-05",
+        "product_id": "PROD-001",
+        "sales": "120"
+      }
+    ]
+  },
+  "profile": {
+    "dimensions": {
+      "rows": 14,
+      "columns": 3,
+      "timeSpanDays": 6
+    },
+    "statisticalSummary": [
+      {
+        "column": "date",
+        "type": "string",
+        "missing": 0,
+        "missing_pct": 0.0,
+        "unique": 7
+      },
+      {
+        "column": "product_id",
+        "type": "string",
+        "missing": 0,
+        "missing_pct": 0.0,
+        "unique": 2
+      },
+      {
+        "column": "sales",
+        "type": "number",
+        "missing": 0,
+        "missing_pct": 0.0,
+        "unique": 14,
+        "mean": 206.21,
+        "std": 50.72,
+        "min": 120.0,
+        "max": 280.0,
+        "median": 205.0
+      }
+    ],
+    "dataQuality": {
+      "completeness": 100.0,
+      "missingCount": 0,
+      "missingByColumn": {},
+      "duplicate_rows": 0
+    },
+    "time_series_info": {
+      "start_date": "2024-01-01T00:00:00",
+      "end_date": "2024-01-07T00:00:00",
+      "duration_days": 6,
+      "frequency": "Daily"
+    },
+    "businessInsights": [],
+    "validation": {
+      "passed": true,
+      "log": [
+        "\u2713 Data completeness: 100.0%.",
+        "\u2713 Found date column 'date' (daily frequency).",
+        "\u2713 Target column 'sales': 14 valid values."
+      ]
+    },
+    "domain_analysis": {
+      "detected_domain": "Sales Forecasting",
+      "confidence": 0.54,
+      "all_scores": {
+        "Sales Forecasting": 0.5416666666666666,
+        "HR Analytics": 0.0,
+        "Financial Metrics": 0.2333333333333333,
+        "Inventory Management": 0.4666666666666666,
+        "Marketing Analytics": 0.2333333333333333
+      },
+      "gap_analysis": {
+        "domain": "Sales Forecasting",
+        "description": "Historical sales data for demand forecasting.",
+        "kpis": [
+          "Total Revenue",
+          "Units Sold",
+          "Growth Rate"
+        ],
+        "missing_required": [
+          "Qty"
+        ],
+        "missing_optional": [
+          "Store",
+          "Price",
+          "Promo"
+        ],
+        "proxy_suggestions": [],
+        "suggestions": [
+          "Critical: Missing Qty. Analysis may be limited.",
+          "Recommended: Add Store, Price, Promo for deeper insights."
+        ],
+        "status": "Incomplete"
+      },
+      "domain_kpis": [
+        {
+          "label": "Total Revenue",
+          "value": "$2,887",
+          "trend": "neutral",
+          "desc": "Gross Revenue"
+        }
+      ]
+    },
+    "enrichment_opportunities": [
+      {
+        "title": "US Holidays",
+        "description": "US Federal Holidays (New Year, Christmas, etc.)",
+        "benefit": "Explains demand spikes/drops around major holidays."
+      },
+      {
+        "title": "Macroeconomic Indicators",
+        "description": "CPI, Inflation, Unemployment Rate",
+        "benefit": "Helps adjust for long-term economic trends."
+      }
+    ],
+    "model_recommendation": {
+      "primary": "naive",
+      "reason": "Data does not meet advanced model requirements. Using Naive.",
+      "fallback": [
+        "moving_average"
+      ],
+      "estimated_complexity": "simple"
+    }
+  },
+  "resolved_date_col": "date",
+  "resolved_target_col": "sales"
+}

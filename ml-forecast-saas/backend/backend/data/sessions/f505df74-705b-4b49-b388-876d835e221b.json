@@ -1,0 +1,264 @@
+{
+  "session_id": "f505df74-705b-4b49-b388-876d835e221b",
+  "status": "uploaded",
+  "data": [
+    {
+      "Store": 1,
+      "Dept": 1,
+      "Date": "2010-02-05",
+      "Weekly_Sales": 24924.5,
+      "IsHoliday": false
+    },
+    {
+      "Store": 1,
+      "Dept": 1,
+      "Date": "2010-02-12",
+      "Weekly_Sales": 46039.49,
+      "IsHoliday": true
+    },
+    {
+      "Store": 1,
+      "Dept": 1,
+      "Date": "2010-02-19",
+      "Weekly_Sales": 41595.55,
+      "IsHoliday": false
+    },
+    {
+      "Store": 1,
+      "Dept": 1,
+      "Date": "2010-02-26",
+      "Weekly_Sales": 19403.54,
+      "IsHoliday": false
+    },
+    {
+      "Store": 1,
+      "Dept": 1,
+      "Date": "2010-03-05",
+      "Weekly_Sales": 21827.9,
+      "IsHoliday": false
+    },
+    {
+      "Store": 1,
+      "Dept": 1,
+      "Date": "2010-03-12",
+      "Weekly_Sales": 21043.39,
+      "IsHoliday": false
+    },
+    {
+      "Store": 1,
+      "Dept": 1,
+      "Date": "2010-03-19",
+      "Weekly_Sales": 22136.64,
+      "IsHoliday": false
+    },
+    {
+      "Store": 1,
+      "Dept": 1,
+      "Date": "2010-03-26",
+      "Weekly_Sales": 26229.21,
+      "IsHoliday": false
+    },
+    {
+      "Store": 1,
+      "Dept": 1,
+      "Date": "2010-04-02",
+      "Weekly_Sales": 57258.43,
+      "IsHoliday": false
+    },
+    {
+      "Store": 1,
+      "Dept": 1,
+      "Date": "2010-04-09",
+      "Weekly_Sales": 42960.91,
+      "IsHoliday": false
+    },
+    {
+      "Store": 1,
+      "Dept": 1,
+      "Date": "2010-04-16",
+      "Weekly_Sales": 17596.96,
+      "IsHoliday": false
+    },
+    {
+      "Store": 1,
+      "Dept": 1,
+      "Date": "2010-04-23",
+      "Weekly_Sales": 16145.35,
+      "IsHoliday": false
+    },
+    {
+      "Store": 1,
+      "Dept": 1,
+      "Date": "2010-04-30",
+      "Weekly_Sales": 16555.11,
+      "IsHoliday": false
+    },
+    {
+      "Store": 1,
+      "Dept": 1,
+      "Date": "2010-05-07",
+      "Weekly_Sales": 17413.94,
+      "IsHoliday": false
+    },
+    {
+      "Store": 1,
+      "Dept": 1,
+      "Date": "2010-05-14",
+      "Weekly_Sales": 18926.74,
+      "IsHoliday": false
+    },
+    {
+      "Store": 1,
+      "Dept": 1,
+      "Date": "2010-05-21",
+      "Weekly_Sales": 14773.04,
+      "IsHoliday": false
+    },
+    {
+      "Store": 1,
+      "Dept": 1,
+      "Date": "2010-05-28",
+      "Weekly_Sales": 15580.43,
+      "IsHoliday": false
+    },
+    {
+      "Store": 1,
+      "Dept": 1,
+      "Date": "2010-06-04",
+      "Weekly_Sales": 17558.09,
+      "IsHoliday": false
+    },
+    {
+      "Store": 1,
+      "Dept": 1,
+      "Date": "2010-06-11",
+      "Weekly_Sales": 16278.35,
+      "IsHoliday": false
+    },
+    {
+      "Store": 1,
+      "Dept": 1,
+      "Date": "2010-06-18",
+      "Weekly_Sales": 16232.43,
+      "IsHoliday": false
+    },
+    {
+      "Store": 1,
+      "Dept": 1,
+      "Date": "2010-06-25",
+      "Weekly_Sales": 15444.72,
+      "IsHoliday": false
+    },
+    {
+      "Store": 1,
+      "Dept": 1,
+      "Date": "2010-07-02",
+      "Weekly_Sales": 16333.14,
+      "IsHoliday": false
+    },
+    {
+      "Store": 1,
+      "Dept": 1,
+      "Date": "2010-07-09",
+      "Weekly_Sales": 17688.76,
+      "IsHoliday": false
+    },
+    {
+      "Store": 1,
+      "Dept": 1,
+      "Date": "2010-07-16",
+      "Weekly_Sales": 17193.31,
+      "IsHoliday": false
+    },
+    {
+      "Store": 1,
+      "Dept": 1,
+      "Date": "2010-07-23",
+      "Weekly_Sales": 16363.54,
+      "IsHoliday": false
+    },
+    {
+      "Store": 1,
+      "Dept": 1,
+      "Date": "2010-07-30",
+      "Weekly_Sales": 15381.82,
+      "IsHoliday": false
+    }
+  ],
+  "filename": "walmart_sales.csv",
+  "rows": 26,
+  "columns": [
+    "Store",
+    "Dept",
+    "Date",
+    "Weekly_Sales",
+    "IsHoliday"
+  ],
+  "uploaded_at": "2026-02-16T00:49:30.031342",
+  "schema_analysis": {
+    "mapped_schema": {
+      "date": "Date",
+      "store": "Store",
+      "quantity": "Weekly_Sales"
+    },
+    "confidence_scores": {
+      "date": 100.0,
+      "store": 100.0,
+      "quantity": 63.6
+    },
+    "overall_confidence": 73.0,
+    "missing_required": [
+      "product_id"
+    ],
+    "domain": "Retail / Supply Chain",
+    "validation_mappings": {
+      "date": "Date",
+      "identifier": "Store",
+      "value": "Weekly_Sales"
+    }
+  },
+  "quality_report": {
+    "issues": [],
+    "row_count": 26,
+    "completeness": 100.0,
+    "missing_cells": 0,
+    "duplicate_rows": 0,
+    "preview": [
+      {
+        "Store": "1",
+        "Dept": "1",
+        "Date": "2010-02-05",
+        "Weekly_Sales": "24924.5",
+        "IsHoliday": "False"
+      },
+      {
+        "Store": "1",
+        "Dept": "1",
+        "Date": "2010-02-12",
+        "Weekly_Sales": "46039.49",
+        "IsHoliday": "True"
+      },
+      {
+        "Store": "1",
+        "Dept": "1",
+        "Date": "2010-02-19",
+        "Weekly_Sales": "41595.55",
+        "IsHoliday": "False"
+      },
+      {
+        "Store": "1",
+        "Dept": "1",
+        "Date": "2010-02-26",
+        "Weekly_Sales": "19403.54",
+        "IsHoliday": "False"
+      },
+      {
+        "Store": "1",
+        "Dept": "1",
+        "Date": "2010-03-05",
+        "Weekly_Sales": "21827.9",
+        "IsHoliday": "False"
+      }
+    ]
+  }
+}

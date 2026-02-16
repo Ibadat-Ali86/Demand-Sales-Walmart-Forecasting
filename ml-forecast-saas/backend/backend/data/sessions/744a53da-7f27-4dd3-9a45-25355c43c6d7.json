@@ -1,0 +1,76 @@
+{
+  "session_id": "744a53da-7f27-4dd3-9a45-25355c43c6d7",
+  "status": "uploaded",
+  "data": [
+    {
+      "Date": "2023-01-01",
+      "Store": 1,
+      "Sales": 1000
+    },
+    {
+      "Date": "2023-01-02",
+      "Store": 1,
+      "Sales": 1100
+    },
+    {
+      "Date": "2023-01-03",
+      "Store": 1,
+      "Sales": 1200
+    }
+  ],
+  "filename": "sample_sales_data.csv",
+  "rows": 3,
+  "columns": [
+    "Date",
+    "Store",
+    "Sales"
+  ],
+  "uploaded_at": "2026-02-16T01:29:11.341081",
+  "schema_analysis": {
+    "mapped_schema": {
+      "date": "Date",
+      "price": "Sales",
+      "store": "Store"
+    },
+    "confidence_scores": {
+      "date": 100.0,
+      "price": 100.0,
+      "store": 100.0
+    },
+    "overall_confidence": 53.3,
+    "missing_required": [
+      "product_id",
+      "quantity"
+    ],
+    "domain": "Retail / Supply Chain",
+    "validation_mappings": {
+      "date": "Date",
+      "identifier": "Store",
+      "value": "Sales"
+    }
+  },
+  "quality_report": {
+    "issues": [],
+    "row_count": 3,
+    "completeness": 100.0,
+    "missing_cells": 0,
+    "duplicate_rows": 0,
+    "preview": [
+      {
+        "Date": "2023-01-01",
+        "Store": "1",
+        "Sales": "1000"
+      },
+      {
+        "Date": "2023-01-02",
+        "Store": "1",
+        "Sales": "1100"
+      },
+      {
+        "Date": "2023-01-03",
+        "Store": "1",
+        "Sales": "1200"
+      }
+    ]
+  }
+}

@@ -1,0 +1,248 @@
+{
+  "session_id": "d8f2b8dd-3b7b-4fa5-bd6a-057d89c0723b",
+  "status": "profiled",
+  "data": [
+    {
+      "Date": "2023-01-01",
+      "Store": "Store A",
+      "Product": "Widget X",
+      "Sales": 100,
+      "Quantity": 10,
+      "Category": "Electronics"
+    },
+    {
+      "Date": "2023-01-02",
+      "Store": "Store A",
+      "Product": "Widget Y",
+      "Sales": 150,
+      "Quantity": 15,
+      "Category": "Electronics"
+    },
+    {
+      "Date": "2023-01-03",
+      "Store": "Store B",
+      "Product": "Widget X",
+      "Sales": 200,
+      "Quantity": 20,
+      "Category": "Electronics"
+    }
+  ],
+  "filename": "sample_upload.csv",
+  "rows": 3,
+  "columns": [
+    "Date",
+    "Store",
+    "Product",
+    "Sales",
+    "Quantity",
+    "Category"
+  ],
+  "uploaded_at": "2026-02-16T02:54:00.923154",
+  "schema_analysis": {
+    "mapped_schema": {
+      "date": "Date",
+      "product_id": "Product",
+      "quantity": "Quantity",
+      "price": "Sales",
+      "category": "Category",
+      "store": "Store"
+    },
+    "confidence_scores": {
+      "date": 100.0,
+      "product_id": 100.0,
+      "quantity": 100.0,
+      "price": 100.0,
+      "category": 100.0,
+      "store": 100.0
+    },
+    "overall_confidence": 100.0,
+    "missing_required": [],
+    "domain": "Retail / Supply Chain",
+    "validation_mappings": {
+      "date": "Date",
+      "identifier": "Store",
+      "value": "Sales"
+    }
+  },
+  "quality_report": {
+    "issues": [],
+    "row_count": 3,
+    "completeness": 100.0,
+    "missing_cells": 0,
+    "duplicate_rows": 0,
+    "preview": [
+      {
+        "Date": "2023-01-01",
+        "Store": "Store A",
+        "Product": "Widget X",
+        "Sales": "100",
+        "Quantity": "10",
+        "Category": "Electronics"
+      },
+      {
+        "Date": "2023-01-02",
+        "Store": "Store A",
+        "Product": "Widget Y",
+        "Sales": "150",
+        "Quantity": "15",
+        "Category": "Electronics"
+      },
+      {
+        "Date": "2023-01-03",
+        "Store": "Store B",
+        "Product": "Widget X",
+        "Sales": "200",
+        "Quantity": "20",
+        "Category": "Electronics"
+      }
+    ]
+  },
+  "profile": {
+    "dimensions": {
+      "rows": 3,
+      "columns": 6,
+      "timeSpanDays": 2
+    },
+    "statisticalSummary": [
+      {
+        "column": "Date",
+        "type": "string",
+        "missing": 0,
+        "missing_pct": 0.0,
+        "unique": 3
+      },
+      {
+        "column": "Store",
+        "type": "string",
+        "missing": 0,
+        "missing_pct": 0.0,
+        "unique": 2
+      },
+      {
+        "column": "Product",
+        "type": "string",
+        "missing": 0,
+        "missing_pct": 0.0,
+        "unique": 2
+      },
+      {
+        "column": "Sales",
+        "type": "number",
+        "missing": 0,
+        "missing_pct": 0.0,
+        "unique": 3,
+        "mean": 150.0,
+        "std": 50.0,
+        "min": 100.0,
+        "max": 200.0,
+        "median": 150.0
+      },
+      {
+        "column": "Quantity",
+        "type": "number",
+        "missing": 0,
+        "missing_pct": 0.0,
+        "unique": 3,
+        "mean": 15.0,
+        "std": 5.0,
+        "min": 10.0,
+        "max": 20.0,
+        "median": 15.0
+      },
+      {
+        "column": "Category",
+        "type": "string",
+        "missing": 0,
+        "missing_pct": 0.0,
+        "unique": 1
+      }
+    ],
+    "dataQuality": {
+      "completeness": 100.0,
+      "missingCount": 0,
+      "missingByColumn": {},
+      "duplicate_rows": 0
+    },
+    "time_series_info": {
+      "start_date": "2023-01-01T00:00:00",
+      "end_date": "2023-01-03T00:00:00",
+      "duration_days": 2,
+      "frequency": "Daily"
+    },
+    "businessInsights": [],
+    "validation": {
+      "passed": true,
+      "log": [
+        "\u2713 Data completeness: 100.0%.",
+        "\u2713 Found date column 'Date' (daily frequency).",
+        "\u2713 Target column 'Sales': 3 valid values."
+      ]
+    },
+    "domain_analysis": {
+      "detected_domain": "Sales Forecasting",
+      "confidence": 0.85,
+      "all_scores": {
+        "Sales Forecasting": 0.85,
+        "HR Analytics": 0.0,
+        "Financial Metrics": 0.4666666666666666,
+        "Inventory Management": 0.4666666666666666,
+        "Marketing Analytics": 0.2333333333333333
+      },
+      "gap_analysis": {
+        "domain": "Sales Forecasting",
+        "description": "Historical sales data for demand forecasting.",
+        "kpis": [
+          "Total Revenue",
+          "Units Sold",
+          "Growth Rate"
+        ],
+        "missing_required": [],
+        "missing_optional": [
+          "Price",
+          "Promo"
+        ],
+        "proxy_suggestions": [],
+        "suggestions": [
+          "Recommended: Add Price, Promo for deeper insights."
+        ],
+        "status": "Complete"
+      },
+      "domain_kpis": [
+        {
+          "label": "Total Revenue",
+          "value": "$450",
+          "trend": "neutral",
+          "desc": "Gross Revenue"
+        },
+        {
+          "label": "ASP",
+          "value": "$10.00",
+          "trend": "neutral",
+          "desc": "Average Selling Price"
+        }
+      ]
+    },
+    "enrichment_opportunities": [
+      {
+        "title": "US Holidays",
+        "description": "US Federal Holidays (New Year, Christmas, etc.)",
+        "benefit": "Explains demand spikes/drops around major holidays."
+      },
+      {
+        "title": "Macroeconomic Indicators",
+        "description": "CPI, Inflation, Unemployment Rate",
+        "benefit": "Helps adjust for long-term economic trends."
+      }
+    ],
+    "model_recommendation": {
+      "primary": "moving_average",
+      "reason": "Very small dataset (3 rows). Using Moving Average.",
+      "fallback": [
+        "naive"
+      ],
+      "estimated_complexity": "simple"
+    }
+  },
+  "resolved_date_col": "Date",
+  "resolved_target_col": "Sales"
+}

@@ -1,0 +1,494 @@
+{
+  "session_id": "190b87b7-b7d3-424f-b86f-3722df343169",
+  "status": "completed",
+  "data": [
+    {
+      "Store": 1,
+      "Dept": 1,
+      "Date": "2010-02-05",
+      "Weekly_Sales": 24924.5,
+      "IsHoliday": false
+    },
+    {
+      "Store": 1,
+      "Dept": 1,
+      "Date": "2010-02-12",
+      "Weekly_Sales": 46039.49,
+      "IsHoliday": true
+    },
+    {
+      "Store": 1,
+      "Dept": 1,
+      "Date": "2010-02-19",
+      "Weekly_Sales": 41595.55,
+      "IsHoliday": false
+    },
+    {
+      "Store": 1,
+      "Dept": 1,
+      "Date": "2010-02-26",
+      "Weekly_Sales": 19403.54,
+      "IsHoliday": false
+    },
+    {
+      "Store": 1,
+      "Dept": 1,
+      "Date": "2010-03-05",
+      "Weekly_Sales": 21827.9,
+      "IsHoliday": false
+    },
+    {
+      "Store": 1,
+      "Dept": 1,
+      "Date": "2010-03-12",
+      "Weekly_Sales": 21043.39,
+      "IsHoliday": false
+    },
+    {
+      "Store": 1,
+      "Dept": 1,
+      "Date": "2010-03-19",
+      "Weekly_Sales": 22136.64,
+      "IsHoliday": false
+    },
+    {
+      "Store": 1,
+      "Dept": 1,
+      "Date": "2010-03-26",
+      "Weekly_Sales": 26229.21,
+      "IsHoliday": false
+    },
+    {
+      "Store": 1,
+      "Dept": 1,
+      "Date": "2010-04-02",
+      "Weekly_Sales": 57258.43,
+      "IsHoliday": false
+    },
+    {
+      "Store": 1,
+      "Dept": 1,
+      "Date": "2010-04-09",
+      "Weekly_Sales": 42960.91,
+      "IsHoliday": false
+    },
+    {
+      "Store": 1,
+      "Dept": 1,
+      "Date": "2010-04-16",
+      "Weekly_Sales": 17596.96,
+      "IsHoliday": false
+    },
+    {
+      "Store": 1,
+      "Dept": 1,
+      "Date": "2010-04-23",
+      "Weekly_Sales": 16145.35,
+      "IsHoliday": false
+    },
+    {
+      "Store": 1,
+      "Dept": 1,
+      "Date": "2010-04-30",
+      "Weekly_Sales": 16555.11,
+      "IsHoliday": false
+    },
+    {
+      "Store": 1,
+      "Dept": 1,
+      "Date": "2010-05-07",
+      "Weekly_Sales": 17413.94,
+      "IsHoliday": false
+    },
+    {
+      "Store": 1,
+      "Dept": 1,
+      "Date": "2010-05-14",
+      "Weekly_Sales": 18926.74,
+      "IsHoliday": false
+    },
+    {
+      "Store": 1,
+      "Dept": 1,
+      "Date": "2010-05-21",
+      "Weekly_Sales": 14773.04,
+      "IsHoliday": false
+    },
+    {
+      "Store": 1,
+      "Dept": 1,
+      "Date": "2010-05-28",
+      "Weekly_Sales": 15580.43,
+      "IsHoliday": false
+    },
+    {
+      "Store": 1,
+      "Dept": 1,
+      "Date": "2010-06-04",
+      "Weekly_Sales": 17558.09,
+      "IsHoliday": false
+    },
+    {
+      "Store": 1,
+      "Dept": 1,
+      "Date": "2010-06-11",
+      "Weekly_Sales": 16278.35,
+      "IsHoliday": false
+    },
+    {
+      "Store": 1,
+      "Dept": 1,
+      "Date": "2010-06-18",
+      "Weekly_Sales": 16232.43,
+      "IsHoliday": false
+    },
+    {
+      "Store": 1,
+      "Dept": 1,
+      "Date": "2010-06-25",
+      "Weekly_Sales": 15444.72,
+      "IsHoliday": false
+    },
+    {
+      "Store": 1,
+      "Dept": 1,
+      "Date": "2010-07-02",
+      "Weekly_Sales": 16333.14,
+      "IsHoliday": false
+    },
+    {
+      "Store": 1,
+      "Dept": 1,
+      "Date": "2010-07-09",
+      "Weekly_Sales": 17688.76,
+      "IsHoliday": false
+    },
+    {
+      "Store": 1,
+      "Dept": 1,
+      "Date": "2010-07-16",
+      "Weekly_Sales": 17193.31,
+      "IsHoliday": false
+    },
+    {
+      "Store": 1,
+      "Dept": 1,
+      "Date": "2010-07-23",
+      "Weekly_Sales": 16363.54,
+      "IsHoliday": false
+    },
+    {
+      "Store": 1,
+      "Dept": 1,
+      "Date": "2010-07-30",
+      "Weekly_Sales": 15381.82,
+      "IsHoliday": false
+    }
+  ],
+  "filename": "walmart_sales.csv",
+  "rows": 26,
+  "columns": [
+    "Store",
+    "Dept",
+    "Date",
+    "Weekly_Sales",
+    "IsHoliday"
+  ],
+  "uploaded_at": "2026-02-16T00:53:37.172083",
+  "schema_analysis": {
+    "mapped_schema": {
+      "date": "Date",
+      "store": "Store",
+      "quantity": "Weekly_Sales"
+    },
+    "confidence_scores": {
+      "date": 100.0,
+      "store": 100.0,
+      "quantity": 63.6
+    },
+    "overall_confidence": 73.0,
+    "missing_required": [
+      "product_id"
+    ],
+    "domain": "Retail / Supply Chain",
+    "validation_mappings": {
+      "date": "Date",
+      "identifier": "Store",
+      "value": "Weekly_Sales"
+    }
+  },
+  "quality_report": {
+    "issues": [],
+    "row_count": 26,
+    "completeness": 100.0,
+    "missing_cells": 0,
+    "duplicate_rows": 0,
+    "preview": [
+      {
+        "Store": "1",
+        "Dept": "1",
+        "Date": "2010-02-05",
+        "Weekly_Sales": "24924.5",
+        "IsHoliday": "False"
+      },
+      {
+        "Store": "1",
+        "Dept": "1",
+        "Date": "2010-02-12",
+        "Weekly_Sales": "46039.49",
+        "IsHoliday": "True"
+      },
+      {
+        "Store": "1",
+        "Dept": "1",
+        "Date": "2010-02-19",
+        "Weekly_Sales": "41595.55",
+        "IsHoliday": "False"
+      },
+      {
+        "Store": "1",
+        "Dept": "1",
+        "Date": "2010-02-26",
+        "Weekly_Sales": "19403.54",
+        "IsHoliday": "False"
+      },
+      {
+        "Store": "1",
+        "Dept": "1",
+        "Date": "2010-03-05",
+        "Weekly_Sales": "21827.9",
+        "IsHoliday": "False"
+      }
+    ]
+  },
+  "model_type": "auto",
+  "progress": 100,
+  "current_step": "Training complete!",
+  "started_at": "2026-02-16T00:53:37.198023",
+  "metrics": {
+    "mape": 4.31,
+    "rmse": 857.86,
+    "mae": 714.56,
+    "r2": 0,
+    "training_samples": 20,
+    "validation_samples": 6,
+    "training_time": 0.02,
+    "accuracy_rating": "Excellent"
+  },
+  "forecast": {
+    "dates": [
+      "2010-08-06",
+      "2010-08-13",
+      "2010-08-20",
+      "2010-08-27",
+      "2010-09-03",
+      "2010-09-10",
+      "2010-09-17",
+      "2010-09-24",
+      "2010-10-01",
+      "2010-10-08",
+      "2010-10-15",
+      "2010-10-22",
+      "2010-10-29",
+      "2010-11-05",
+      "2010-11-12",
+      "2010-11-19",
+      "2010-11-26",
+      "2010-12-03",
+      "2010-12-10",
+      "2010-12-17",
+      "2010-12-24",
+      "2010-12-31",
+      "2011-01-07",
+      "2011-01-14",
+      "2011-01-21",
+      "2011-01-28",
+      "2011-02-04",
+      "2011-02-11",
+      "2011-02-18",
+      "2011-02-25"
+    ],
+    "predictions": [
+      15381.82,
+      15381.82,
+      15381.82,
+      15381.82,
+      15381.82,
+      15381.82,
+      15381.82,
+      15381.82,
+      15381.82,
+      15381.82,
+      15381.82,
+      15381.82,
+      15381.82,
+      15381.82,
+      15381.82,
+      15381.82,
+      15381.82,
+      15381.82,
+      15381.82,
+      15381.82,
+      15381.82,
+      15381.82,
+      15381.82,
+      15381.82,
+      15381.82,
+      15381.82,
+      15381.82,
+      15381.82,
+      15381.82,
+      15381.82
+    ],
+    "lower_bound": [
+      -6629.192201651804,
+      -6629.192201651804,
+      -6629.192201651804,
+      -6629.192201651804,
+      -6629.192201651804,
+      -6629.192201651804,
+      -6629.192201651804,
+      -6629.192201651804,
+      -6629.192201651804,
+      -6629.192201651804,
+      -6629.192201651804,
+      -6629.192201651804,
+      -6629.192201651804,
+      -6629.192201651804,
+      -6629.192201651804,
+      -6629.192201651804,
+      -6629.192201651804,
+      -6629.192201651804,
+      -6629.192201651804,
+      -6629.192201651804,
+      -6629.192201651804,
+      -6629.192201651804,
+      -6629.192201651804,
+      -6629.192201651804,
+      -6629.192201651804,
+      -6629.192201651804,
+      -6629.192201651804,
+      -6629.192201651804,
+      -6629.192201651804,
+      -6629.192201651804
+    ],
+    "upper_bound": [
+      37392.83220165181,
+      37392.83220165181,
+      37392.83220165181,
+      37392.83220165181,
+      37392.83220165181,
+      37392.83220165181,
+      37392.83220165181,
+      37392.83220165181,
+      37392.83220165181,
+      37392.83220165181,
+      37392.83220165181,
+      37392.83220165181,
+      37392.83220165181,
+      37392.83220165181,
+      37392.83220165181,
+      37392.83220165181,
+      37392.83220165181,
+      37392.83220165181,
+      37392.83220165181,
+      37392.83220165181,
+      37392.83220165181,
+      37392.83220165181,
+      37392.83220165181,
+      37392.83220165181,
+      37392.83220165181,
+      37392.83220165181,
+      37392.83220165181,
+      37392.83220165181,
+      37392.83220165181,
+      37392.83220165181
+    ],
+    "confidence_level": 95.0
+  },
+  "config": {
+    "target_col": "Weekly_Sales",
+    "date_col": "Date"
+  },
+  "completed_at": "2026-02-16T00:53:37.278749",
+  "model_used": "Naive (Last Value)",
+  "routing_decision": {
+    "primary": "naive",
+    "reason": "Data does not meet advanced model requirements. Using Naive.",
+    "fallback_chain": [
+      "moving_average"
+    ],
+    "data_profile": {
+      "row_count": 26,
+      "has_datetime": true,
+      "has_features": true,
+      "has_seasonality": true,
+      "complexity": "simple"
+    }
+  },
+  "validation_log": [
+    "\u2713 MAPE 4.3% \u2013 forecast quality is acceptable.",
+    "\u2713 Predictions are within expected historical range."
+  ],
+  "insights": {
+    "executive_summary": {
+      "headline": "Forecast predicts Stable demand trend with projected revenue of $20,765,457.",
+      "key_takeaway": "Primary attention required: Forecast Uncertainty. Key opportunity: Lean Inventory Opportunity.",
+      "trend_direction": "Stable",
+      "confidence_level": "Moderate"
+    },
+    "financial_metrics": {
+      "projected_revenue": "$20,765,457",
+      "projected_cogs": "$11,536,365",
+      "gross_margin": "$9,229,092",
+      "margin_percent": "44.4%"
+    },
+    "risks": [
+      {
+        "id": "risk_uncertainty",
+        "severity": "Medium",
+        "title": "Forecast Uncertainty",
+        "description": "Significant gap between likely and worst-case scenarios.",
+        "impact": "Planning capability reduced.",
+        "mitigation": "Use tiered inventory planning for critical SKUs."
+      }
+    ],
+    "opportunities": [
+      {
+        "id": "opp_lean_inventory",
+        "type": "Cost Saving",
+        "title": "Lean Inventory Opportunity",
+        "description": "Stable demand patterns allow for reduced safety stock.",
+        "value": "Medium",
+        "action": "Reduce safety stock coverage by 1 week."
+      }
+    ],
+    "action_plan": {
+      "immediate": [
+        "Review inventory levels for next 14 days",
+        "Share forecast with key suppliers"
+      ],
+      "short_term": [
+        "Adjust marketing spend based on projected peaks",
+        "Plan workforce staffing for identified high-volume weeks"
+      ],
+      "strategic": [
+        "Evaluate supplier performance matches",
+        "Consider contract renegotiation based on volume projections"
+      ]
+    },
+    "inventory_recommendations": {
+      "recommended_safety_stock": "18473 units",
+      "stock_cover_days": "14 days",
+      "reorder_trigger": "Weekly"
+    },
+    "generated_at": "2026-02-16T00:53:37.304680",
+    "summary": "Forecast predicts Stable demand trend with projected revenue of $20,765,457.",
+    "trends": [
+      "Stable demand patterns allow for reduced safety stock."
+    ],
+    "risks_old": [
+      "Significant gap between likely and worst-case scenarios."
+    ]
+  }
+}
