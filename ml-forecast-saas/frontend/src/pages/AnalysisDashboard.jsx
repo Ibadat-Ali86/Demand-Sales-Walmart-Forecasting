@@ -26,6 +26,7 @@ import BusinessInsights from '../components/analysis/BusinessInsights';
 import ActionableRecommendations from '../components/analysis/ActionableRecommendations';
 import ForecastVisualizationSuite from '../components/charts/ForecastVisualizationSuite';
 import ColumnMappingModal from '../components/common/ColumnMappingModal';
+import SanityCheck from '../components/analysis/SanityCheck'; // NEW
 import { API_BASE_URL } from '../utils/constants';
 
 // Simple Error Boundary Component for debugging
@@ -590,6 +591,7 @@ const AnalysisDashboard = () => {
                                     data={uploadedData}
                                     onPreprocessingComplete={handlePreprocessingComplete}
                                     totalRows={backendProfile?.dimensions?.rows} // Pass backend row count
+                                    sessionId={sessionId}
                                 />
                             </motion.div>
                         )}
@@ -633,6 +635,7 @@ const AnalysisDashboard = () => {
                                         {[
                                             { id: 'insights', label: 'Business Insights', icon: <TrendingUp className="w-4 h-4" /> },
                                             { id: 'charts', label: 'Visualizations', icon: <BarChart3 className="w-4 h-4" /> },
+                                            { id: 'sanity', label: 'Sanity Check', icon: <CheckCircle className="w-4 h-4" /> }, // NEW
                                             { id: 'actions', label: 'Action Plan', icon: <Target className="w-4 h-4" /> },
                                         ].map(tab => (
                                             <button
@@ -678,6 +681,22 @@ const AnalysisDashboard = () => {
                                         >
                                             <ErrorBoundary>
                                                 <ForecastVisualizationSuite
+                                                    forecastData={analysisData}
+                                                    historicalData={uploadedData}
+                                                />
+                                            </ErrorBoundary>
+                                        </motion.div>
+                                    )}
+
+                                    {activeTab === 'sanity' && (
+                                        <motion.div
+                                            key="sanity-tab"
+                                            initial={{ opacity: 0, y: 10 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            exit={{ opacity: 0, y: -10 }}
+                                        >
+                                            <ErrorBoundary>
+                                                <SanityCheck
                                                     forecastData={analysisData}
                                                     historicalData={uploadedData}
                                                 />

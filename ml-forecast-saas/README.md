@@ -62,21 +62,26 @@ It automates the entire data pipeline:
 ### 🚄 Analysis Pipeline
 *   **Automated Data Profiling:** Instantly understand missing values, correlations, and distributions.
 *   **Smart Preprocessing:** Handles missing data, encodes categorical variables, and scales features automatically.
+*   **Data Quality Scorecard:** Professional grading (A-F) with completeness, consistency, and sufficiency checks.
 *   **Interim Evaluation Screen:** Transparently displays model accuracy (e.g., "98.7% Accuracy") before you view the results, ensuring trust.
 
 ### 🧠 Advanced Machine Learning
 *   **Ensemble Modeling:** Combines Prophet (trends) and XGBoost (residuals) for superior accuracy.
 *   **Feature Engineering:** Generates lag features, rolling averages, and holiday flags.
 *   **Hyperparameter Tuning:** Automated grid search for optimal model configuration.
+*   **Confidence Intervals:** Visualizes uncertainty bounds (95% CI) for risk management.
 
 ### 📊 Interactive Dashboard
 *   **Dynamic Visualizations:** Zoomable `Chart.js` graphs for historical vs. predicted sales.
+*   **Sanity Check Dashboard:** Automated validation of forecast reliability (negative values, continuity, outliers).
 *   **Scenario Simulator:** Adjust price, marketing spend, or economic factors to see real-time forecast impact.
 *   **Exportable Reports:** Generate PDF Executive Summaries or Excel data dumps.
 
 ### 🛡️ Enterprise Ready
 *   **Secure Auth:** JWT-based authentication with protected routes.
 *   **Role-Based Access:** (Scalable to) Admin vs. Analyst views.
+*   **Health Monitoring:** Real-time system health checks (`/health` endpoint with CPU/Memory stats).
+*   **Optimization:** Automated background cleanup for old sessions and temporary files.
 *   **Dockerized:** Ready for deployment on AWS, Azure, or Hugging Face Spaces.
 
 ---
@@ -165,7 +170,7 @@ cd ml-forecast-saas
 ```bash
 cd backend
 python -m venv venv
-source venv/bin/activate  # Windows: venv\Scripts\activate
+source venv/bin/activate  # Windows: venv\\Scripts\\activate
 pip install -r requirements.txt
 uvicorn app.main:app --reload --port 8000
 ```

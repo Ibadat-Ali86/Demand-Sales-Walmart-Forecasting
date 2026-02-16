@@ -286,3 +286,112 @@ class DataAdapter:
                 warnings.append(f"Forced date parsing, some invalid dates may vary: {str(e)}")
         
         return df, warnings
+
+    def generate_quality_scorecard(self, df: pd.DataFrame) -> Dict[str, Any]:
+        """
+        Generates a detailed data quality scorecard (0-100) for the frontend.
+        Phase 2.2 Requirement.
+        """
+        scorecard = {
+            'overall_score': 0,
+            'grade': 'F',
+            'dimensions': {
+                'completeness': {'score': 0, 'details': []},
+                'consistency': {'score': 0, 'details': []},
+                'frequency': {'score': 0, 'details': []},
+                'sufficiency': {'score': 0, 'details': []}
+            }
+        }
+        
+        if df is None or len(df) == 0:
+            return scorecard
+            
+        # 1. Completeness (Missing Values)
+        # Weight: 30%
+        total_cells = df.size
+        missing_cells = df.isnull().sum().sum()
+        completeness_ratio = 1 - (missing_cells / total_cells) if total_cells > 0 else 0
+        scorecard['dimensions']['completeness']['score'] = int(completeness_ratio * 100)
+        scorecard['dimensions']['completeness']['details'].append(f"{missing_cells} missing values found ({100-completeness_ratio*100:.1f}%)")
+        
+        # 2. Consistency (Date Monotonicity, Type checks)
+        # Weight: 20%
+        consistency_score = 100
+        issues = []
+        if 'date' in df.columns:
+            if not df['date'].is_monotonic_increasing:
+                consistency_score -= 20
+                issues.append("Dates are not strictly increasing")
+            
+            # Check for duplicates
+            duplicates = df.duplicated(subset=['date']).sum()
+            if duplicates > 0:
+                consistency_score -= 30
+                issues.append(f"{duplicates} duplicate dates found")
+        
+        scorecard['dimensions']['consistency']['score'] = max(0, consistency_score)
+        scorecard['dimensions']['consistency']['details'] = issues if issues else ["Data is consistent"]
+
+        # 3. Frequency (Regularity)
+        # Weight: 20%
+        freq_score = 0
+        freq_details = []
+        if 'date' in df.columns and len(df) > 2:
+            df_sorted = df.sort_values('date')
+            diffs = df_sorted['date'].diff().dropna()
+            if not diffs.empty:
+                # Infer likely frequency (mode)
+                mode_diff = diffs.mode()[0]
+                # Calculate % of gaps that match the mode
+                regularity = (diffs == mode_diff).mean()
+                freq_score = int(regularity * 100)
+                freq_details.append(f"Inferred frequency: {mode_diff}")
+                if regularity < 1.0:
+                    freq_details.append(f"Data is {regularity*100:.0f}% regular")
+                else:
+                    freq_details.append("Perfectly regular time intervals")
+        
+        scorecard['dimensions']['frequency']['score'] = freq_score
+        scorecard['dimensions']['frequency']['details'] = freq_details
+
+        # 4. Sufficiency (Data Length)
+        # Weight: 30%
+        # Target: > 2 years (104 weeks, 24 months, 730 days) is ideal, but let's be lenient
+        # > 100 points = 100 score
+        # > 50 points = 70 score
+        # < 20 points = 0 score
+        rows = len(df)
+        suff_score = 0
+        if rows >= 104: # ~2 years weekly
+            suff_score = 100
+            quality_msg = "Excellent history depth"
+        elif rows >= 50:
+            suff_score = 80
+            quality_msg = "Good history depth"
+        elif rows >= 20:
+            suff_score = 50
+            quality_msg = "Minimum sufficient history"
+        else:
+            suff_score = 20
+            quality_msg = "Insufficient history for reliable forecast"
+            
+        scorecard['dimensions']['sufficiency']['score'] = suff_score
+        scorecard['dimensions']['sufficiency']['details'].append(f"{rows} data points. {quality_msg}")
+
+        # Weighted Overall Score
+        overall = (
+            scorecard['dimensions']['completeness']['score'] * 0.3 +
+            scorecard['dimensions']['consistency']['score'] * 0.2 +
+            scorecard['dimensions']['frequency']['score'] * 0.2 +
+            scorecard['dimensions']['sufficiency']['score'] * 0.3
+        )
+        scorecard['overall_score'] = int(overall)
+        
+        # Grade Assignment
+        if overall >= 90: scorecard['grade'] = 'A'
+        elif overall >= 80: scorecard['grade'] = 'B'
+        elif overall >= 70: scorecard['grade'] = 'C'
+        elif overall >= 60: scorecard['grade'] = 'D'
+        else: scorecard['grade'] = 'F'
+        
+        return scorecard

@@ -1,3 +1,4 @@
+
 import os
 import logging
 from contextlib import asynccontextmanager
@@ -6,7 +7,6 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import HTMLResponse, JSONResponse
 from app.config import settings
-import os
 
 # Configure logging
 logging.basicConfig(
@@ -38,6 +38,14 @@ async def lifespan(app: FastAPI):
             init_default_user()
     except Exception as e:
         logger.warning(f"⚠️ Database initialization: {e}")
+    
+    # Run Maintenance Cleanup (Task 5.1)
+    try:
+        from app.services.maintenance import maintenance_service
+        maintenance_service.cleanup_old_files(max_age_hours=24)
+        logger.info("🧹 System cleanup completed on startup")
+    except Exception as e:
+        logger.warning(f"⚠️ Maintenance cleanup failed: {e}")
     
     yield
     
@@ -127,15 +135,19 @@ async def root():
 
 @app.get("/health")
 async def health_check():
-    """Health check endpoint for Render and monitoring"""
-    return {
-        "status": "healthy",
-        "version": settings.VERSION,
-        "environment": settings.ENVIRONMENT
-    }
+    """Health check endpoint with system metrics (Task 5.2)"""
+    try:
+        from app.services.maintenance import maintenance_service
+        return maintenance_service.check_system_health()
+    except Exception as e:
+        logger.error(f"Health check failed: {e}")
+        return {
+            "status": "degraded", 
+            "error": str(e),
+            "version": settings.VERSION
+        }
 
 if __name__ == "__main__":
     import uvicorn
     port = int(os.getenv("PORT", 8080))
     uvicorn.run("app.main:app", host="0.0.0.0", port=port, reload=True)
-

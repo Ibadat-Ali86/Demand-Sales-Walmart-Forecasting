@@ -132,6 +132,59 @@ class DataProfileRequest(BaseModel):
     date_col: str = 'date'
 
 
+class InitSessionRequest(BaseModel):
+    file_path: str
+    filename: str
+
+@router.post("/init-session-from-path")
+async def init_session_from_path(request: InitSessionRequest):
+    """
+    Initialize a new analysis session from an existing file path (e.g., after conversion)
+    """
+    try:
+        if not os.path.exists(request.file_path):
+            raise HTTPException(status_code=404, detail="File not found")
+            
+        # Read the file
+        try:
+            df = pd.read_csv(request.file_path)
+            # Re-validate essential columns just in case
+            if 'date' not in df.columns or 'target' not in df.columns:
+                 # Try to infer again or just fail if conversion should have guaranteed it
+                 pass
+        except Exception as e:
+            raise HTTPException(status_code=400, detail=f"Failed to read file: {str(e)}")
+            
+        # Generate Session ID
+        session_id = str(uuid.uuid4())
+        
+        # Store in session state
+        analysis_sessions[session_id] = {
+            'id': session_id,
+            'filename': request.filename,
+            'upload_time': datetime.now().isoformat(),
+            'rows': len(df),
+            'columns': list(df.columns),
+            'data': df.to_dict('records'), # Store full data in memory (for MVP)
+            'status': 'uploaded'
+        }
+        
+        logger.info(f"Initialized session {session_id} from {request.file_path}")
+        
+        return {
+            "session_id": session_id,
+            "filename": request.filename,
+            "rows": len(df),
+            "columns": list(df.columns),
+            "sample_data": df.head(5).astype(str).to_dict('records'),
+            "message": "Session initialized successfully"
+        }
+        
+    except Exception as e:
+        logger.error(f"Session initialization failed: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 @router.post("/upload")
 async def upload_dataset(file: UploadFile = File(...)):
     """
@@ -381,6 +434,16 @@ async def profile_dataset(session_id: str, request: DataProfileRequest):
         'ready': readiness_score >= 75,
         'issues': readiness_issues
     }
+
+    # --- Phase 2.2: Data Quality Scorecard ---
+    try:
+        from app.services.data_adapter import DataAdapter
+        adapter = DataAdapter()
+        scorecard = adapter.generate_quality_scorecard(df)
+        profile['quality_scorecard'] = scorecard
+    except Exception as e:
+        logger.warning(f"Failed to generate quality scorecard: {e}")
+        profile['quality_scorecard'] = None
     
     # Update job status
     training_jobs[session_id]['status'] = 'profiled'
@@ -388,6 +451,99 @@ async def profile_dataset(session_id: str, request: DataProfileRequest):
     save_jobs()
     
     return profile
+
+
+@router.post("/preprocess/{session_id}")
+async def preprocess_dataset(session_id: str):
+    """
+    Apply robust preprocessing to the dataset.
+    Returns the transformed data sample and a changelog.
+    Phase 2.3: Lightweight Preprocessing Log
+    """
+    try:
+        if session_id not in training_jobs:
+            # Try load
+            load_jobs()
+            if session_id not in training_jobs:
+                raise HTTPException(status_code=404, detail="Session not found")
+        
+        job = training_jobs[session_id]
+        df = pd.DataFrame(job['data'])
+        
+        from app.services.data_adapter import DataAdapter
+        adapter = DataAdapter()
+        
+        # Apply normalization and preprocessing
+        # Note: we might have already done some in 'upload', but this forces a clean pass
+        df_clean, report = adapter.normalize_dataset(df)
+        
+        # Enhanced Logging for Frontend
+        log = []
+        
+        # 1. Structural Changes
+        if report.get('transformations'):
+            for t in report['transformations']:
+                log.append({
+                    "step": "Structural Normalization",
+                    "status": "completed",
+                    "message": t,
+                    "icon": "structure"
+                })
+                
+        # 2. Date Parsing
+        if 'date' in df_clean.columns:
+            log.append({
+                "step": "Date Standardization",
+                "status": "completed",
+                "message": f"standardized to datetime format ({df_clean['date'].min()} to {df_clean['date'].max()})",
+                "icon": "calendar"
+            })
+            
+        # 3. Missing Values
+        initial_missing = df.isnull().sum().sum()
+        final_missing = df_clean.isnull().sum().sum()
+        filled = initial_missing - final_missing
+        if filled > 0:
+             log.append({
+                "step": "Imputation",
+                "status": "completed",
+                "message": f"Filled {filled} missing values using forward/backward fill",
+                "icon": "fill"
+            })
+            
+        # 4. Feature Engineering (Simulated or Real if we add it to adapter)
+        # For now, adding basic time features
+        new_features = 0
+        if 'date' in df_clean.columns:
+            df_clean['month'] = df_clean['date'].dt.month
+            df_clean['day_of_week'] = df_clean['date'].dt.dayofweek
+            new_features += 2
+            log.append({
+                "step": "Feature Engineering",
+                "status": "completed",
+                "message": "Extracted temporal features: month, day_of_week",
+                "icon": "sparkles"
+            })
+
+        # Update Session
+        training_jobs[session_id]['data'] = df_clean.to_dict('records') # Update with cleaned data
+        training_jobs[session_id]['columns'] = list(df_clean.columns)
+        training_jobs[session_id]['status'] = 'preprocessed'
+        training_jobs[session_id]['preprocessing_log'] = log
+        save_jobs()
+        
+        return {
+            "success": True,
+            "rows": len(df_clean),
+            "features": len(df_clean.columns),
+            "new_features": newFeatures,
+            "log": log,
+            "sample": df_clean.head(5).astype(str).to_dict('records')
+        }
+
+    except Exception as e:
+        logger.error(f"Preprocessing failed: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 @router.post("/train/{session_id}")
