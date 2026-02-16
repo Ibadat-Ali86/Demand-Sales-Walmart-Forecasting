@@ -13,7 +13,7 @@ import {
     Info
 } from 'lucide-react';
 import DataQualityScorecard from './DataQualityScorecard';
-import DataQualityScorecard from './DataQualityScorecard';
+
 import DynamicKPIs from '../dashboard/DynamicKPIs';
 import NarrativeReport from '../dashboard/NarrativeReport';
 

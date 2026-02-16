@@ -22,7 +22,7 @@ const PasswordStrength = ({ password }) => {
                     />
                 ))}
             </div>
-            <p className={`text-xs font-medium ${strength === 4 ? 'text-success-600' : 'text-gray-600'}`}>
+            <p className={`text-xs font-medium ${strength === 4 ? 'text-emerald-600' : 'text-gray-500'}`}>
                 {text}
             </p>
         </div>

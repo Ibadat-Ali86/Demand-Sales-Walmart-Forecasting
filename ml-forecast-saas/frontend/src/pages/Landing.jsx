@@ -7,12 +7,31 @@ import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import AmbientBackground from '../components/ui/AmbientBackground';
 import MagneticButton from '../components/ui/MagneticButton';
-import GradientText from '../components/landing/GradientText';
-import ShimmerCard from '../components/landing/ShimmerCard';
-import PulseRing from '../components/landing/PulseRing';
+import DashboardPreview from '../components/landing/DashboardPreview';
 import NavigationUnderline from '../components/landing/NavigationUnderline';
 
 gsap.registerPlugin(ScrollTrigger);
+
+// Custom Text Reveal Component (Alternative to SplitText)
+const TextReveal = ({ children, className = '', delay = 0 }) => {
+    const chars = children.split('');
+    return (
+        <span className={`inline-block ${className}`}>
+            {chars.map((char, index) => (
+                <span
+                    key={index}
+                    className="inline-block opacity-0 reveal-char"
+                    style={{
+                        transformOrigin: 'bottom center',
+                        whiteSpace: char === ' ' ? 'pre' : 'normal'
+                    }}
+                >
+                    {char}
+                </span>
+            ))}
+        </span>
+    );
+};
 
 const Landing = () => {
     const [scrolled, setScrolled] = useState(false);
@@ -28,14 +47,37 @@ const Landing = () => {
 
         // GSAP Animations
         const ctx = gsap.context(() => {
-            // Hero Elements Stagger
-            gsap.from('.hero-animate', {
-                y: 50,
+            // Hero Loading Sequence
+            const tl = gsap.timeline();
+
+            // Headline Character Animation
+            tl.to('.reveal-char', {
+                y: 0,
+                opacity: 1,
+                rotateX: 0,
+                stagger: 0.02,
+                duration: 0.8,
+                ease: 'back.out(1.7)',
+                startAt: { y: 100, rotateX: -90, opacity: 0 }
+            });
+
+            // Subtitle & CTAs Fade In
+            tl.from('.hero-fade', {
+                y: 20,
                 opacity: 0,
-                duration: 1,
+                duration: 0.8,
                 stagger: 0.2,
                 ease: 'power3.out'
-            });
+            }, '-=0.4');
+
+            // Dashboard Preview 3D Entrance
+            tl.from('#dashboard-preview-container', {
+                y: 50,
+                opacity: 0,
+                rotateX: 10,
+                duration: 1,
+                ease: 'power3.out'
+            }, '-=0.6');
 
             // Stats Counter Animation
             ScrollTrigger.batch('.stat-item', {
@@ -43,7 +85,9 @@ const Landing = () => {
                     opacity: 1,
                     y: 0,
                     stagger: 0.15,
-                    overwrite: true
+                    overwrite: true,
+                    duration: 0.8,
+                    ease: 'power3.out'
                 }),
                 start: 'top 85%'
             });
@@ -59,6 +103,18 @@ const Landing = () => {
                 duration: 0.8,
                 stagger: 0.1,
                 ease: 'power3.out'
+            });
+
+            // Parallax Effects
+            gsap.to('.hero-content-parallax', {
+                y: -100,
+                opacity: 0,
+                scrollTrigger: {
+                    trigger: heroRef.current,
+                    start: 'top top',
+                    end: 'bottom top',
+                    scrub: true
+                }
             });
         });
 
@@ -202,8 +258,8 @@ const Landing = () => {
             <section ref={heroRef} className="pt-40 pb-20 sm:pb-32 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
                 <div className="max-w-7xl mx-auto relative z-10">
                     <div className="grid lg:grid-cols-2 gap-16 items-center">
-                        <div className="text-center lg:text-left">
-                            <div className="hero-animate inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/50 backdrop-blur-sm border border-white/60 shadow-sm mb-8">
+                        <div className="text-center lg:text-left hero-content-parallax">
+                            <div className="hero-fade inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/50 backdrop-blur-sm border border-white/60 shadow-sm mb-8">
                                 <span className="flex h-2 w-2 relative">
                                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-success-400 opacity-75"></span>
                                     <span className="relative inline-flex rounded-full h-2 w-2 bg-success-500"></span>
@@ -213,18 +269,19 @@ const Landing = () => {
                                 </span>
                             </div>
 
-                            <h1 className="hero-animate text-5xl sm:text-6xl lg:text-7xl font-extrabold font-display text-gray-900 mb-8 leading-[1.1] tracking-tight">
-                                Transform data into{' '}
+                            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-extrabold font-display text-gray-900 mb-8 leading-[1.1] tracking-tight">
+                                <TextReveal className="block">Transform data</TextReveal>
+                                <TextReveal className="block">into{' '}</TextReveal>
                                 <span className="transparent-text bg-clip-text bg-gradient-to-r from-primary-600 via-secondary-500 to-primary-600 animate-shimmer bg-[length:200%_100%]">
-                                    intelligence
+                                    <TextReveal>intelligence</TextReveal>
                                 </span>
                             </h1>
 
-                            <p className="hero-animate text-xl text-gray-600 mb-10 leading-relaxed max-w-xl mx-auto lg:mx-0 font-light">
+                            <p className="hero-fade text-xl text-gray-600 mb-10 leading-relaxed max-w-xl mx-auto lg:mx-0 font-light">
                                 Enterprise-grade demand forecasting that helps businesses reduce stockouts by 80% and save millions in operational costs.
                             </p>
 
-                            <div className="hero-animate flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+                            <div className="hero-fade flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
                                 <MagneticButton>
                                     <Link to="/register" className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-primary-600 text-white rounded-full font-semibold hover:bg-primary-700 transition-all shadow-lg shadow-primary-500/25 min-w-[180px]">
                                         <span>Start Free Trial</span>
@@ -240,7 +297,7 @@ const Landing = () => {
                                 </MagneticButton>
                             </div>
 
-                            <div className="hero-animate flex items-center gap-8 mt-12 justify-center lg:justify-start text-sm font-medium text-gray-500">
+                            <div className="hero-fade flex items-center gap-8 mt-12 justify-center lg:justify-start text-sm font-medium text-gray-500">
                                 <div className="flex items-center gap-2">
                                     <CheckCircle className="w-5 h-5 text-secondary-500" />
                                     <span>SOC 2 Type II Ready</span>
@@ -253,55 +310,8 @@ const Landing = () => {
                         </div>
 
                         {/* Glassmorphism Dashboard Preview */}
-                        <div className="hero-animate hidden lg:block perspective-1000">
-                            <div className="glass-panel rounded-2xl p-6 relative transform transition-all duration-500 hover:scale-[1.02] hover:rotate-y-2 hover:rotate-x-2">
-                                {/* Dashboard Header */}
-                                <div className="flex items-center justify-between mb-6 pb-4 border-b border-gray-100/50">
-                                    <div className="flex items-center gap-4">
-                                        <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary-100 to-white flex items-center justify-center shadow-inner">
-                                            <BarChart3 className="w-6 h-6 text-primary-600" />
-                                        </div>
-                                        <div>
-                                            <div className="font-bold text-gray-900 text-lg">Demand Forecast</div>
-                                            <div className="text-sm text-gray-500">Real-time predictive analytics</div>
-                                        </div>
-                                    </div>
-                                    <div className="flex items-center gap-2 px-4 py-1.5 bg-white/80 backdrop-blur rounded-full shadow-sm border border-gray-100 text-success-600 text-sm font-bold tracking-wide">
-                                        <span className="w-2 h-2 rounded-full bg-success-500 animate-pulse" />
-                                        LIVE
-                                    </div>
-                                </div>
-
-                                {/* Animated Chart Bars */}
-                                <div className="h-64 rounded-2xl mb-6 flex items-end justify-between px-6 pb-0 relative overflow-hidden bg-gradient-to-b from-transparent to-gray-50/50 border border-gray-100/50">
-                                    {[35, 55, 45, 70, 60, 85, 95, 75, 90].map((h, i) => (
-                                        <div
-                                            key={i}
-                                            style={{
-                                                height: `${h}%`,
-                                                animation: `growBar 1s cubic-bezier(0.4, 0, 0.2, 1) ${0.5 + i * 0.1}s forwards`,
-                                                transform: 'scaleY(0)',
-                                                transformOrigin: 'bottom'
-                                            }}
-                                            className={`w-8 rounded-t-lg ${i >= 6 ? 'bg-gradient-to-t from-primary-600 to-secondary-400 shadow-[0_0_20px_rgba(139,92,246,0.3)]' : 'bg-gray-200/80'}`}
-                                        />
-                                    ))}
-                                </div>
-
-                                {/* Stats Grid */}
-                                <div className="grid grid-cols-3 gap-4">
-                                    {[
-                                        { label: 'Accuracy', value: '98.7%', color: 'text-gray-900' },
-                                        { label: 'Savings', value: '$2.4M', color: 'text-success-600' },
-                                        { label: 'Stockouts', value: '-82%', color: 'text-secondary-600' }
-                                    ].map((stat, i) => (
-                                        <div key={i} className="p-4 rounded-xl bg-white/60 border border-white/60 shadow-sm backdrop-blur-sm text-center transform transition-all hover:-translate-y-1">
-                                            <div className={`text-2xl font-bold font-mono ${stat.color} mb-1`}>{stat.value}</div>
-                                            <div className="text-xs font-semibold uppercase tracking-wider text-gray-400">{stat.label}</div>
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
+                        <div id="dashboard-preview-container" className="hidden lg:block">
+                            <DashboardPreview />
                         </div>
                     </div>
                 </div>
