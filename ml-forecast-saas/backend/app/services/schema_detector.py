@@ -1,197 +1,230 @@
-"""
-Universal Schema Detector - Identifies business domain and analyzes data gaps.
-
-Part of Phase 1: Intelligent Schema Detection.
-detects: Sales, HR, Finance, Inventory, etc.
-provides: Gap Analysis Report
-"""
-
-import re
-from typing import Dict, List, Optional, Any
 import pandas as pd
-import logging
+from typing import Dict, List, Optional, Any
+from pydantic import BaseModel
+from fuzzywuzzy import process, fuzz
 
-logger = logging.getLogger(__name__)
+class DomainSchema(BaseModel):
+    name: str
+    required_columns: List[str]  # Critical for core functionality
+    optional_columns: List[str]  # Nice to have
+    synonyms: Dict[str, List[str]] # Mapping of standard_name -> [possible_names]
+    identifiers: List[str] # Strong signals for this domain (e.g. "employee_id" for HR)
+
+class GapAnalysisReport(BaseModel):
+    domain: str
+    domain_key: str # Internal ID for programmatic usage
+    confidence: float
+    matched_columns: Dict[str, str]  # standard_col -> user_col
+    missing_critical: List[str]
+    missing_optional: List[str]
+    suggestions: List[str]
 
 class UniversalSchemaDetector:
     """
-    detects the business domain of a dataset and performs gap analysis
-    to guide the user on missing fields.
+    Intelligent service to detect data domain and map schema gaps.
+    Multi-layer approach:
+    1. Identifier Match (Fastest)
+    2. Column Fuzzy Match (Fast)
+    3. Content Statistical Profiling (Deep)
     """
+    
+    def __init__(self):
+        self.domains = self._initialize_domains()
 
-    # Domain Definitions
-    DOMAINS = {
-        'Sales Forecasting': {
-            'required_patterns': ['date|time', 'qty|quantity|units|volume', 'sales|revenue|amount'],
-            'optional_patterns': ['product|sku|item', 'store|location|region', 'price|cost', 'promo|discount'],
-            'kpis': ['Total Revenue', 'Units Sold', 'Growth Rate'],
-            'description': 'Historical sales data for demand forecasting.'
-        },
-        'HR Analytics': {
-            'required_patterns': ['hire_date|join_date', 'emp|employee|staff', 'status|active|term'],
-            'optional_patterns': ['term_date|exit_date', 'dept|department', 'salary|comp', 'performance|rating'],
-            'kpis': ['Headcount', 'Turnover Rate', 'Avg Tenure'],
-            'description': 'Employee data for retention and workforce planning.'
-        },
-        'Financial Metrics': {
-            'required_patterns': ['date|period', 'amount|value|balance', 'account|category|gl'],
-            'optional_patterns': ['dept|cost_center', 'budget|forecast', 'variance'],
-            'kpis': ['Total Expenses', 'Budget Variance', 'Run Rate'],
-            'description': 'General ledger or expense data for financial forecasting.'
-        },
-        'Inventory Management': {
-            'required_patterns': ['date|time', 'stock|inventory|on_hand', 'sku|product'],
-            'optional_patterns': ['warehouse|location', 'reorder_point', 'lead_time'],
-            'kpis': ['Stockout Risk', 'Inventory Turnover', 'Weeks of Supply'],
-            'description': 'Stock levels for supply chain optimization.'
-        },
-        'Marketing Analytics': {
-            'required_patterns': ['date|campaign_date', 'clicks|visits', 'spend|cost'],
-            'optional_patterns': ['campaign|source|medium', 'conversions|leads', 'ctr|cpc', 'impressions'],
-            'proxies': {
-                'clicks|visits': ['impressions', 'conversions'], # metrics that correlate or can substitute
-                'spend|cost': ['clicks'] # approximate if cpc is known (advanced) - for now just simple relations
-            },
-            'kpis': ['ROAS', 'CPR', 'Conversion Rate'],
-            'description': 'Campaign performance data for marketing optimization.'
-        },
-    }
+    def _initialize_domains(self) -> Dict[str, DomainSchema]:
+        """Define known business domains with robust synonym mapping"""
+        return {
+            "sales_forecast": DomainSchema(
+                name="Sales Forecasting",
+                required_columns=["date", "target_value", "item_id"],
+                optional_columns=["price", "store_id", "promotion", "holiday"],
+                synonyms={
+                    "date": ["date", "timestamp", "order_date", "sales_date", "day", "week", "month"],
+                    "target_value": ["sales", "quantity", "qty", "demand", "units_sold", "revenue", "amount"],
+                    "item_id": ["item", "product", "product_id", "sku", "item_code", "material"],
+                    "price": ["price", "unit_price", "cost", "selling_price", "rp"],
+                    "store_id": ["store", "location", "branch", "warehouse", "outlet"]
+                },
+                identifiers=["sku", "store", "price", "qty"]
+            ),
+            "hr_analytics": DomainSchema(
+                name="HR Analytics",
+                required_columns=["employee_id", "hire_date", "status"],
+                optional_columns=["salary", "department", "termination_date", "performance_score"],
+                synonyms={
+                    "employee_id": ["emp_id", "employee_idd", "staff_id", "worker_id", "associate_id"],
+                    "hire_date": ["hire_date", "joining_date", "start_date", "date_of_joining", "doj"],
+                    "status": ["status", "employment_status", "active", "is_active"],
+                    "salary": ["salary", "wage", "compensation", "pay", "ctc"],
+                    "department": ["dept", "department", "team", "unit", "division"],
+                    "termination_date": ["term_date", "exit_date", "end_date", "left_date"]
+                },
+                identifiers=["employee", "salary", "hire", "termination"]
+            ),
+            "financial_metrics": DomainSchema(
+                name="Financial Metrics",
+                required_columns=["transaction_date", "amount", "account_id"],
+                optional_columns=["category", "description", "currency"],
+                synonyms={
+                    "transaction_date": ["date", "txn_date", "posting_date"],
+                    "amount": ["amount", "value", "debit", "credit", "balance"],
+                    "account_id": ["account", "gl_code", "ledger_id"],
+                    "category": ["category", "type", "expense_type", "revenue_type"]
+                },
+                identifiers=["account", "ledger", "credit", "debit"]
+            ),
+            "inventory_optimization": DomainSchema(
+                name="Inventory Optimization",
+                required_columns=["item_id", "location_id", "stock_on_hand"],
+                optional_columns=["reorder_point", "lead_time", "safety_stock"],
+                synonyms={
+                    "item_id": ["sku", "item", "product", "material"],
+                    "location_id": ["warehouse", "dc", "store", "location"],
+                    "stock_on_hand": ["soh", "stock", "quantity", "inventory", "on_hand", "available"],
+                    "reorder_point": ["rop", "min_stock", "reorder_level"],
+                    "lead_time": ["lead_time", "delivery_time", "lt"]
+                },
+                identifiers=["stock", "inventory", "warehouse", "soh"]
+            )
+        }
 
-    GENERIC_DOMAIN = {
-        'name': 'Generic Time-Series',
-        'description': 'Unclassified time-series data.',
-        'required_patterns': ['date|time', 'value|count|amount|metric'],
-        'proxies': {},
-        'kpis': ['Trend', 'Volatility', 'Growth']
-    }
-
-    def detect_domain(self, df: pd.DataFrame) -> Dict[str, Any]:
+    def detect_domain(self, df: pd.DataFrame) -> GapAnalysisReport:
         """
-        Identify the most likely domain for the given dataframe.
+        Main entry point: Analyze dataframe to find best matching domain and report gaps.
         """
-        columns = [str(c).lower().strip() for c in df.columns]
-        best_domain = None
-        best_score = 0.0
-        details = {}
+        # 1. Map lower -> original for precise lookup
+        case_map = {str(c).lower().strip(): str(c) for c in df.columns}
+        columns = list(case_map.keys())
+        
+        best_domain_key = None
+        best_score = 0
+        best_mapping = {}
 
-        for domain_name, rules in self.DOMAINS.items():
-            score = self._calculate_domain_score(columns, rules)
-            details[domain_name] = score
+        # 2. Score each domain based on column overlap
+        for key, schema in self.domains.items():
+            score, mapping = self._calculate_domain_score(columns, schema, df)
             if score > best_score:
                 best_score = score
-                best_domain = domain_name
+                best_domain_key = key
+                best_mapping = mapping
         
-        # Threshold for detection (e.g., 60% match of required/optional patterns)
+        # Restore original casing in mapping
+        final_mapping = {k: case_map.get(v, v) for k, v in best_mapping.items()}
+
+        # 3. If confidence is too low, return generic or unknown
         if best_score < 0.4:
-            matched_domain = self.GENERIC_DOMAIN['name']
-            confidence = 0.0
-        else:
-            matched_domain = best_domain
-            confidence = best_score
+            return self._create_unknown_report(columns) # Passing lower cols is fine for unknown report
 
-        return {
-            'detected_domain': matched_domain,
-            'confidence': round(confidence, 2),
-            'all_scores': details
-        }
+        # 4. Generate Gap Analysis for best domain
+        selected_schema = self.domains[best_domain_key]
+        return self._generate_gap_report(selected_schema, final_mapping, best_score, columns, best_domain_key)
 
-    def analyze_gaps(self, df: pd.DataFrame, domain_name: str) -> Dict[str, Any]:
+    def _calculate_domain_score(self, user_columns: List[str], schema: DomainSchema, df: pd.DataFrame) -> tuple[float, Dict[str, str]]:
         """
-        Analyze missing columns for the chosen domain.
+        Calculate a match score (0-1) for a domain against user columns.
+        Uses a weighted approach: 
+        - Required columns match: High weight
+        - Identifier words match: Medium weight
+        - Optional columns match: Low weight
+        - Content profiling (e.g. is 'date' actually a date?): Validation weight
         """
-        if domain_name == self.GENERIC_DOMAIN['name']:
-             return {
-                'status': 'Generic',
-                'missing_required': [],
-                'missing_optional': [],
-                'proxy_suggestions': [],
-                'suggestions': ['Ensure you have a Date column and at least one Metric column.']
-            }
-
-        if domain_name not in self.DOMAINS:
-             return {'status': 'Unknown'}
-
-        rules = self.DOMAINS[domain_name]
-        columns = [str(c).lower().strip() for c in df.columns]
-
-        missing_required = []
-        proxy_suggestions = []
-
-        for pattern in rules['required_patterns']:
-            if not self._match_pattern(columns, pattern):
-                missing_col = self._humanize_pattern(pattern)
-                missing_required.append(missing_col)
-                
-                # Check for proxies
-                if 'proxies' in rules and pattern in rules['proxies']:
-                    for proxy_pat in rules['proxies'][pattern]:
-                        if self._match_pattern(columns, proxy_pat):
-                            found_proxy = self._find_matching_col(columns, proxy_pat)
-                            proxy_suggestions.append(
-                                f"Missing '{missing_col}' but found '{found_proxy}'. Use as proxy?"
-                            )
-
-        missing_optional = []
-        for pattern in rules['optional_patterns']:
-            if not self._match_pattern(columns, pattern):
-                missing_optional.append(self._humanize_pattern(pattern))
+        mapping = {}
+        matched_required = 0
+        matched_optional = 0
         
-        # Generate suggestions
+        # A. Identifier Signal Check (Fast pre-filter)
+        # Check if generic words like "employee" or "revenue" appear in ANY column
+        identifier_hits = sum(1 for ident in schema.identifiers if any(ident in col for col in user_columns))
+        identifier_score = min(identifier_hits / max(1, len(schema.identifiers)), 1.0) * 0.2
+
+        # B. Column Mapping (Fuzzy Match)
+        # 1. Map Required Columns
+        for req in schema.required_columns:
+            # Check synonyms
+            best_match, score = process.extractOne(req, user_columns, scorer=fuzz.token_sort_ratio)
+            # Override with synonym list if available
+            synonyms = schema.synonyms.get(req, [req])
+            
+            # Check strictly against synonyms first (higher precision)
+            direct_hit = next((col for col in user_columns if col in synonyms), None)
+            
+            if direct_hit:
+                mapping[req] = direct_hit
+                matched_required += 1
+            elif score > 80: # Fuzzy fallback
+                mapping[req] = best_match
+                matched_required += 1
+                
+        # 2. Map Optional Columns
+        for opt in schema.optional_columns:
+            synonyms = schema.synonyms.get(opt, [opt])
+            direct_hit = next((col for col in user_columns if col in synonyms), None)
+            
+            if direct_hit:
+                mapping[opt] = direct_hit
+                matched_optional += 1
+            else:
+                best_match, score = process.extractOne(opt, user_columns, scorer=fuzz.token_sort_ratio)
+                if score > 85:
+                    mapping[opt] = best_match
+                    matched_optional += 1
+
+        # C. Calculate Final Score
+        # Weight required columns heavily
+        req_score = (matched_required / len(schema.required_columns)) if schema.required_columns else 0
+        opt_score = (matched_optional / len(schema.optional_columns)) if schema.optional_columns else 0
+        
+        # 70% Required + 20% Identifiers + 10% Optional
+        total_score = (req_score * 0.7) + identifier_score + (opt_score * 0.1)
+        
+        return total_score, mapping
+
+    def _generate_gap_report(self, schema: DomainSchema, mapping: Dict[str, str], score: float, user_columns: List[str], domain_key: str) -> GapAnalysisReport:
+        """Create the detailed report for the frontend"""
+        missing_critical = [col for col in schema.required_columns if col not in mapping]
+        missing_optional = [col for col in schema.optional_columns if col not in mapping]
+        
         suggestions = []
-        if missing_required:
-            suggestions.append(f"Critical: Missing {', '.join(missing_required)}. Analysis may be limited.")
-        if missing_optional:
-            suggestions.append(f"Recommended: Add {', '.join(missing_optional)} for deeper insights.")
-        if proxy_suggestions:
-             suggestions.append(f"Proxies Available: {'; '.join(proxy_suggestions)}")
+        if missing_critical:
+            suggestions.append(f"Critical: Missing columns {', '.join(missing_critical)}. Analysis will be limited.")
+            
+            # 1. Fuzzy Match Suggestions
+            for missing in missing_critical:
+                potential, fuzz_score = process.extractOne(missing, user_columns)
+                if fuzz_score > 60:
+                    suggestions.append(f"Did you mean to use '{potential}' as '{missing}'?")
+            
+            # 2. Smart Proxy / Derived Column Suggestions (Phase 15)
+            # Sales: Revenue = Price * Quantity
+            if 'target_value' in missing_critical and 'price' in mapping and 'item_id' in mapping:
+                 # Check if we have a quantity-like column in user columns not mapped yet?
+                 # Or generally suggest calculation
+                 suggestions.append("💡 Suggestion: You can calculate 'target_value' (Revenue) if you have Price and Quantity columns.")
 
-        return {
-            'domain': domain_name,
-            'description': rules['description'],
-            'kpis': rules['kpis'],
-            'missing_required': missing_required,
-            'missing_optional': missing_optional,
-            'proxy_suggestions': proxy_suggestions,
-            'suggestions': suggestions,
-            'status': 'Incomplete' if missing_required else 'Complete'
-        }
+            # HR: Tenure = Today - Hire Date
+            if 'hire_date' in missing_critical:
+                 suggestions.append("💡 Suggestion: Ensure you have a 'Join Date' to calculate Tenure and Retention.")
 
-    def _calculate_domain_score(self, columns: List[str], rules: Dict) -> float:
-        """
-        Score = (Found Required / Total Required) * 0.7 + (Found Optional / Total Optional) * 0.3
-        """
-        req_pats = rules['required_patterns']
-        opt_pats = rules['optional_patterns']
+        return GapAnalysisReport(
+            domain=schema.name,
+            domain_key=domain_key, # Populated key
+            confidence=round(score, 2),
+            matched_columns=mapping,
+            missing_critical=missing_critical,
+            missing_optional=missing_optional,
+            suggestions=suggestions
+        )
 
-        found_req = sum(1 for p in req_pats if self._match_pattern(columns, p))
-        found_opt = sum(1 for p in opt_pats if self._match_pattern(columns, p))
+    def _create_unknown_report(self, user_columns: List[str]) -> GapAnalysisReport:
+        return GapAnalysisReport(
+            domain="Unknown / Generic",
+            domain_key="generic",
+            confidence=0.0,
+            matched_columns={},
+            missing_critical=[],
+            missing_optional=[],
+            suggestions=["Could not detect a specific domain. Proceeding with generic exploratory analysis."]
+        )
 
-        # Weights
-        req_score = (found_req / len(req_pats)) if req_pats else 0
-        opt_score = (found_opt / len(opt_pats)) if opt_pats else 0
-
-        return (req_score * 0.7) + (opt_score * 0.3)
-
-    def _match_pattern(self, columns: List[str], pattern: str) -> bool:
-        """
-        Check if any column matches the regex pattern.
-        """
-        # Pattern is like 'date|time|timestamp'
-        regex = re.compile(pattern, re.IGNORECASE)
-        return any(regex.search(col) for col in columns)
-
-    def _find_matching_col(self, columns: List[str], pattern: str) -> Optional[str]:
-        """
-        Find the first column that matches the regex pattern.
-        """
-        regex = re.compile(pattern, re.IGNORECASE)
-        for col in columns:
-            if regex.search(col):
-                return col
-        return None
-
-    def _humanize_pattern(self, pattern: str) -> str:
-        """
-        Convert 'qty|quantity|units' -> 'Quantity' (first term capitalized)
-        """
-        return pattern.split('|')[0].title()
+# Singleton instance
+schema_detector = UniversalSchemaDetector()

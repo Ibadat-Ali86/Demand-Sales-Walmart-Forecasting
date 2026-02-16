@@ -1,28 +1,30 @@
 
 import React from 'react';
-import { useRegisterSW } from 'virtual:pwa-register/react';
+// import { useRegisterSW } from 'virtual:pwa-register/react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { WifiOff, RefreshCw, X } from 'lucide-react';
 
 function ReloadPrompt() {
-    const {
-        offlineReady: [offlineReady, setOfflineReady],
-        needRefresh: [needRefresh, setNeedRefresh],
-        updateServiceWorker,
-    } = useRegisterSW({
-        onRegistered(r) {
-            console.log('SW Registered: ' + r);
-        },
-        onRegisterError(error) {
-            console.log('SW registration error', error);
-        },
-    });
+    // const {
+    //     offlineReady: [offlineReady, setOfflineReady],
+    //     needRefresh: [needRefresh, setNeedRefresh],
+    //     updateServiceWorker,
+    // } = useRegisterSW({
+    //     onRegistered(r) {
+    //         console.log('SW Registered: ' + r);
+    //     },
+    //     onRegisterError(error) {
+    //         console.log('SW registration error', error);
+    //     },
+    // });
 
-    const close = () => {
-        setOfflineReady(false);
-        setNeedRefresh(false);
-    };
+    // const close = () => {
+    //     setOfflineReady(false);
+    //     setNeedRefresh(false);
+    // };
 
+    return null; // Temporarily disabled to fix build error
+    /*
     return (
         <AnimatePresence>
             {(offlineReady || needRefresh) && (
@@ -70,6 +72,7 @@ function ReloadPrompt() {
             )}
         </AnimatePresence>
     );
+    */
 }
 
 export default ReloadPrompt;

@@ -444,6 +444,43 @@ async def profile_dataset(session_id: str, request: DataProfileRequest):
     except Exception as e:
         logger.warning(f"Failed to generate quality scorecard: {e}")
         profile['quality_scorecard'] = None
+
+    # --- Phase 11: Dynamic KPI Generation (Universal Adapter) ---
+    try:
+        from app.services.schema_detector import schema_detector
+        from app.services.kpi_generator import kpi_generator
+        
+        # 1. Re-detect domain (or retrieval from session if we stored it)
+        domain_report = schema_detector.detect_domain(df)
+        
+        # 2. Generate KPIs
+        # Invert mapping? schema_detector returns std->user. kpi_generator needs that.
+        # kpi_generator.generate_kpis expects column_mapping as std->user
+        kpis = kpi_generator.generate_kpis(
+            df, 
+            domain_report.domain_key,
+            domain_report.matched_columns
+        )
+        
+        profile['domain_analysis'] = domain_report.dict()
+        profile['dynamic_kpis'] = kpis
+        
+        logger.info(f"Generated {len(kpis)} dynamic KPIs for domain: {domain_report.domain}")
+        
+        # --- Phase 12: Adaptive Narrative Report ---
+        from app.services.report_generator import report_generator
+        narrative = report_generator.generate_narrative(
+            domain_report.domain_key,
+            kpis,
+            profile
+        )
+        profile['narrative_report'] = narrative
+        
+    except Exception as e:
+        logger.error(f"Failed to generate dynamic KPIs/Report: {e}")
+        profile['dynamic_kpis'] = []
+        profile['domain_analysis'] = None
+        profile['narrative_report'] = None
     
     # Update job status
     training_jobs[session_id]['status'] = 'profiled'

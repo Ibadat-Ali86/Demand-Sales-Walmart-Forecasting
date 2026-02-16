@@ -70,6 +70,10 @@ async def detect_file_format(file: UploadFile = File(...)):
 
             df_normalized, report = adapter.normalize_dataset(df_raw)
             
+            # INTELLIGENT SCHEMA DETECTION (Universal Data Adapter)
+            from ..services.schema_detector import schema_detector
+            gap_report = schema_detector.detect_domain(df_raw)
+            
             # Construct response to match what frontend expects (partially)
             # Frontend expects: encoding, separator, columns, suggested_mapping
             # We map our robust report to that structure
@@ -84,6 +88,7 @@ async def detect_file_format(file: UploadFile = File(...)):
                 'num_columns': len(df_raw.columns),
                 'columns': list(df_raw.columns),
                 'sample_data': df_raw.head(5).astype(str).to_dict('records'),
+                'schema_analysis': gap_report.dict(), # New Universal Adapter field
                 'suggested_mapping': {
                     'mapping': {
                         'date': {'source_column': report['column_mapping'].get('date'), 'confidence': 100 if report['column_mapping'].get('date') else 0},
@@ -99,6 +104,7 @@ async def detect_file_format(file: UploadFile = File(...)):
             # Log adapter report
             logger.info(f"Adapter Transformations: {report['transformations']}")
             logger.info(f"Adapter Warnings: {report['warnings']}")
+            logger.info(f"Detected Domain: {gap_report.domain} (Confidence: {gap_report.confidence})")
             
             return JSONResponse(content=format_info)
             

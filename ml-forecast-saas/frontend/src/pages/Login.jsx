@@ -11,7 +11,7 @@ import { Mail, Lock, Eye, EyeOff, ArrowRight, AlertCircle } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import AuthLayout from '../components/auth/AuthLayout';
 import SocialAuth from '../components/common/SocialAuth';
-import MagneticButton from '../components/auth/MagneticButton';
+import MagneticButton from '../ui/MagneticButton';
 import LoadingTheater from '../components/auth/LoadingTheater';
 import PasswordStrength from '../components/auth/PasswordStrength';
 

@@ -8,7 +8,7 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { gsap } from 'gsap';
 import { TrendingUp, TrendingUpIcon, ShieldCheck, ArrowUpRight, CheckCircle } from 'lucide-react';
-import ParticleBackground from './ParticleBackground';
+import ParticleNetwork from '../ui/ParticleNetwork';
 import FloatingOrbs from './FloatingOrbs';
 import StatsCard3D from './StatsCard3D';
 import { useSmoothScroll } from '../../hooks/useSmoothScroll';
@@ -70,7 +70,7 @@ const AuthLayout = ({ children, mode = 'signin' }) => {
         <div className="min-h-screen flex relative overflow-hidden bg-slate-50">
             {/* Background Effects */}
             <FloatingOrbs />
-            <ParticleBackground />
+            <ParticleNetwork />
 
             {/* Grid Background */}
             <div className="fixed inset-0 pointer-events-none z-0">

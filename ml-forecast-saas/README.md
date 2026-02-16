@@ -46,14 +46,15 @@ Traditional forecasting methods (moving averages) fail to account for complex se
 
 ## 💡 Solution Overview
 
-**ForecastAI** is an end-to-end Demand Forecasting SaaS platform that transforms historical sales data into actionable inventory insights. 
+**ForecastAI** is an end-to-end Demand Forecasting SaaS platform that transforms historical data into actionable insights. Originally built for retail, it now features a **Universal Data Adapter** capable of analyzing diverse business domains.
 
 It automates the entire data pipeline:
-1.  **Ingestion:** Upload raw CSV data (sales, features, stores).
-2.  **Profiling:** Automated data quality checks and profiling.
-3.  **Modeling:** Trains an ensemble **XGBoost** model optimized for time-series.
-4.  **Evaluation:** Presents transparent performance metrics (MAPE, RMSE) before finalizing.
-5.  **Visualization:** Interactive dashboards for exploring forecasts and simulating "What-If" scenarios.
+1.  **Ingestion:** Upload raw CSV data from Sales, HR, Finance, or Inventory.
+2.  **Detection:** Automatically identifies the domain and maps the schema.
+3.  **Profiling:** Generates domain-specific KPIs and quality scorecards.
+4.  **Modeling:** Trains an ensemble **XGBoost** model optimized for time-series.
+5.  **Evaluation:** Presents transparent performance metrics (MAPE, RMSE) before finalizing.
+6.  **Visualization:** Interactive dashboards for exploring forecasts and simulating "What-If" scenarios.
 
 ---
 
@@ -76,6 +77,12 @@ It automates the entire data pipeline:
 *   **Sanity Check Dashboard:** Automated validation of forecast reliability (negative values, continuity, outliers).
 *   **Scenario Simulator:** Adjust price, marketing spend, or economic factors to see real-time forecast impact.
 *   **Exportable Reports:** Generate PDF Executive Summaries or Excel data dumps.
+
+### 🌐 Universal Data Adapter (New)
+*   **Intelligent Schema Detection:** Automatically identifies data domains (Sales, HR, Finance) using multi-layer recognition.
+*   **Adaptive Analysis:** Dynamically generates relevant KPIs (e.g., Revenue for Sales, Headcount for HR) based on the detected domain.
+*   **Narrative Reporting:** Produces context-aware executive summaries and strategic recommendations.
+*   **Gap Analysis Engine:** Proactively identifies missing columns and suggests mappings to ensure high-quality analysis.
 
 ### 🛡️ Enterprise Ready
 *   **Secure Auth:** JWT-based authentication with protected routes.

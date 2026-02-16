@@ -21,6 +21,7 @@ import Layout from '../components/layout/Layout';
 import { useFlow } from '../context/FlowContext';
 import { API_BASE_URL } from '../utils/constants';
 import ColumnMapper from '../components/pipeline/ColumnMapper';
+import GapAnalysisReport from '../components/pipeline/GapAnalysisReport';
 
 const DataUpload = () => {
     const navigate = useNavigate();
@@ -40,6 +41,8 @@ const DataUpload = () => {
     const [suggestedMapping, setSuggestedMapping] = useState(null);
     const [detectedColumns, setDetectedColumns] = useState([]);
     const [tempFilePath, setTempFilePath] = useState(null);
+    const [gapReport, setGapReport] = useState(null);
+    const [showGapReport, setShowGapReport] = useState(false);
 
     // Mock Datasets for UI demonstration (plus the uploaded one)
     const [datasets, setDatasets] = useState([
@@ -274,13 +277,18 @@ const DataUpload = () => {
             const result = await response.json();
             console.log('Format detected:', result);
 
-            // 2. Set State for Mapper
+            // 2. Set State for Mapper and Gap Analysis
             setSuggestedMapping(result.suggested_mapping);
             setDetectedColumns(result.columns);
             setTempFilePath(result.file_path);
 
-            // 3. Show Mapper Modal
-            setShowMapper(true);
+            if (result.schema_analysis) {
+                setGapReport(result.schema_analysis);
+                setShowGapReport(true);
+            } else {
+                // Fallback for legacy behavior
+                setShowMapper(true);
+            }
 
         } catch (error) {
             console.error('Detection error:', error);
@@ -614,6 +622,28 @@ const DataUpload = () => {
                     </div>
                 </section>
             </div>
+
+            <AnimatePresence>
+                {showGapReport && (
+                    <div className="modal-overlay">
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.95 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0, scale: 0.95 }}
+                            className="w-full flex justify-center items-center p-4"
+                        >
+                            <GapAnalysisReport
+                                report={gapReport}
+                                onProceed={() => {
+                                    setShowGapReport(false);
+                                    setShowMapper(true);
+                                }}
+                                onCancel={() => setShowGapReport(false)}
+                            />
+                        </motion.div>
+                    </div>
+                )}
+            </AnimatePresence>
 
             {/* Column Mapper Modal */}
             <AnimatePresence>

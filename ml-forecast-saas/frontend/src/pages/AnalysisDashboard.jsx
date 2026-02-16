@@ -27,6 +27,7 @@ import ActionableRecommendations from '../components/analysis/ActionableRecommen
 import ForecastVisualizationSuite from '../components/charts/ForecastVisualizationSuite';
 import ColumnMappingModal from '../components/common/ColumnMappingModal';
 import SanityCheck from '../components/analysis/SanityCheck'; // NEW
+import Confetti from '../components/common/Confetti'; // Gamification
 import { API_BASE_URL } from '../utils/constants';
 
 // Simple Error Boundary Component for debugging
@@ -81,6 +82,7 @@ const AnalysisDashboard = () => {
     const [preprocessedData, setPreprocessedData] = useState(null);
     const [modelMetrics, setModelMetrics] = useState(null);
     const [analysisComplete, setAnalysisComplete] = useState(false);
+    const [showConfetti, setShowConfetti] = useState(false); // New state for gamification
     const [isRepairingSession, setIsRepairingSession] = useState(false);
     const [activeTab, setActiveTab] = useState('insights');
     const [analysisData, setAnalysisData] = useState(null); // For export functionality
@@ -434,6 +436,7 @@ const AnalysisDashboard = () => {
 
             // State updates last to trigger re-render
             setAnalysisComplete(true);
+            setShowConfetti(true); // Trigger celebration
             setCurrentStep(4);
         } catch (error) {
             console.error("AnalysisDashboard: Error in handleTrainingComplete", error);
@@ -481,6 +484,8 @@ const AnalysisDashboard = () => {
                 <div className="fixed bottom-4 right-4 bg-black/80 text-white text-xs p-2 rounded z-50 pointer-events-none opacity-50">
                     Session: {sessionId || 'NULL'} | Ref: {sessionIdRef.current || 'NULL'} | Store: {sessionStorage.getItem('currentSessionId') || 'NULL'}
                 </div>
+
+                <Confetti trigger={showConfetti} />
 
                 {/* Action Bar */}
                 {analysisComplete && (
