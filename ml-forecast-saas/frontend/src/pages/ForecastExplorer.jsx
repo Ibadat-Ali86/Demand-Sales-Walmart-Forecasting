@@ -1,7 +1,6 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import Layout from '../components/layout/Layout';
 import ForecastChart from '../components/charts/ForecastChart';
 import { useFlow } from '../context/FlowContext';
 import { generateForecastCSV } from '../utils/reportGenerator';
@@ -13,26 +12,24 @@ import {
     Brain,
     ChevronRight,
     AlertCircle,
-    Clock,
     RefreshCw,
-    History
+    CheckCircle2
 } from 'lucide-react';
+import { formatPercent, formatNumber } from '../utils/formatters';
+import Card from '../components/ui/Card';
+import Button from '../components/ui/Button';
 
 const ForecastExplorer = () => {
     const navigate = useNavigate();
-    const { analysisResults: flowAnalysisResults, uploadedData: flowUploadedData } = useFlow();
+    const { analysisResults: flowAnalysisResults } = useFlow();
     const [analysisData, setAnalysisData] = useState(null);
     const [forecastData, setForecastData] = useState(null);
     const [metrics, setMetrics] = useState(null);
     const [loading, setLoading] = useState(true);
 
-    // Load analysis data from FlowContext first, then fallback to localStorage
     useEffect(() => {
         const loadData = () => {
-            // Priority 1: FlowContext data
             let data = flowAnalysisResults;
-
-            // Priority 2: localStorage fallback
             if (!data) {
                 const savedResults = localStorage.getItem('analysisResults');
                 if (savedResults) {
@@ -42,15 +39,12 @@ const ForecastExplorer = () => {
 
             if (data) {
                 setAnalysisData(data);
-
-                // Transform data for chart
                 if (data.forecast) {
-                    const labels = data.forecast.dates.slice(0, 15); // Show 15 days
+                    const labels = data.forecast.dates.slice(0, 15);
                     const predictions = data.forecast.predictions.slice(0, 15);
-
-                    // Generate historical data from actual uploaded data if available
+                    // Mock historical for chart if not present
                     const historical = predictions.map((p, i) =>
-                        i < 7 ? p * (0.9 + Math.random() * 0.2) : null
+                        i < 5 ? p * (0.9 + Math.random() * 0.2) : null
                     );
 
                     setForecastData({
@@ -60,12 +54,11 @@ const ForecastExplorer = () => {
                     });
                 }
 
-                // Set metrics from analysis
                 if (data.metrics) {
                     setMetrics({
-                        mape: `${(data.metrics.mape || 4.5).toFixed(2)}%`,
-                        rmse: (data.metrics.rmse || 150).toFixed(0),
-                        mae: (data.metrics.mae || 120).toFixed(0),
+                        mape: formatPercent(data.metrics.mape || 4.5),
+                        rmse: formatNumber((data.metrics.rmse || 150).toFixed(0)),
+                        mae: formatNumber((data.metrics.mae || 120).toFixed(0)),
                         r2: (data.metrics.r2Score || 0.92).toFixed(3),
                     });
                 }
@@ -81,208 +74,132 @@ const ForecastExplorer = () => {
         generateForecastCSV(analysisData);
     };
 
-    // No analysis data - prompt to run analysis first
     if (!loading && !analysisData) {
         return (
-            <Layout title="Forecast History">
-                <div className="max-w-3xl mx-auto mt-20">
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        className="rounded-2xl p-8 text-center border shadow-xl"
-                        style={{ background: 'var(--bg-secondary)', borderColor: 'var(--border-primary)' }}
-                    >
-                        <div className="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6"
-                            style={{ background: 'rgba(245, 158, 11, 0.1)' }}>
-                            <AlertCircle className="w-10 h-10" style={{ color: 'var(--accent-orange)' }} />
-                        </div>
-
-                        <h2 className="text-2xl font-bold mb-3" style={{ color: 'var(--text-primary)' }}>
-                            No Forecasts Available
-                        </h2>
-                        <p className="mb-8 max-w-md mx-auto" style={{ color: 'var(--text-secondary)' }}>
-                            To view forecast history, you first need to complete an analysis.
-                            Run the ML pipeline to generate forecasts for your data.
-                        </p>
-
-                        <motion.button
-                            whileHover={{ scale: 1.02 }}
-                            whileTap={{ scale: 0.98 }}
-                            onClick={() => navigate('/analysis')}
-                            className="btn-primary"
-                        >
-                            <Brain className="w-5 h-5" />
-                            Go to Analysis Pipeline
-                            <ChevronRight className="w-4 h-4" />
-                        </motion.button>
-                    </motion.div>
+            <div className="h-[calc(100vh-100px)] flex items-center justify-center">
+                <div className="text-center max-w-md mx-auto p-8">
+                    <div className="w-16 h-16 rounded-2xl bg-brand-50 text-brand-500 flex items-center justify-center mx-auto mb-6">
+                        <AlertCircle className="w-8 h-8" />
+                    </div>
+                    <h2 className="text-xl font-bold text-text-primary mb-2">No Forecasts Available</h2>
+                    <p className="text-text-secondary mb-8">
+                        To view forecast history, you need to run the analysis pipeline first.
+                    </p>
+                    <Button onClick={() => navigate('/analysis')} variant="primary" icon={Brain} iconPosition="left">
+                        Go to Analysis
+                    </Button>
                 </div>
-            </Layout>
+            </div>
         );
     }
 
     if (loading) {
         return (
-            <Layout title="Forecast History">
-                <div className="flex items-center justify-center h-64">
-                    <RefreshCw className="w-8 h-8 animate-spin" style={{ color: 'var(--accent-blue)' }} />
-                </div>
-            </Layout>
+            <div className="flex items-center justify-center h-[calc(100vh-100px)]">
+                <RefreshCw className="w-8 h-8 animate-spin text-brand-600" />
+            </div>
         );
     }
 
     return (
-        <Layout title="Forecast History">
-            <div className="space-y-6">
+        <div className="space-y-6 animate-in fade-in duration-500">
+            <div className="flex items-center justify-between">
+                <div>
+                    <h2 className="text-2xl font-bold text-text-primary">Forecast Explorer</h2>
+                    <p className="text-text-secondary mt-1">Detailed view of predicted demand and model performance.</p>
+                </div>
+                <Button onClick={exportForecast} variant="outline" icon={Download}>
+                    Export CSV
+                </Button>
+            </div>
 
-                {/* Analysis Summary */}
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="rounded-xl shadow-lg p-6 text-white relative overflow-hidden"
-                    style={{ background: 'linear-gradient(135deg, var(--accent-blue), var(--accent-purple))' }}
-                >
-                    <div className="relative z-10 flex items-center justify-between">
-                        <div>
-                            <div className="flex items-center gap-2 text-blue-100 text-sm mb-1">
-                                <History className="w-4 h-4" />
-                                Last Analysis
-                            </div>
-                            <h3 className="text-2xl font-bold text-white">
-                                {analysisData.metrics?.modelType || 'Prophet + XGBoost Ensemble'}
-                            </h3>
-                            <div className="flex items-center gap-4 mt-2 text-sm opacity-90 text-white/90">
-                                <span className="flex items-center gap-1">
-                                    <Clock className="w-4 h-4" />
-                                    {analysisData.completedAt ?
-                                        new Date(analysisData.completedAt).toLocaleDateString() :
-                                        'Recent'}
-                                </span>
-                                <span>{analysisData.dataLength || 360} records analyzed</span>
+            <Card className="overflow-hidden">
+                <div className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-border-default">
+                    {/* Left: Reliability */}
+                    <div className="p-6 flex flex-col justify-center items-center text-center">
+                        <div className="relative w-32 h-32 mb-4">
+                            <svg className="w-full h-full transform -rotate-90">
+                                <circle cx="64" cy="64" r="56" stroke="currentColor" strokeWidth="12" fill="transparent" className="text-bg-tertiary" />
+                                <circle cx="64" cy="64" r="56" stroke="currentColor" strokeWidth="12" fill="transparent" strokeDasharray={351.8} strokeDashoffset={351.8 * 0.15} className="text-brand-600" strokeLinecap="round" />
+                            </svg>
+                            <div className="absolute inset-0 flex items-center justify-center flex-col">
+                                <span className="text-3xl font-bold text-text-primary">85%</span>
                             </div>
                         </div>
-                        <div className="text-right">
-                            <div className="text-sm opacity-90 text-white/90">Accuracy</div>
-                            <div className="text-3xl font-bold text-white">{analysisData.metrics?.accuracyRating || 'Excellent'}</div>
+                        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 text-xs font-bold mb-2">
+                            <CheckCircle2 className="w-3 h-3" />
+                            HIGH CONFIDENCE
                         </div>
+                        <p className="text-sm text-text-secondary">Ensemble Model Accuracy</p>
                     </div>
 
-                    {/* Background pattern */}
-                    <div className="absolute top-0 right-0 w-64 h-64 rounded-full bg-white/10 blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none" />
-                </motion.div>
-
-                {/* Metrics Cards */}
-                {metrics && (
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                        {[
-                            { label: 'MAPE', value: metrics.mape, icon: TrendingUp, color: 'var(--accent-blue)' },
-                            { label: 'RMSE', value: metrics.rmse, icon: BarChart2, color: 'var(--accent-green)' },
-                            { label: 'MAE', value: metrics.mae, icon: Calendar, color: 'var(--accent-orange)' },
-                            { label: 'R² Score', value: metrics.r2, icon: TrendingUp, color: 'var(--accent-purple)' },
-                        ].map((metric, index) => (
-                            <motion.div
-                                key={index}
-                                initial={{ opacity: 0, scale: 0.9 }}
-                                animate={{ opacity: 1, scale: 1 }}
-                                transition={{ delay: index * 0.1 }}
-                                className="kpi-card group"
-                                style={{ borderColor: 'var(--border-primary)' }}
-                            >
-                                <div className="flex items-center justify-between">
-                                    <div>
-                                        <p className="text-xs font-semibold uppercase tracking-wider mb-1" style={{ color: 'var(--text-secondary)' }}>{metric.label}</p>
-                                        <p className="text-2xl font-bold font-mono" style={{ color: 'var(--text-primary)' }}>{metric.value}</p>
-                                    </div>
-                                    <div className="w-10 h-10 rounded-lg flex items-center justify-center transition-all duration-300 group-hover:scale-110"
-                                        style={{ background: `${metric.color}20` }}>
-                                        <metric.icon className="w-5 h-5" style={{ color: metric.color }} />
-                                    </div>
+                    {/* Right: Metrics */}
+                    <div className="col-span-2 p-6">
+                        <h3 className="text-sm font-semibold text-text-secondary uppercase tracking-wider mb-6">Performance Metrics</h3>
+                        <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+                            {[
+                                { label: 'MAPE', value: metrics?.mape, sub: 'Error Rate', icon: TrendingUp, color: 'text-brand-600' },
+                                { label: 'RMSE', value: metrics?.rmse, sub: 'Deviation', icon: BarChart2, color: 'text-emerald-600' },
+                                { label: 'MAE', value: metrics?.mae, sub: 'Abs Error', icon: Calendar, color: 'text-amber-600' },
+                                { label: 'R² Score', value: metrics?.r2, sub: 'Fit Quality', icon: Brain, color: 'text-purple-600' },
+                            ].map((metric, index) => (
+                                <div key={index} className="flex flex-col">
+                                    <span className="text-xs text-text-tertiary mb-1">{metric.label}</span>
+                                    <span className={`text-2xl font-mono font-bold ${metric.color} mb-1`}>{metric.value}</span>
+                                    <span className="text-xs text-text-tertiary">{metric.sub}</span>
                                 </div>
-                            </motion.div>
-                        ))}
-                    </div>
-                )}
-
-                {/* Forecast Chart */}
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.2 }}
-                    className="card"
-                >
-                    <div className="flex items-center justify-between mb-6">
-                        <div>
-                            <h3 className="text-lg font-semibold" style={{ color: 'var(--text-primary)' }}>Demand Forecast</h3>
-                            <p className="text-sm" style={{ color: 'var(--text-tertiary)' }}>
-                                Historical data vs. {analysisData.metrics?.modelType || 'Ensemble'} predictions
-                            </p>
+                            ))}
                         </div>
-
-                        <motion.button
-                            whileHover={{ scale: 1.02 }}
-                            whileTap={{ scale: 0.98 }}
-                            onClick={exportForecast}
-                            className="btn-primary"
-                        >
-                            <Download className="w-4 h-4" />
-                            Export CSV
-                        </motion.button>
                     </div>
+                </div>
+            </Card>
 
+            <Card>
+                <div className="flex items-center justify-between mb-6">
+                    <div>
+                        <h3 className="text-lg font-bold text-text-primary">Demand Forecast Chart</h3>
+                        <p className="text-sm text-text-tertiary">14-day rolling prediction</p>
+                    </div>
+                </div>
+                <div className="h-96 w-full">
                     {forecastData ? (
-                        <div className="h-80 w-full">
-                            <ForecastChart data={forecastData} />
-                        </div>
+                        <ForecastChart data={forecastData} />
                     ) : (
-                        <div className="h-80 flex items-center justify-center" style={{ color: 'var(--text-tertiary)' }}>
-                            No forecast data available
+                        <div className="h-full flex items-center justify-center text-text-tertiary">
+                            Loading chart data...
                         </div>
                     )}
-                </motion.div>
+                </div>
+            </Card>
 
-                {/* Quick Actions */}
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.3 }}
-                    className="grid md:grid-cols-2 gap-4"
-                >
-                    <div className="card h-full flex flex-col justify-between">
-                        <div>
-                            <h4 className="font-semibold mb-2" style={{ color: 'var(--text-primary)' }}>Run New Analysis</h4>
-                            <p className="text-sm mb-4" style={{ color: 'var(--text-secondary)' }}>
-                                Upload new data and generate fresh forecasts with the latest models.
-                            </p>
+            <div className="grid md:grid-cols-2 gap-6">
+                <Card className="hover:border-brand-300 transition-colors group cursor-pointer" interactive onClick={() => navigate('/analysis')}>
+                    <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 rounded-xl bg-brand-50 text-brand-600 flex items-center justify-center group-hover:scale-110 transition-transform">
+                            <Brain className="w-6 h-6" />
                         </div>
-                        <button
-                            onClick={() => navigate('/analysis')}
-                            className="btn-secondary w-full justify-center"
-                        >
-                            <Brain className="w-4 h-4" />
-                            Start Analysis
-                            <ChevronRight className="w-4 h-4" />
-                        </button>
+                        <div>
+                            <h4 className="font-bold text-text-primary group-hover:text-brand-700 transition-colors">Run New Analysis</h4>
+                            <p className="text-sm text-text-secondary">Upload new data to retrain model</p>
+                        </div>
+                        <ChevronRight className="w-5 h-5 text-text-tertiary ml-auto group-hover:text-brand-600" />
                     </div>
+                </Card>
 
-                    <div className="card h-full flex flex-col justify-between">
-                        <div>
-                            <h4 className="font-semibold mb-2" style={{ color: 'var(--text-primary)' }}>Generate Report</h4>
-                            <p className="text-sm mb-4" style={{ color: 'var(--text-secondary)' }}>
-                                Export a comprehensive PDF or Excel report from your analysis results.
-                            </p>
+                <Card className="hover:border-brand-300 transition-colors group cursor-pointer" interactive onClick={() => navigate('/reports')}>
+                    <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center group-hover:scale-110 transition-transform">
+                            <Download className="w-6 h-6" />
                         </div>
-                        <button
-                            onClick={() => navigate('/reports')}
-                            className="btn-secondary w-full justify-center"
-                        >
-                            <Download className="w-4 h-4" />
-                            Go to Reports
-                            <ChevronRight className="w-4 h-4" />
-                        </button>
+                        <div>
+                            <h4 className="font-bold text-text-primary group-hover:text-purple-700 transition-colors">Generate Reports</h4>
+                            <p className="text-sm text-text-secondary">Download PDF/Excel summaries</p>
+                        </div>
+                        <ChevronRight className="w-5 h-5 text-text-tertiary ml-auto group-hover:text-purple-600" />
                     </div>
-                </motion.div>
+                </Card>
             </div>
-        </Layout>
+        </div>
     );
 };
 

@@ -119,15 +119,15 @@ const DataFormatConverter = ({ onConversionComplete, onCancel }) => {
                     {['upload', 'detect', 'map', 'convert', 'complete'].map((s, idx) => (
                         <div key={s} className="flex items-center flex-1">
                             <div className={`flex items-center justify-center w-10 h-10 rounded-full border-2 ${step === s ? 'border-primary-500 bg-primary-500 text-white' :
-                                    ['detect', 'map', 'convert', 'complete'].includes(step) && idx < ['upload', 'detect', 'map', 'convert', 'complete'].indexOf(step) ?
-                                        'border-success-500 bg-success-500 text-white' :
-                                        'border-gray-300 bg-white text-gray-400'
+                                ['detect', 'map', 'convert', 'complete'].includes(step) && idx < ['upload', 'detect', 'map', 'convert', 'complete'].indexOf(step) ?
+                                    'border-success-500 bg-success-500 text-white' :
+                                    'border-gray-300 bg-white text-gray-400'
                                 }`}>
                                 {idx + 1}
                             </div>
                             {idx < 4 && (
                                 <div className={`flex-1 h-0.5 mx-2 ${['detect', 'map', 'convert', 'complete'].includes(step) && idx < ['upload', 'detect', 'map', 'convert', 'complete'].indexOf(step) ?
-                                        'bg-success-500' : 'bg-gray-300'
+                                    'bg-success-500' : 'bg-gray-300'
                                     }`} />
                             )}
                         </div>

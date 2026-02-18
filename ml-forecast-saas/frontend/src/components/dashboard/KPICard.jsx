@@ -1,63 +1,49 @@
-import { motion } from 'framer-motion';
 import { TrendingUp, TrendingDown, Minus } from 'lucide-react';
+import Card from '../ui/Card';
 
 const KPICard = ({ title, value, change, trend, icon: Icon, color = 'primary' }) => {
     // Determine trend color and icon
     const isPositive = trend === 'up';
     const isNeutral = trend === 'neutral';
 
-    // Map colors to theme variables
+    // Map colors to theme variables (using Tailwind classes)
     const colorMap = {
-        primary: 'var(--accent-blue)',
-        success: 'var(--accent-green)',
-        warning: 'var(--accent-orange)',
-        danger: 'var(--accent-red)',
-        info: 'var(--accent-cyan)',
-        purple: 'var(--accent-purple)'
+        primary: 'text-brand-600 bg-brand-50',
+        success: 'text-emerald-600 bg-emerald-50',
+        warning: 'text-amber-600 bg-amber-50',
+        danger: 'text-red-600 bg-red-50',
+        info: 'text-cyan-600 bg-cyan-50',
+        purple: 'text-purple-600 bg-purple-50'
     };
 
-    const accentColor = colorMap[color] || colorMap.primary;
+    const iconStyle = colorMap[color] || colorMap.primary;
 
     return (
-        <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            whileHover={{ y: -4, boxShadow: `0 10px 20px -5px ${accentColor}20` }}
-            transition={{ duration: 0.2 }}
-            className="kpi-card group"
-            style={{ borderColor: 'var(--border-primary)' }}
-        >
-            <div className="flex items-start justify-between mb-4">
-                <div className="w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-300 group-hover:scale-110"
-                    style={{ background: `${accentColor}15` }}>
-                    <Icon className="w-6 h-6" style={{ color: accentColor }} />
+        <Card variant="kpi" className="group relative overflow-hidden">
+            <div className="flex items-start justify-between mb-4 relative z-10">
+                <div className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-300 group-hover:scale-110 ${iconStyle}`}>
+                    <Icon className="w-6 h-6" />
                 </div>
 
                 {change && (
-                    <div className="flex items-center gap-1 text-sm font-medium px-2 py-1 rounded-lg"
-                        style={{
-                            background: isPositive ? 'rgba(74, 222, 128, 0.1)' : isNeutral ? 'rgba(148, 163, 184, 0.1)' : 'rgba(248, 113, 113, 0.1)',
-                            color: isPositive ? 'var(--accent-green)' : isNeutral ? 'var(--text-secondary)' : 'var(--accent-red)'
-                        }}>
+                    <div className={`flex items-center gap-1 text-xs font-medium px-2 py-1 rounded-full border ${isPositive
+                        ? 'bg-green-50 text-green-700 border-green-200'
+                        : isNeutral
+                            ? 'bg-slate-50 text-slate-600 border-slate-200'
+                            : 'bg-red-50 text-red-700 border-red-200'
+                        }`}>
                         {isPositive ? <TrendingUp className="w-3 h-3" /> : isNeutral ? <Minus className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
                         <span>{change}</span>
                     </div>
                 )}
             </div>
 
-            <h3 className="text-sm font-medium mb-1" style={{ color: 'var(--text-secondary)' }}>{title}</h3>
-            <p className="text-2xl font-bold font-mono tracking-tight" style={{ color: 'var(--text-primary)' }}>{value}</p>
+            <h3 className="text-sm font-medium mb-1 text-text-secondary">{title}</h3>
+            <p className="text-2xl font-bold font-display tracking-tight text-text-primary">{value}</p>
 
-            <div className="w-full h-1 mt-4 rounded-full overflow-hidden" style={{ background: 'var(--bg-tertiary)' }}>
-                <motion.div
-                    initial={{ width: 0 }}
-                    animate={{ width: '60%' }} // Placeholder for actual progress if available
-                    transition={{ duration: 1, delay: 0.5 }}
-                    className="h-full rounded-full"
-                    style={{ background: accentColor }}
-                />
-            </div>
-        </motion.div>
+            {/* Decorative background element */}
+            <div className="absolute -bottom-4 -right-4 w-24 h-24 rounded-full bg-current opacity-5 blur-2xl text-brand-500 pointer-events-none" />
+        </Card>
     );
 };
 

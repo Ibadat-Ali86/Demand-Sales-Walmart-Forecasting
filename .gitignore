@@ -1,0 +1,29 @@
+# Large Data Files (>100MB)
+data/walmart_features_complete.csv
+data/walmart_train.csv
+Warehouse_and_Retail_Sales.csv
+Market_Trend_Analysis.csv
+326165.mp4
+
+# Model Artifacts
+models/*.pkl
+models/*.h5
+models/*.json
+
+# Backend Backups
+ml-forecast-saas/backend/training_jobs.json.bak
+ml-forecast-saas/backend/training_jobs.json.bak2
+
+# System Files
+.DS_Store
+Thumbs.db
+
+# Python
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+venv/
+.conda/
+
+# Node
+node_modules/

@@ -50,37 +50,35 @@ const ForecastChart = ({ data }) => {
         labels: data?.labels || [],
         datasets: [
             {
-                label: 'Actual Sales',
+                label: 'Actual Consumptions',
                 data: data?.actual || [],
-                borderColor: '#4A9EFF', // var(--accent-blue)
-                backgroundColor: gradientActual || 'rgba(74, 158, 255, 0.1)',
+                borderColor: '#3B82F6', // viz-primary (Blue)
+                backgroundColor: gradientActual || 'rgba(59, 130, 246, 0.1)',
                 borderWidth: 2,
                 tension: 0.4,
                 fill: true,
-                pointRadius: 4,
-                pointBackgroundColor: '#0A0E1A', // var(--bg-primary)
-                pointBorderColor: '#4A9EFF',
-                pointBorderWidth: 2,
+                pointRadius: 0, // Clean look, show on hover
+                pointHitRadius: 20,
                 pointHoverRadius: 6,
-                pointHoverBackgroundColor: '#4A9EFF',
+                pointHoverBackgroundColor: '#3B82F6',
                 pointHoverBorderColor: '#fff',
+                pointHoverBorderWidth: 2,
             },
             {
-                label: 'Forecasted Sales',
+                label: 'AI Forecast',
                 data: data?.forecast || [],
-                borderColor: '#B794F6', // var(--accent-purple)
-                backgroundColor: gradientForecast || 'rgba(183, 148, 246, 0.1)',
+                borderColor: '#6366F1', // primary-500 (Indigo)
+                backgroundColor: gradientForecast || 'rgba(99, 102, 241, 0.1)',
                 borderWidth: 2,
-                borderDash: [5, 5],
+                borderDash: [6, 4],
                 tension: 0.4,
                 fill: true,
-                pointRadius: 4,
-                pointBackgroundColor: '#0A0E1A',
-                pointBorderColor: '#B794F6',
-                pointBorderWidth: 2,
+                pointRadius: 0,
+                pointHitRadius: 20,
                 pointHoverRadius: 6,
-                pointHoverBackgroundColor: '#B794F6',
+                pointHoverBackgroundColor: '#6366F1',
                 pointHoverBorderColor: '#fff',
+                pointHoverBorderWidth: 2,
             },
         ],
     };
@@ -95,7 +93,7 @@ const ForecastChart = ({ data }) => {
         plugins: {
             legend: {
                 position: 'top',
-                align: 'end',
+                align: 'start',
                 labels: {
                     usePointStyle: true,
                     boxWidth: 8,

@@ -5,7 +5,7 @@ echo "🚀 Starting ML Forecast SaaS Application..."
 # Start Backend
 echo "📦 Starting Backend API on port 8000..."
 cd backend
-python -m app.main &
+PORT=8000 python -m app.main &
 BACKEND_PID=$!
 
 # Start Frontend

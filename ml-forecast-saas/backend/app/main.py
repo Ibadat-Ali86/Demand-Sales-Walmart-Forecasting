@@ -88,7 +88,7 @@ async def log_requests(request: Request, call_next):
         raise e
 
 # Include routers
-from app.api import auth, dashboard, sales, forecasts, analysis, monitoring, data_pipeline, oauth
+from app.api import auth, dashboard, sales, forecasts, analysis, monitoring, data_pipeline, oauth, error_handler
 app.include_router(auth.router, prefix="/api/auth", tags=["Authentication"])
 app.include_router(oauth.router, prefix="/api/auth", tags=["OAuth"])
 app.include_router(dashboard.router, prefix="/api/dashboard", tags=["Dashboard"])
@@ -98,6 +98,11 @@ app.include_router(analysis.router, prefix="/api/analysis", tags=["Analysis"])
 # app.include_router(monitoring.router, prefix="/api/monitoring", tags=["ML Monitoring"]) - Uncomment when module exists
 app.include_router(monitoring.router, prefix="/api/monitoring", tags=["ML Monitoring"])
 app.include_router(data_pipeline.router, tags=["Data Pipeline"])
+app.include_router(error_handler.router, tags=["Error Handling"])
+
+# Reports API
+from app.api import reports
+app.include_router(reports.router, prefix="/api/reports", tags=["Reporting"])
 
 # Mount static files (Frontend)
 # Try to find the static directory relative to the current file or working directory

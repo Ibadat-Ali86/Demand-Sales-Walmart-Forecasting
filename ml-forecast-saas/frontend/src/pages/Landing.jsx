@@ -9,11 +9,19 @@ import AmbientBackground from '../components/ui/AmbientBackground';
 import MagneticButton from '../components/ui/MagneticButton';
 import DashboardPreview from '../components/landing/DashboardPreview';
 import NavigationUnderline from '../components/landing/NavigationUnderline';
+import Button from '../components/ui/Button';
+import Card from '../components/ui/Card';
+import Badge from '../components/ui/Badge';
 
 gsap.registerPlugin(ScrollTrigger);
 
 // Custom Text Reveal Component (Alternative to SplitText)
 const TextReveal = ({ children, className = '', delay = 0 }) => {
+    // Safely handle non-string children to prevent runtime crashes
+    if (typeof children !== 'string') {
+        return <span className={`inline-block ${className}`}>{children}</span>;
+    }
+
     const chars = children.split('');
     return (
         <span className={`inline-block ${className}`}>
@@ -33,9 +41,33 @@ const TextReveal = ({ children, className = '', delay = 0 }) => {
     );
 };
 
+// Animated counter component
+const AnimatedCounter = ({ value, suffix = '', prefix = '' }) => {
+    const [count, setCount] = useState(0);
+
+    useEffect(() => {
+        if (typeof value !== 'number') return;
+
+        let start = 0;
+        const increment = value / 60;
+        const timer = setInterval(() => {
+            start += increment;
+            if (start >= value) {
+                setCount(value);
+                clearInterval(timer);
+            } else {
+                setCount(Math.floor(start * 100) / 100);
+            }
+        }, 30);
+        return () => clearInterval(timer);
+    }, [value]);
+
+    return <span>{prefix}{typeof value === 'number' && value % 1 !== 0 ? count.toFixed(2) : Math.floor(count)}{suffix}</span>;
+};
+
 const Landing = () => {
     const [scrolled, setScrolled] = useState(false);
-    useSmoothScroll();
+    // useSmoothScroll();
 
     const heroRef = useRef(null);
     const statsRef = useRef(null);
@@ -141,43 +173,43 @@ const Landing = () => {
             icon: TrendingUp,
             title: 'AI-Powered Forecasting',
             description: 'Leverage XGBoost, LSTM, and Prophet models for highly accurate demand predictions.',
-            iconBg: 'bg-primary-100',
-            iconColor: 'text-primary-600',
+            iconBg: 'bg-brand-50',
+            iconColor: 'text-brand-600',
         },
         {
             icon: BarChart3,
             title: 'Interactive Dashboards',
             description: 'Visualize trends and forecasts with beautiful, real-time charts.',
-            iconBg: 'bg-secondary-100',
-            iconColor: 'text-secondary-600',
+            iconBg: 'bg-indigo-50',
+            iconColor: 'text-indigo-600',
         },
         {
             icon: Sliders,
             title: 'Scenario Planning',
             description: 'Run what-if analyses to optimize inventory and reduce costs.',
-            iconBg: 'bg-success-100',
-            iconColor: 'text-success-600',
+            iconBg: 'bg-emerald-50',
+            iconColor: 'text-emerald-600',
         },
         {
             icon: Shield,
             title: 'Enterprise Security',
             description: 'Bank-level encryption, SOC 2 compliance, and GDPR-ready.',
-            iconBg: 'bg-warning-100',
-            iconColor: 'text-warning-600',
+            iconBg: 'bg-amber-50',
+            iconColor: 'text-amber-600',
         },
         {
             icon: Zap,
             title: 'Real-time Updates',
             description: 'Get instant forecast updates with 24/7 automated processing.',
-            iconBg: 'bg-info-100',
-            iconColor: 'text-info-600',
+            iconBg: 'bg-blue-50',
+            iconColor: 'text-blue-600',
         },
         {
             icon: Users,
             title: 'Team Collaboration',
             description: 'Share insights and align your team on demand strategy.',
-            iconBg: 'bg-primary-100',
-            iconColor: 'text-primary-600',
+            iconBg: 'bg-purple-50',
+            iconColor: 'text-purple-600',
         },
     ];
 
@@ -188,30 +220,8 @@ const Landing = () => {
         { name: 'Costco', icon: Building2 },
     ];
 
-    // Animated counter hook
-    const AnimatedCounter = ({ value, suffix = '', prefix = '' }) => {
-        const [count, setCount] = useState(0);
-
-        useEffect(() => {
-            let start = 0;
-            const increment = value / 60;
-            const timer = setInterval(() => {
-                start += increment;
-                if (start >= value) {
-                    setCount(value);
-                    clearInterval(timer);
-                } else {
-                    setCount(Math.floor(start * 100) / 100);
-                }
-            }, 30);
-            return () => clearInterval(timer);
-        }, [value]);
-
-        return <span>{prefix}{typeof value === 'number' && value % 1 !== 0 ? count.toFixed(2) : Math.floor(count)}{suffix}</span>;
-    };
-
     return (
-        <div className="min-h-screen bg-bg-primary font-sans selection:bg-primary-200">
+        <div className="min-h-screen bg-bg-primary font-sans selection:bg-brand-200">
             {/* Ambient Background */}
             <AmbientBackground />
 
@@ -220,10 +230,10 @@ const Landing = () => {
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex justify-between items-center h-20">
                         <Link to="/" className="flex items-center gap-3 group">
-                            <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-gradient-to-br from-primary-500 to-secondary-500 shadow-lg group-hover:shadow-primary-500/30 transition-shadow">
+                            <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-gradient-to-br from-brand-500 to-accent-500 shadow-lg group-hover:shadow-brand-500/30 transition-shadow">
                                 <TrendingUp className="w-6 h-6 text-white" />
                             </div>
-                            <span className="text-xl font-bold font-display tracking-tight text-gray-900">AdaptIQ</span>
+                            <span className="text-xl font-bold font-display tracking-tight text-text-primary">AdaptIQ</span>
                         </Link>
 
                         <div className="hidden lg:flex items-center gap-8">
@@ -238,15 +248,16 @@ const Landing = () => {
 
                         <div className="flex items-center gap-4">
                             <MagneticButton>
-                                <Link to="/login" className="hidden sm:inline-flex px-5 py-2.5 text-gray-600 font-medium hover:text-primary-600 transition-colors">
-                                    Sign In
-                                </Link>
+                                <Button variant="ghost" className="hidden sm:inline-flex text-text-secondary hover:text-brand-600">
+                                    <Link to="/login">Sign In</Link>
+                                </Button>
                             </MagneticButton>
 
                             <MagneticButton>
-                                <Link to="/register" className="inline-flex items-center gap-2 px-6 py-2.5 bg-gray-900 text-white rounded-full font-medium hover:bg-gray-800 transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5">
-                                    Get Started
-                                    <ArrowRight className="w-4 h-4" />
+                                <Link to="/register">
+                                    <Button variant="primary" className="rounded-full shadow-lg hover:shadow-xl hover:-translate-y-0.5" icon={ArrowRight} iconPosition="right">
+                                        Get Started
+                                    </Button>
                                 </Link>
                             </MagneticButton>
                         </div>
@@ -264,46 +275,46 @@ const Landing = () => {
                                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-success-400 opacity-75"></span>
                                     <span className="relative inline-flex rounded-full h-2 w-2 bg-success-500"></span>
                                 </span>
-                                <span className="text-sm font-medium text-gray-600 tracking-wide">
+                                <span className="text-sm font-medium text-text-secondary tracking-wide">
                                     v3.0 Now Available
                                 </span>
                             </div>
 
-                            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-extrabold font-display text-gray-900 mb-8 leading-[1.1] tracking-tight">
+                            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-extrabold font-display text-text-primary mb-8 leading-[1.1] tracking-tight">
                                 <TextReveal className="block">Transform data</TextReveal>
                                 <TextReveal className="block">into{' '}</TextReveal>
-                                <span className="transparent-text bg-clip-text bg-gradient-to-r from-primary-600 via-secondary-500 to-primary-600 animate-shimmer bg-[length:200%_100%]">
+                                <span className="transparent-text bg-clip-text bg-gradient-to-r from-brand-600 via-accent-500 to-brand-600 animate-shimmer bg-[length:200%_100%]">
                                     <TextReveal>intelligence</TextReveal>
                                 </span>
                             </h1>
 
-                            <p className="hero-fade text-xl text-gray-600 mb-10 leading-relaxed max-w-xl mx-auto lg:mx-0 font-light">
+                            <p className="hero-fade text-xl text-text-secondary mb-10 leading-relaxed max-w-xl mx-auto lg:mx-0 font-light">
                                 Enterprise-grade demand forecasting that helps businesses reduce stockouts by 80% and save millions in operational costs.
                             </p>
 
                             <div className="hero-fade flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
                                 <MagneticButton>
-                                    <Link to="/register" className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-primary-600 text-white rounded-full font-semibold hover:bg-primary-700 transition-all shadow-lg shadow-primary-500/25 min-w-[180px]">
-                                        <span>Start Free Trial</span>
-                                        <ArrowRight className="w-5 h-5" />
+                                    <Link to="/register">
+                                        <Button variant="primary" size="lg" className="rounded-full shadow-lg shadow-brand-500/25 min-w-[180px]" icon={ArrowRight} iconPosition="right">
+                                            Start Free Trial
+                                        </Button>
                                     </Link>
                                 </MagneticButton>
 
                                 <MagneticButton>
-                                    <button className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-white text-gray-700 rounded-full font-semibold border border-gray-200 hover:border-gray-300 hover:bg-gray-50 transition-all shadow-sm min-w-[180px]">
-                                        <Play className="w-5 h-5 fill-current" />
-                                        <span>View Demo</span>
-                                    </button>
+                                    <Button variant="secondary" size="lg" className="rounded-full min-w-[180px]" icon={Play}>
+                                        View Demo
+                                    </Button>
                                 </MagneticButton>
                             </div>
 
-                            <div className="hero-fade flex items-center gap-8 mt-12 justify-center lg:justify-start text-sm font-medium text-gray-500">
+                            <div className="hero-fade flex items-center gap-8 mt-12 justify-center lg:justify-start text-sm font-medium text-text-tertiary">
                                 <div className="flex items-center gap-2">
-                                    <CheckCircle className="w-5 h-5 text-secondary-500" />
+                                    <CheckCircle className="w-5 h-5 text-accent-500" />
                                     <span>SOC 2 Type II Ready</span>
                                 </div>
                                 <div className="flex items-center gap-2">
-                                    <CheckCircle className="w-5 h-5 text-secondary-500" />
+                                    <CheckCircle className="w-5 h-5 text-accent-500" />
                                     <span>14-day free trial</span>
                                 </div>
                             </div>
@@ -323,17 +334,17 @@ const Landing = () => {
                     transition={{ repeat: Infinity, duration: 2 }}
                     onClick={() => document.getElementById('trusted').scrollIntoView({ behavior: 'smooth' })}
                 >
-                    <ChevronDown className="w-6 h-6 text-gray-400/80" />
+                    <ChevronDown className="w-6 h-6 text-text-tertiary/80" />
                 </motion.div>
             </section>
 
             {/* Trusted Logos */}
-            <section id="trusted" className="py-16 border-y border-gray-100 bg-white/50 backdrop-blur-sm">
+            <section id="trusted" className="py-16 border-y border-border-default bg-white/50 backdrop-blur-sm">
                 <div className="max-w-7xl mx-auto px-4 text-center">
-                    <p className="text-sm font-semibold text-gray-400 uppercase tracking-widest mb-10">Trusted by industry leaders</p>
+                    <p className="text-sm font-semibold text-text-tertiary uppercase tracking-widest mb-10">Trusted by industry leaders</p>
                     <div className="flex items-center justify-center gap-16 flex-wrap grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all duration-500">
                         {trustedLogos.map((logo, index) => (
-                            <div key={index} className="flex items-center gap-3 text-gray-500 hover:text-gray-900">
+                            <div key={index} className="flex items-center gap-3 text-text-tertiary hover:text-text-primary">
                                 <logo.icon className="w-8 h-8" />
                                 <span className="font-bold text-xl">{logo.name}</span>
                             </div>
@@ -348,10 +359,10 @@ const Landing = () => {
                     <div className="grid md:grid-cols-3 gap-12">
                         {stats.map((stat, index) => (
                             <div key={index} className="stat-item text-center opacity-0 translate-y-8">
-                                <div className="text-6xl sm:text-7xl font-bold font-display text-transparent bg-clip-text bg-gradient-to-br from-gray-900 to-gray-500 mb-4 tracking-tight">
+                                <div className="text-6xl sm:text-7xl font-bold font-display text-transparent bg-clip-text bg-gradient-to-br from-text-primary to-text-tertiary mb-4 tracking-tight">
                                     <AnimatedCounter value={stat.value} suffix={stat.suffix} prefix={stat.prefix} />
                                 </div>
-                                <div className="text-lg font-medium text-gray-500 uppercase tracking-wide">{stat.label}</div>
+                                <div className="text-lg font-medium text-text-secondary uppercase tracking-wide">{stat.label}</div>
                             </div>
                         ))}
                     </div>
@@ -359,27 +370,27 @@ const Landing = () => {
             </section>
 
             {/* Features Grid */}
-            <section id="features" ref={featuresRef} className="py-32 bg-gray-50/50">
+            <section id="features" ref={featuresRef} className="py-32 bg-bg-secondary/50">
                 <div className="max-w-7xl mx-auto px-4">
                     <div className="text-center mb-20">
-                        <span className="text-secondary-600 font-bold tracking-wider uppercase text-sm mb-4 block">Capabilities</span>
-                        <h2 className="text-4xl md:text-5xl font-bold font-display text-gray-900 mb-6">
-                            Constructed for <span className="gradient-text">scale</span>
+                        <span className="text-brand-600 font-bold tracking-wider uppercase text-sm mb-4 block">Capabilities</span>
+                        <h2 className="text-4xl md:text-5xl font-bold font-display text-text-primary mb-6">
+                            Constructed for <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-600 to-accent-500">scale</span>
                         </h2>
-                        <p className="text-xl text-gray-500 max-w-2xl mx-auto">
+                        <p className="text-xl text-text-secondary max-w-2xl mx-auto">
                             Comprehensive tools designed for modern supply chain teams
                         </p>
                     </div>
 
                     <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
                         {features.map((feature, index) => (
-                            <div key={index} className="feature-card-item group bg-white rounded-3xl p-8 shadow-sm border border-gray-100 hover:shadow-xl hover:border-primary-100 transition-all duration-300">
+                            <Card key={index} className="feature-card-item h-full hover:shadow-xl hover:border-brand-200" variant="feature">
                                 <div className={`w-14 h-14 rounded-2xl flex items-center justify-center mb-6 ${feature.iconBg} group-hover:scale-110 transition-transform duration-300`}>
                                     <feature.icon className={`w-7 h-7 ${feature.iconColor}`} />
                                 </div>
-                                <h3 className="text-xl font-bold text-gray-900 mb-3">{feature.title}</h3>
-                                <p className="text-gray-500 leading-relaxed">{feature.description}</p>
-                            </div>
+                                <h3 className="text-xl font-bold text-text-primary mb-3">{feature.title}</h3>
+                                <p className="text-text-secondary leading-relaxed">{feature.description}</p>
+                            </Card>
                         ))}
                     </div>
                 </div>
@@ -387,10 +398,10 @@ const Landing = () => {
 
             {/* CTA Section */}
             <section id="cta" className="py-32 relative overflow-hidden">
-                <div className="absolute inset-0 bg-gray-900 rounded-[3rem] mx-4 md:mx-10 z-0">
+                <div className="absolute inset-0 bg-text-primary rounded-[3rem] mx-4 md:mx-10 z-0">
                     <div className="absolute inset-0 opacity-20 bg-[url('https://grainy-gradients.vercel.app/noise.svg')]"></div>
-                    <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary-600/30 rounded-full blur-[120px]"></div>
-                    <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-secondary-600/30 rounded-full blur-[120px]"></div>
+                    <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-brand-600/30 rounded-full blur-[120px]"></div>
+                    <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-accent-600/30 rounded-full blur-[120px]"></div>
                 </div>
 
                 <div className="relative z-10 max-w-4xl mx-auto text-center px-4 py-20">
@@ -402,27 +413,28 @@ const Landing = () => {
                     </p>
                     <div className="flex flex-col sm:flex-row gap-4 justify-center">
                         <MagneticButton>
-                            <Link to="/register" className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-white text-gray-900 rounded-full font-bold hover:bg-gray-100 transition-colors min-w-[200px]">
-                                Start Free Trial
-                                <ArrowRight className="w-5 h-5" />
+                            <Link to="/register">
+                                <Button variant="secondary" size="lg" className="rounded-full font-bold min-w-[200px]" icon={ArrowRight} iconPosition="right">
+                                    Start Free Trial
+                                </Button>
                             </Link>
                         </MagneticButton>
                     </div>
                 </div>
             </section>
 
-            <footer className="py-12 border-t border-gray-100 bg-white">
+            <footer className="py-12 border-t border-border-default bg-white">
                 <div className="max-w-7xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-6">
                     <div className="flex items-center gap-2">
-                        <div className="w-8 h-8 bg-gray-900 rounded-lg flex items-center justify-center text-white font-bold">A</div>
-                        <span className="font-bold text-gray-900 tracking-tight">AdaptIQ</span>
+                        <div className="w-8 h-8 bg-text-primary rounded-lg flex items-center justify-center text-white font-bold">A</div>
+                        <span className="font-bold text-text-primary tracking-tight">AdaptIQ</span>
                     </div>
-                    <div className="text-gray-500 text-sm">
+                    <div className="text-text-tertiary text-sm">
                         © 2026 AdaptIQ Inc. All rights reserved.
                     </div>
                     <div className="flex gap-8">
                         {['Twitter', 'LinkedIn', 'GitHub'].map(social => (
-                            <a key={social} href="#" className="text-gray-400 hover:text-gray-900 transition-colors text-sm font-medium">{social}</a>
+                            <a key={social} href="#" className="text-text-tertiary hover:text-text-primary transition-colors text-sm font-medium">{social}</a>
                         ))}
                     </div>
                 </div>

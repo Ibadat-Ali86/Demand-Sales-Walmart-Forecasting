@@ -18,6 +18,7 @@ import {
     ShoppingCart,
     Megaphone
 } from 'lucide-react';
+import { formatPercent, formatNumber, formatCurrency } from '../utils/formatters';
 
 const ScenarioSimulator = () => {
     const navigate = useNavigate();
@@ -74,9 +75,9 @@ const ScenarioSimulator = () => {
             quantityChange: quantityImpact.toFixed(1),
             costChange: costImpact.toFixed(1),
             profitChange: profitImpact.toFixed(1),
-            projectedRevenue: (baseRevenue * (1 + revenueImpact / 100)).toFixed(0),
-            projectedQuantity: (baseQuantity * (1 + quantityImpact / 100)).toFixed(0),
-            projectedProfit: ((baseRevenue * 0.3) * (1 + profitImpact / 100)).toFixed(0),
+            projectedRevenue: (baseRevenue * (1 + revenueImpact / 100)),
+            projectedQuantity: (baseQuantity * (1 + quantityImpact / 100)),
+            projectedProfit: ((baseRevenue * 0.3) * (1 + profitImpact / 100)),
         });
     };
 
@@ -197,7 +198,7 @@ const ScenarioSimulator = () => {
                     </div>
                 </motion.div>
 
-                <div className="grid lg:grid-cols-2 gap-6">
+                <div className="grid lg:grid-cols-[1fr_400px] gap-8">
                     {/* Scenario Controls */}
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
@@ -223,7 +224,7 @@ const ScenarioSimulator = () => {
                                             </div>
                                         </div>
                                         <span className={`font-bold ${scenario[slider.key] > 100 ? 'text-green-600' :
-                                                scenario[slider.key] < 100 ? 'text-red-600' : 'text-gray-600'
+                                            scenario[slider.key] < 100 ? 'text-red-600' : 'text-gray-600'
                                             }`}>
                                             {scenario[slider.key]}%
                                         </span>
@@ -276,48 +277,70 @@ const ScenarioSimulator = () => {
                         {results ? (
                             <div className="space-y-4">
                                 {/* Impact Cards */}
-                                <div className="grid grid-cols-2 gap-4">
+                                <div className="space-y-4">
                                     {[
-                                        { label: 'Revenue', value: results.revenueChange, projected: `$${parseInt(results.projectedRevenue).toLocaleString()}` },
-                                        { label: 'Volume', value: results.quantityChange, projected: parseInt(results.projectedQuantity).toLocaleString() },
-                                        { label: 'Profit', value: results.profitChange, projected: `$${parseInt(results.projectedProfit).toLocaleString()}` },
+                                        { label: 'Revenue', value: results.revenueChange, projected: formatCurrency(results.projectedRevenue) },
+                                        { label: 'Volume', value: results.quantityChange, projected: formatNumber(results.projectedQuantity) },
+                                        { label: 'Profit', value: results.profitChange, projected: formatCurrency(results.projectedProfit) },
                                         { label: 'Costs', value: results.costChange, projected: 'Variable' },
                                     ].map((item, i) => (
-                                        <div key={i} className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4">
-                                            <div className="text-sm text-gray-600 dark:text-gray-400">{item.label}</div>
-                                            <div className={`text-2xl font-bold flex items-center gap-1 ${parseFloat(item.value) > 0 ? 'text-green-600' :
-                                                    parseFloat(item.value) < 0 ? 'text-red-600' : 'text-gray-600'
-                                                }`}>
-                                                {parseFloat(item.value) > 0 ? (
-                                                    <TrendingUp className="w-5 h-5" />
-                                                ) : parseFloat(item.value) < 0 ? (
-                                                    <TrendingDown className="w-5 h-5" />
-                                                ) : null}
-                                                {item.value}%
+                                        <div key={i} className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg border border-gray-100 dark:border-gray-600">
+                                            <div>
+                                                <div className="text-sm font-medium text-gray-500 dark:text-gray-400">{item.label}</div>
+                                                <div className="text-sm font-semibold text-gray-900 dark:text-gray-200 mt-1">
+                                                    Projected: <span className="font-mono">{item.projected}</span>
+                                                </div>
                                             </div>
-                                            <div className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                                                Projected: {item.projected}
+                                            <div className="text-right">
+                                                <div className={`text-xl font-bold font-mono flex items-center justify-end gap-1 ${parseFloat(item.value) > 0 ? 'text-green-600' :
+                                                        parseFloat(item.value) < 0 ? 'text-red-600' : 'text-gray-500'
+                                                    }`}>
+                                                    {parseFloat(item.value) > 0 ? <TrendingUp className="w-4 h-4" /> :
+                                                        parseFloat(item.value) < 0 ? <TrendingDown className="w-4 h-4" /> : null}
+                                                    {Math.abs(item.value)}%
+                                                </div>
+                                                <div className="text-xs text-gray-400 font-medium uppercase tracking-wide mt-1">
+                                                    Change
+                                                </div>
                                             </div>
                                         </div>
                                     ))}
                                 </div>
 
+                                {/* ROI Analysis Section */}
+                                <div className="mt-6 pt-6 border-t border-gray-100 dark:border-gray-700">
+                                    <div className="flex items-center justify-between mb-2">
+                                        <span className="text-sm font-medium text-gray-600 dark:text-gray-400">ROI Impact</span>
+                                        <span className={`text-lg font-bold ${parseFloat(results.profitChange) > 0 ? 'text-green-600' : 'text-gray-600'
+                                            }`}>
+                                            {parseFloat(results.profitChange) > 0 ? '+' : ''}{results.profitChange}%
+                                        </span>
+                                    </div>
+                                    <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                                        <div
+                                            className={`h-2 rounded-full ${parseFloat(results.profitChange) > 0 ? 'bg-green-500' : 'bg-gray-400'
+                                                }`}
+                                            style={{ width: `${Math.min(Math.abs(parseFloat(results.profitChange)) * 2, 100)}%` }}
+                                        />
+                                    </div>
+                                </div>
+
                                 {/* Action Buttons */}
-                                <div className="flex gap-3 mt-6">
+                                <div className="grid grid-cols-2 gap-3 mt-6">
                                     <motion.button
                                         whileHover={{ scale: 1.02 }}
                                         whileTap={{ scale: 0.98 }}
                                         onClick={saveScenario}
-                                        className="flex-1 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium flex items-center justify-center gap-2"
+                                        className="px-4 py-2.5 bg-green-600 hover:bg-green-700 text-white rounded-lg font-semibold flex items-center justify-center gap-2 shadow-sm"
                                     >
                                         <Save className="w-4 h-4" />
-                                        Save Scenario
+                                        Save
                                     </motion.button>
                                     <motion.button
                                         whileHover={{ scale: 1.02 }}
                                         whileTap={{ scale: 0.98 }}
                                         onClick={downloadResults}
-                                        className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium flex items-center gap-2"
+                                        className="px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold flex items-center justify-center gap-2 shadow-sm"
                                     >
                                         <Download className="w-4 h-4" />
                                         Export

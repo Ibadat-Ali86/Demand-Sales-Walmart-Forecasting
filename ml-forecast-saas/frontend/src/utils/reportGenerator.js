@@ -219,7 +219,7 @@ export const generatePDFReport = (data) => {
         }
 
         // --- SAVE ---
-        doc.save(`ForecastAI_Comprehensive_Report_${new Date().toISOString().split('T')[0]}.pdf`);
+        doc.save(`AdaptIQ_Comprehensive_Report_${new Date().toISOString().split('T')[0]}.pdf`);
 
     } catch (err) {
         console.error("Report Generation Failed:", err);
@@ -268,7 +268,7 @@ export const generateExcelReport = (analysisData) => {
         const ws = XLSX.utils.json_to_sheet([{ info: "Please use PDF for full report" }]);
         XLSX.utils.book_append_sheet(wb, ws, "Summary");
 
-        XLSX.writeFile(wb, `ForecastAI_Data_${new Date().toISOString().split('T')[0]}.xlsx`);
+        XLSX.writeFile(wb, `AdaptIQ_Data_${new Date().toISOString().split('T')[0]}.xlsx`);
     } catch (e) {
         console.error("Excel Export Error", e);
     }

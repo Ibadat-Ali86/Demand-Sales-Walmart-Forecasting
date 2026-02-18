@@ -16,6 +16,7 @@ import {
     AlertTriangle
 } from 'lucide-react';
 import { API_BASE_URL } from '../../utils/constants';
+import AnalysisStatCard from './AnalysisStatCard';
 
 /**
  * PreprocessingLog - Shows transparent data preprocessing steps
@@ -221,11 +222,35 @@ const PreprocessingLog = ({ data, onPreprocessingComplete, totalRows, sessionId 
                         Processed Data Summary
                     </h3>
 
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                        <StatBox label="Records" value={stats.rows} />
-                        <StatBox label="Features" value={stats.features} />
-                        <StatBox label="Missing Values" value={stats.missing} color="text-green-600 dark:text-green-400" />
-                        <StatBox label="New Features" value={stats.new} color="text-purple-600 dark:text-purple-400" />
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                        <AnalysisStatCard
+                            label="Rows"
+                            value={stats.rows}
+                            icon={<TrendingUp className="w-6 h-6" />}
+                            color="blue"
+                            delay={0.1}
+                        />
+                        <AnalysisStatCard
+                            label="Features"
+                            value={stats.features}
+                            icon={<Filter className="w-6 h-6" />}
+                            color="purple"
+                            delay={0.2}
+                        />
+                        <AnalysisStatCard
+                            label="Missing Values"
+                            value={stats.missing}
+                            icon={<AlertTriangle className="w-6 h-6" />}
+                            color="green"
+                            delay={0.3}
+                        />
+                        <AnalysisStatCard
+                            label="New Features"
+                            value={stats.new}
+                            icon={<Sparkles className="w-6 h-6" />}
+                            color="yellow"
+                            delay={0.4}
+                        />
                     </div>
 
                     {/* Only show Proceed button here if using Manual Start mode */}

@@ -18,6 +18,11 @@ from app.ml.xgboost_model import XGBoostForecaster
 from app.ml.sarima_model import SARIMAForecaster
 from app.ml.ensemble_model import EnsembleForecaster
 
+# Phase 0: Foundation Components
+from app.utils.data_adapter import DataAdapter, validate_adapted_data
+from app.utils.pipeline_validator import PipelineValidator, ValidationError
+from app.utils.model_router import ModelRouter, ModelType
+
 logger = logging.getLogger(__name__)
 
 router = APIRouter()
@@ -218,22 +223,43 @@ async def upload_dataset(file: UploadFile = File(...)):
             
         df = pd.read_csv(io.StringIO(decoded_content))
         
-        # Basic validation
-        if len(df) == 0:
-            raise HTTPException(status_code=400, detail="Empty dataset")
+        # PHASE 0: Data Adapter - Auto-detect columns
+        adapter = DataAdapter()
+        df_adapted, metadata = adapter.adapt_dataframe(df)
+        
+        logger.info(f"📊 Data adapted: {metadata['detected_columns']}")
+        
+        # PHASE 0: Validation Gate - Upload stage
+        validator = PipelineValidator()
+        try:
+            validation_result = validator.validate_upload(df_adapted)
+            logger.info(f"✅ Upload validation passed: {validation_result['info']}")
+        except ValidationError as ve:
+            logger.error(f"❌ Upload validation failed: {ve.message}")
+            raise HTTPException(
+                status_code=400,
+                detail={
+                    'error': ve.message,
+                    'suggestion': ve.suggestion,
+                    'stage': ve.stage
+                }
+            )
         
         # Generate session ID for this dataset
         session_id = str(uuid.uuid4())
         logger.info(f"📤 New upload session created: {session_id} ({file.filename})")
         
-        # Store in memory first
+        # Store in memory first (with adapted data and metadata)
         training_jobs[session_id] = {
             'status': 'uploaded',
-            'data': df.to_dict('records'),
+            'data': df_adapted.to_dict('records'),
             'filename': file.filename,
-            'rows': len(df),
-            'columns': list(df.columns),
-            'uploaded_at': datetime.now().isoformat()
+             'rows': len(df_adapted),
+            'columns': list(df_adapted.columns),
+            'uploaded_at': datetime.now().isoformat(),
+            'adapter_metadata': metadata,  # Store column mappings
+            'validation_warnings': validation_result.get('warnings', []),
+            'quality_score': metadata.get('quality_score', 100)
         }
         
         # CRITICAL: Save synchronously and verify
@@ -249,10 +275,17 @@ async def upload_dataset(file: UploadFile = File(...)):
         return {
             'session_id': session_id,
             'filename': file.filename,
-            'rows': len(df),
-            'columns': list(df.columns),
-            'sample_data': df.head(5).replace({np.nan: None}).to_dict('records'),
-            'summary': df.describe().replace({np.nan: None}).to_dict()
+            'rows': len(df_adapted),
+            'columns': list(df_adapted.columns),
+            'sample_data': df_adapted.head(5).replace({np.nan: None}).to_dict('records'),
+            'summary': df_adapted.describe().replace({np.nan: None}).to_dict(),
+            'adapter_info': {
+                'detected_columns': metadata.get('detected_columns', {}),
+                'data_shape': metadata.get('data_shape', 'long'),
+                'issues': metadata.get('issues', []),
+                'quality_score': metadata.get('quality_score', 100)
+            },
+            'validation_warnings': validation_result.get('warnings', [])
         }
         
     except HTTPException:
@@ -468,19 +501,24 @@ async def profile_dataset(session_id: str, request: DataProfileRequest):
         logger.info(f"Generated {len(kpis)} dynamic KPIs for domain: {domain_report.domain}")
         
         # --- Phase 12: Adaptive Narrative Report ---
-        from app.services.report_generator import report_generator
-        narrative = report_generator.generate_narrative(
-            domain_report.domain_key,
-            kpis,
-            profile
-        )
-        profile['narrative_report'] = narrative
-        
+        try:
+            from app.services.report_generator import report_generator
+            narrative = report_generator.generate_narrative(
+                domain_report.domain_key,
+                kpis,
+                profile
+            )
+            profile['narrative_report'] = narrative
+        except Exception as e:
+            logger.error(f"Failed to generate narrative report: {e}")
+            profile['narrative_report'] = None
+            
     except Exception as e:
         logger.error(f"Failed to generate dynamic KPIs/Report: {e}")
         profile['dynamic_kpis'] = []
         profile['domain_analysis'] = None
-        profile['narrative_report'] = None
+        if 'narrative_report' not in profile:
+             profile['narrative_report'] = None
     
     # Update job status
     training_jobs[session_id]['status'] = 'profiled'
@@ -847,6 +885,7 @@ async def get_training_results(job_id: str):
         'model_type': job['model_type'],
         'metrics': job['metrics'],
         'forecast': job['forecast'],
+        'insights': job.get('business_insights', {}),  # CRITICAL: Include insights
         'training_time': job['metrics'].get('training_time'),
         'accuracy_rating': job['metrics'].get('accuracy_rating')
     }
