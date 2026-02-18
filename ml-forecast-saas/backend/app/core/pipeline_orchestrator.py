@@ -325,6 +325,304 @@ class EnterprisePipelineOrchestrator:
             "recoverable": False,
             "error_id": f"ERR_{context.session_id}"  # For support reference
         }
+    
+    @stage_wrapper(PipelineStage.INGESTION)
+    def _ingest_data(self, context: PipelineContext) -> pd.DataFrame:
+        """Ingest data from file"""
+        import io
+        
+        ext = context.file_path.split('.')[-1].lower()
+        
+        try:
+            if ext in ['csv', 'tsv']:
+                sep = '\t' if ext == 'tsv' else ','
+                for encoding in ['utf-8', 'latin-1', 'cp1252', 'ISO-8859-1']:
+                    try:
+                        df = pd.read_csv(context.file_path, sep=sep, encoding=encoding)
+                        self.logger.log_event("data_ingested", {
+                            "session_id": context.session_id,
+                            "encoding": encoding,
+                            "rows": len(df),
+                            "columns": len(df.columns)
+                        })
+                        return df
+                    except UnicodeDecodeError:
+                        continue
+                raise ValueError("Could not decode file")
+            elif ext in ['xlsx', 'xls']:
+                df = pd.read_excel(context.file_path)
+                return df
+            else:
+                raise ValueError(f"Unsupported format: {ext}")
+        except Exception as e:
+            raise PipelineError(
+                f"Failed to ingest data: {str(e)}",
+                PipelineStage.INGESTION,
+                {"file_path": context.file_path},
+                recoverable=False
+            ) from e
+    
+    @stage_wrapper(PipelineStage.SANITIZATION)
+    def _sanitize_data(self, context: PipelineContext, df: pd.DataFrame) -> pd.DataFrame:
+        """Clean and sanitize data"""
+        df_clean = df.copy()
+        df_clean = df_clean.dropna(how='all')
+        duplicates = df_clean.duplicated().sum()
+        if duplicates > 0:
+            df_clean = df_clean.drop_duplicates()
+        return df_clean
+    
+    @stage_wrapper(PipelineStage.PROFILING)
+    def _profile_data(self, context: PipelineContext, df: pd.DataFrame) -> Dict:
+        """Generate data profile"""
+        profile = {
+            "dimensions": {"rows": len(df), "columns": len(df.columns)},
+            "columns": [],
+            "data_quality": {}
+        }
+        for col in df.columns:
+            col_info = {
+                "name": col,
+                "dtype": str(df[col].dtype),
+                "missing": int(df[col].isna().sum()),
+                "missing_pct": round(df[col].isna().sum() / len(df) * 100, 2)
+            }
+            if pd.api.types.is_numeric_dtype(df[col]):
+                col_info.update({
+                    "mean": round(float(df[col].mean()), 2),
+                    "std": round(float(df[col].std()), 2)
+                })
+            profile["columns"].append(col_info)
+        return profile
+    
+    @stage_wrapper(PipelineStage.PREPROCESSING)
+    def _preprocess_data(self, context: PipelineContext, df: pd.DataFrame) -> pd.DataFrame:
+        """Preprocess data for modeling"""
+        from ..services.data_adapter import DataAdapter
+        adapter = DataAdapter()
+        df_processed, _ = adapter.normalize_dataset(df)
+        return df_processed
+    
+    @stage_wrapper(PipelineStage.FEATURE_ENGINEERING)
+    def _engineer_features(self, context: PipelineContext, df: pd.DataFrame) -> pd.DataFrame:
+        """Engineer features for ML models"""
+        df_features = df.copy()
+        target_col = context.column_mapping.get('target')
+        if target_col and target_col in df_features.columns:
+            for lag in [1, 7, 14]:
+                df_features[f'lag_{lag}'] = df_features[target_col].shift(lag)
+            # Use bfill() instead of deprecated fillna(method='bfill')
+            df_features = df_features.bfill().fillna(0)
+        return df_features
+    
+    @stage_wrapper(PipelineStage.MODEL_TRAINING)
+    def _train_models(self, context: PipelineContext, features: pd.DataFrame,
+                     progress_callback=None) -> Dict:
+        """Train ML models using EnsembleForecaster (Prophet + XGBoost + SARIMA)"""
+        from ..ml.ensemble_model import EnsembleForecaster
+        
+        target_col = context.column_mapping.get('target', 'target')
+        date_col = context.column_mapping.get('date', 'date')
+        
+        # Ensure columns exist in features
+        if target_col not in features.columns:
+            # Try to find a numeric column as fallback
+            numeric_cols = features.select_dtypes(include='number').columns.tolist()
+            if numeric_cols:
+                target_col = numeric_cols[0]
+                self.logger.log_event("column_fallback", {
+                    "session_id": context.session_id,
+                    "fallback_target": target_col
+                })
+            else:
+                raise PipelineError(
+                    "No numeric target column found for model training",
+                    PipelineStage.MODEL_TRAINING,
+                    {"available_columns": list(features.columns)},
+                    recoverable=False
+                )
+        
+        if date_col not in features.columns:
+            # Try to find a datetime column as fallback
+            date_cols = features.select_dtypes(include=['datetime64']).columns.tolist()
+            if date_cols:
+                date_col = date_cols[0]
+            else:
+                raise PipelineError(
+                    "No date column found for model training",
+                    PipelineStage.MODEL_TRAINING,
+                    {"available_columns": list(features.columns)},
+                    recoverable=False
+                )
+        
+        self.logger.log_event("training_started", {
+            "session_id": context.session_id,
+            "target_col": target_col,
+            "date_col": date_col,
+            "rows": len(features)
+        })
+        
+        # Train ensemble (Prophet + XGBoost + SARIMA)
+        ensemble = EnsembleForecaster()
+        try:
+            training_result = ensemble.train(
+                df=features,
+                target_col=target_col,
+                date_col=date_col,
+                include_models=['prophet', 'xgboost', 'sarima'],
+                parallel=True
+            )
+        except Exception as e:
+            # Fallback: try sequential training with fewer models
+            self.logger.log_error(e, {
+                "session_id": context.session_id,
+                "note": "Parallel training failed, falling back to sequential"
+            }, "ensemble_parallel_train")
+            training_result = ensemble.train(
+                df=features,
+                target_col=target_col,
+                date_col=date_col,
+                include_models=['prophet', 'xgboost'],
+                parallel=False
+            )
+        
+        # Extract metrics from trained models
+        models_used = list(ensemble.models.keys())
+        metrics = {}
+        for model_name, model in ensemble.models.items():
+            if hasattr(model, 'metrics') and model.metrics:
+                m = model.metrics
+                metrics[model_name] = {
+                    "mape": round(getattr(m, 'mape', 0) or 0, 4),
+                    "rmse": round(getattr(m, 'rmse', 0) or 0, 2),
+                    "mae": round(getattr(m, 'mae', 0) or 0, 2),
+                    "r2": round(getattr(m, 'r2_score', 0) or 0, 4)
+                }
+        
+        # Store ensemble reference in context for use in _create_ensemble
+        context.metadata['_ensemble_model'] = ensemble
+        context.metadata['target_col'] = target_col
+        context.metadata['date_col'] = date_col
+        
+        self.logger.log_event("training_completed", {
+            "session_id": context.session_id,
+            "models_trained": models_used,
+            "metrics": metrics
+        })
+        
+        return {
+            "status": "trained",
+            "models_used": models_used,
+            "metrics": metrics,
+            "ensemble": ensemble
+        }
+    
+    @stage_wrapper(PipelineStage.ENSEMBLE)
+    def _create_ensemble(self, context: PipelineContext, models: Dict) -> Dict:
+        """Generate ensemble predictions using trained EnsembleForecaster"""
+        ensemble = models.get('ensemble') or context.metadata.get('_ensemble_model')
+        
+        if ensemble is None:
+            # Fallback: return empty forecast structure
+            self.logger.log_event("ensemble_fallback", {
+                "session_id": context.session_id,
+                "reason": "No ensemble model found in context"
+            })
+            return {
+                "forecast": {"dates": [], "predictions": [], "lower_bound": [], "upper_bound": []},
+                "metrics": models.get("metrics", {}),
+                "ensemble_method": "weighted_average",
+                "models_used": models.get("models_used", [])
+            }
+        
+        # Generate predictions for 30 days ahead
+        try:
+            forecast_result = ensemble.predict(periods=30, confidence_level=0.95)
+            
+            # Extract forecast data
+            dates = []
+            predictions = []
+            lower_bound = []
+            upper_bound = []
+            
+            if hasattr(forecast_result, 'forecast_df') and forecast_result.forecast_df is not None:
+                fdf = forecast_result.forecast_df
+                dates = fdf['ds'].dt.strftime('%Y-%m-%d').tolist() if 'ds' in fdf.columns else []
+                predictions = fdf['yhat'].round(2).tolist() if 'yhat' in fdf.columns else []
+                lower_bound = fdf['yhat_lower'].round(2).tolist() if 'yhat_lower' in fdf.columns else []
+                upper_bound = fdf['yhat_upper'].round(2).tolist() if 'yhat_upper' in fdf.columns else []
+            elif isinstance(forecast_result, dict):
+                dates = forecast_result.get('dates', [])
+                predictions = forecast_result.get('predictions', [])
+                lower_bound = forecast_result.get('lower_bound', [])
+                upper_bound = forecast_result.get('upper_bound', [])
+            
+            # Get model comparison
+            model_comparison = {}
+            try:
+                model_comparison = ensemble.get_model_comparison()
+            except Exception:
+                pass
+            
+            self.logger.log_event("ensemble_completed", {
+                "session_id": context.session_id,
+                "forecast_periods": len(predictions),
+                "models_in_ensemble": models.get("models_used", [])
+            })
+            
+            return {
+                "forecast": {
+                    "dates": dates,
+                    "predictions": predictions,
+                    "lower_bound": lower_bound,
+                    "upper_bound": upper_bound
+                },
+                "metrics": models.get("metrics", {}),
+                "ensemble_method": "weighted_average",
+                "models_used": models.get("models_used", []),
+                "model_comparison": model_comparison
+            }
+            
+        except Exception as e:
+            self.logger.log_error(e, {
+                "session_id": context.session_id
+            }, "ensemble_predict")
+            # Return partial result rather than failing completely
+            return {
+                "forecast": {"dates": [], "predictions": [], "lower_bound": [], "upper_bound": []},
+                "metrics": models.get("metrics", {}),
+                "ensemble_method": "weighted_average",
+                "models_used": models.get("models_used", []),
+                "error": f"Prediction generation failed: {str(e)}"
+            }
+    
+    def execute_pipeline(self, context: PipelineContext, 
+                        progress_callback=None) -> Dict:
+        """Execute full pipeline with comprehensive error handling"""
+        try:
+            df = self._ingest_data(context)
+            is_valid, validation_results = self.validate_data(context, df)
+            if not is_valid:
+                return self.handle_validation_failure(context, validation_results)
+            df_clean = self._sanitize_data(context, df)
+            profile = self._profile_data(context, df_clean)
+            df_processed = self._preprocess_data(context, df_clean)
+            features = self._engineer_features(context, df_processed)
+            models = self._train_models(context, features, progress_callback)
+            ensemble_results = self._create_ensemble(context, models)
+            context.current_stage = PipelineStage.COMPLETED
+            return {
+                "success": True,
+                "session_id": context.session_id,
+                "results": ensemble_results,
+                "profile": profile,
+                "quality_score": context.data_quality_score,
+                "warnings": context.warnings
+            }
+        except PipelineError as e:
+            return self.handle_pipeline_error(context, e)
+        except Exception as e:
+            return self.handle_unexpected_error(context, e)
 
 
 # Global orchestrator instance

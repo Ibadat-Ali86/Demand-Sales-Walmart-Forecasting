@@ -21,6 +21,7 @@ const Reports = lazy(() => import('./pages/Reports'));
 const AnalysisDashboard = lazy(() => import('./pages/AnalysisDashboard'));
 const ExecutiveDashboard = lazy(() => import('./pages/ExecutiveDashboard'));
 const ScenarioPlanningStudio = lazy(() => import('./pages/ScenarioPlanningStudio'));
+const MonitoringDashboard = lazy(() => import('./pages/MonitoringDashboard'));
 const Settings = lazy(() => import('./pages/Settings'));
 const Profile = lazy(() => import('./pages/Profile'));
 
@@ -89,6 +90,7 @@ function App() {
                       <Route path="/reports" element={<PageTransition><Reports /></PageTransition>} />
                       <Route path="/executive" element={<PageTransition><ExecutiveDashboard /></PageTransition>} />
                       <Route path="/scenario-planning" element={<PageTransition><ScenarioPlanningStudio /></PageTransition>} />
+                      <Route path="/monitoring" element={<PageTransition><MonitoringDashboard /></PageTransition>} />
                       <Route path="/settings" element={<PageTransition><Settings /></PageTransition>} />
                       <Route path="/profile" element={<PageTransition><Profile /></PageTransition>} />
                     </Route>

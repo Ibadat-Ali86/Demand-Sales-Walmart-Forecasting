@@ -19,7 +19,7 @@ import PipelineProgress from '../pipeline/PipelineProgress';
  * ModelTrainingProgress - Shows real-time model training progress and metrics
  * Displays training status, performance metrics, and business-language insights
  */
-const ModelTrainingProgress = ({ data, onTrainingComplete, sessionId }) => {
+const ModelTrainingProgress = ({ data, onTrainingComplete, sessionId, onStageChange }) => {
     const [progress, setProgress] = useState({ status: 'idle', percentage: 0, currentStep: '' });
     const [metrics, setMetrics] = useState(null);
     const [trainingStarted, setTrainingStarted] = useState(false);
@@ -74,6 +74,20 @@ const ModelTrainingProgress = ({ data, onTrainingComplete, sessionId }) => {
                         percentage: statusData.progress || 0,
                         currentStep: statusData.current_step || 'Processing...'
                     });
+
+                    // Emit stage change for parent PipelineProgress
+                    if (onStageChange) {
+                        const progress = statusData.progress || 0;
+                        let stage = 'training';
+                        if (progress < 15) stage = 'upload';
+                        else if (progress < 30) stage = 'validation';
+                        else if (progress < 45) stage = 'profiling';
+                        else if (progress < 60) stage = 'preprocessing';
+                        else if (progress < 90) stage = 'training';
+                        else stage = 'ensemble';
+
+                        onStageChange(stage, progress);
+                    }
 
                     if (statusData.status === 'completed') {
                         clearInterval(pollInterval);
@@ -142,6 +156,18 @@ const ModelTrainingProgress = ({ data, onTrainingComplete, sessionId }) => {
                         percentage: step.percentage,
                         currentStep: step.currentStep
                     });
+
+                    // Emit stage change for parent (Mock mode)
+                    if (onStageChange) {
+                        let stage = 'training';
+                        if (step.percentage < 15) stage = 'upload';
+                        else if (step.percentage < 30) stage = 'validation';
+                        else if (step.percentage < 45) stage = 'profiling';
+                        else if (step.percentage < 60) stage = 'preprocessing';
+                        else if (step.percentage < 90) stage = 'training';
+                        else stage = 'ensemble';
+                        onStageChange(stage, step.percentage);
+                    }
                     currentStep++;
                     runNextStep();
                 }, step.delay);

@@ -19,6 +19,7 @@ import {
     FileText,
     Loader
 } from 'lucide-react';
+import { API_BASE_URL } from '../../utils/constants';
 
 const DataFormatConverter = ({ onConversionComplete, onCancel }) => {
     const [step, setStep] = useState('upload'); // upload | detect | map | convert | complete
@@ -39,7 +40,7 @@ const DataFormatConverter = ({ onConversionComplete, onCancel }) => {
         formData.append('file', selectedFile);
 
         try {
-            const response = await fetch('http://localhost:8000/api/data-pipeline/detect-format', {
+            const response = await fetch(`${API_BASE_URL}/api/data-pipeline/detect-format`, {
                 method: 'POST',
                 body: formData
             });
@@ -65,7 +66,7 @@ const DataFormatConverter = ({ onConversionComplete, onCancel }) => {
         setError(null);
 
         try {
-            const response = await fetch('http://localhost:8000/api/data-pipeline/convert-format', {
+            const response = await fetch(`${API_BASE_URL}/api/data-pipeline/convert-format`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({

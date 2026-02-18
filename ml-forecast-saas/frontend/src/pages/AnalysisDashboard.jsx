@@ -27,44 +27,14 @@ import SanityCheck from '../components/analysis/SanityCheck';
 import Confetti from '../components/common/Confetti';
 import { API_BASE_URL } from '../utils/constants';
 
+// Enterprise components
+import EnterpriseErrorBoundary from '../components/common/EnterpriseErrorBoundary';
+import PipelineProgress from '../components/pipeline/PipelineProgress';
+
 // Core Components
 import Button from '../components/ui/Button';
 import Card from '../components/ui/Card';
 import FileUploadZone from '../components/upload/FileUploadZone'; // New Component
-
-// Simple Error Boundary
-class ErrorBoundary extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = { hasError: false, error: null };
-    }
-
-    static getDerivedStateFromError(error) {
-        return { hasError: true, error };
-    }
-
-    componentDidCatch(error, errorInfo) {
-        console.error("ErrorBoundary caught error:", error, errorInfo);
-    }
-
-    render() {
-        if (this.state.hasError) {
-            return (
-                <div className="p-6 bg-red-50 border border-red-200 rounded-xl text-red-800">
-                    <h2 className="text-xl font-bold mb-2">Component Error</h2>
-                    <p className="font-mono text-sm">{this.state.error?.toString()}</p>
-                    <button
-                        onClick={() => window.location.reload()}
-                        className="mt-4 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
-                    >
-                        Reload Page
-                    </button>
-                </div>
-            );
-        }
-        return this.props.children;
-    }
-}
 
 const AnalysisDashboard = () => {
     const navigate = useNavigate();
@@ -80,8 +50,12 @@ const AnalysisDashboard = () => {
     const [showConfetti, setShowConfetti] = useState(false);
     const [activeTab, setActiveTab] = useState('insights');
     const [analysisData, setAnalysisData] = useState(null);
-    const [sessionId, setSessionId] = useState(flowUploadedData?.sessionId || null);
+    const [sessionId, setSessionId] = useState(flowUploadedData?.sessionId || sessionStorage.getItem('currentSessionId'));
     const sessionIdRef = useRef(null);
+
+    // Pipeline progress state (for Step 4)
+    const [pipelineStage, setPipelineStage] = useState('training');
+    const [pipelineStageProgress, setPipelineStageProgress] = useState(0);
 
     // Mapping Modal
     const [showMappingModal, setShowMappingModal] = useState(false);
@@ -91,7 +65,34 @@ const AnalysisDashboard = () => {
 
     useEffect(() => {
         sessionIdRef.current = sessionId;
-    }, [sessionId]);
+
+        // Recover session context if missing (e.g. page refresh)
+        if (sessionId && !uploadedData) {
+            console.log("Recovering session data for:", sessionId);
+            // Fetch session summary/metadata
+            fetch(`${API_BASE_URL}/api/analysis/session/${sessionId}`)
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        setUploadedData(data.summary?.sample_data || []);
+                        setProfile(data.profile);
+                        if (data.status === 'completed') {
+                            setAnalysisData(data.results);
+                            setAnalysisComplete(true);
+                            setCurrentStep(5);
+                        } else if (data.status === 'training') {
+                            setCurrentStep(4);
+                        } else if (data.status === 'profiling') {
+                            setCurrentStep(2);
+                        } else {
+                            // Default to step 2 if uploaded
+                            setCurrentStep(2);
+                        }
+                    }
+                })
+                .catch(err => console.warn("Failed to recover session:", err));
+        }
+    }, [sessionId]); // Removed uploadedData dependency to prevent loop, logic handles it
 
     const steps = ['Upload Data', 'Profile Dataset', 'Preprocess', 'Train Model', 'View Results'];
 
@@ -255,10 +256,26 @@ const AnalysisDashboard = () => {
                     {/* Step 4: Train */}
                     {currentStep === 4 && (
                         <motion.div key="training" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}>
+                            {/* Enterprise Pipeline Progress overlay */}
+                            <PipelineProgress
+                                currentStage={pipelineStage}
+                                stageProgress={pipelineStageProgress}
+                                onStageComplete={() => {
+                                    // PipelineProgress signals completion — handled by ModelTrainingProgress
+                                }}
+                            />
                             <ModelTrainingProgress
                                 data={uploadedData}
-                                onTrainingComplete={handleTrainingComplete}
+                                onTrainingComplete={(metrics) => {
+                                    setPipelineStage('ensemble');
+                                    setPipelineStageProgress(100);
+                                    handleTrainingComplete(metrics);
+                                }}
                                 sessionId={sessionId}
+                                onStageChange={(stage, progress) => {
+                                    setPipelineStage(stage);
+                                    setPipelineStageProgress(progress);
+                                }}
                             />
                         </motion.div>
                     )}
@@ -290,7 +307,7 @@ const AnalysisDashboard = () => {
                                 ))}
                             </div>
 
-                            <ErrorBoundary>
+                            <EnterpriseErrorBoundary>
                                 {activeTab === 'insights' && (
                                     <BusinessInsights forecastData={uploadedData} metrics={modelMetrics} onContinue={() => setActiveTab('charts')} />
                                 )}
@@ -303,7 +320,7 @@ const AnalysisDashboard = () => {
                                 {activeTab === 'actions' && (
                                     <ActionableRecommendations forecastData={analysisData} insights={modelMetrics} />
                                 )}
-                            </ErrorBoundary>
+                            </EnterpriseErrorBoundary>
                         </motion.div>
                     )}
                 </AnimatePresence>

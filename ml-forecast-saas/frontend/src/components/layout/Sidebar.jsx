@@ -13,7 +13,8 @@ import {
     TrendingUp,
     LogOut,
     Settings,
-    HelpCircle
+    HelpCircle,
+    Activity
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 
@@ -22,6 +23,7 @@ const navItems = [
     { path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { path: '/upload', label: 'Upload Data', icon: Upload },
     { path: '/analysis', label: 'Analysis', icon: Brain },
+    { path: '/monitoring', label: 'Monitor', icon: Activity },
     { path: '/forecast-explorer', label: 'Forecasts', icon: History },
     { path: '/scenario-simulator', label: 'Scenarios', icon: Target },
     { path: '/scenario-planning', label: 'Planning', icon: BarChart3 },

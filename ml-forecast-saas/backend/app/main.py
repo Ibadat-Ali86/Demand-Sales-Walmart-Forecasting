@@ -95,9 +95,33 @@ app.include_router(dashboard.router, prefix="/api/dashboard", tags=["Dashboard"]
 app.include_router(sales.router, prefix="/api/sales", tags=["Sales Data"])
 app.include_router(forecasts.router, prefix="/api/forecasts", tags=["Forecasts"])
 app.include_router(analysis.router, prefix="/api/analysis", tags=["Analysis"])
-# app.include_router(monitoring.router, prefix="/api/monitoring", tags=["ML Monitoring"]) - Uncomment when module exists
 app.include_router(monitoring.router, prefix="/api/monitoring", tags=["ML Monitoring"])
 app.include_router(data_pipeline.router, tags=["Data Pipeline"])
+
+# WebSocket Endpoint
+from fastapi import WebSocket, WebSocketDisconnect
+from app.services.websocket_manager import manager
+
+@app.websocket("/ws/{client_id}")
+async def websocket_endpoint(websocket: WebSocket, client_id: str):
+    # Parse client_id to determine subscription type
+    # Format: "session:uuid" or "user:uuid"
+    session_id = None
+    user_id = None
+    
+    if client_id.startswith("session:"):
+        session_id = client_id.split(":")[1]
+    elif client_id.startswith("user:"):
+        user_id = client_id.split(":")[1]
+        
+    await manager.connect(websocket, session_id, user_id)
+    try:
+        while True:
+            # Keep connection alive and handle incoming messages (e.g. pings)
+            data = await websocket.receive_text()
+            # Optional: handle client messages
+    except WebSocketDisconnect:
+        manager.disconnect(websocket, session_id, user_id)
 app.include_router(error_handler.router, tags=["Error Handling"])
 
 # Reports API

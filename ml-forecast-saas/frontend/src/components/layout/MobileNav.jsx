@@ -5,7 +5,8 @@ import {
     Upload,
     History,
     Menu,
-    BarChart3
+    BarChart3,
+    Activity
 } from 'lucide-react';
 
 const MobileNav = () => {
@@ -52,6 +53,19 @@ const MobileNav = () => {
                         <Brain className="w-7 h-7" />
                     </NavLink>
                 </div>
+
+                <NavLink
+                    to="/monitoring"
+                    className={({ isActive }) =>
+                        `flex flex-col items-center justify-center w-full h-full space-y-1 ${isActive
+                            ? 'text-brand-600'
+                            : 'text-text-secondary hover:text-text-primary'
+                        }`
+                    }
+                >
+                    <Activity className="w-6 h-6" />
+                    <span className="text-[10px] font-medium">Monitor</span>
+                </NavLink>
 
                 <NavLink
                     to="/forecast-explorer"

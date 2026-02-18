@@ -163,8 +163,8 @@ async def init_session_from_path(request: InitSessionRequest):
         # Generate Session ID
         session_id = str(uuid.uuid4())
         
-        # Store in session state
-        analysis_sessions[session_id] = {
+        # Store in session state (use training_jobs for consistency)
+        training_jobs[session_id] = {
             'id': session_id,
             'filename': request.filename,
             'upload_time': datetime.now().isoformat(),
@@ -173,6 +173,7 @@ async def init_session_from_path(request: InitSessionRequest):
             'data': df.to_dict('records'), # Store full data in memory (for MVP)
             'status': 'uploaded'
         }
+        save_jobs()
         
         logger.info(f"Initialized session {session_id} from {request.file_path}")
         
@@ -480,11 +481,12 @@ async def profile_dataset(session_id: str, request: DataProfileRequest):
     df = pd.DataFrame(job['data'])
     
     # GATE 3: Profiling Validation
-    from ..services.pipeline_validator import PipelineValidator
-    profile_validation = PipelineValidator.validate_profiling(df)
-    if not profile_validation['valid']:
+    from app.utils.pipeline_validator import PipelineValidator
+    validator = PipelineValidator()
+    profile_validation = validator.validate_profile(df)
+    if not profile_validation['passed']:
         # We don't block profiling but we warn heavily
-        logger.warning(f"Profiling Data Quality Issues: {profile_validation['issues']}")
+        logger.warning(f"Profiling Data Quality Issues: {profile_validation['warnings']}")
         # We could potentially inject these issues into the profile result
     
     # --- Date Synthesis Logic (for Warehouse_and_Retail_Sales.csv) ---
@@ -767,7 +769,7 @@ async def preprocess_dataset(session_id: str):
             "success": True,
             "rows": len(df_clean),
             "features": len(df_clean.columns),
-            "new_features": newFeatures,
+            "new_features": new_features,
             "log": log,
             "sample": df_clean.head(5).astype(str).to_dict('records')
         }
@@ -843,10 +845,25 @@ async def run_training(
     confidence_level: float
 ):
     """Background task to run model training"""
+    from app.services.websocket_manager import manager
+    
+    async def update_status(progress: int, step: str, status: str = 'training'):
+        """Helper to update job status and broadcast via WebSocket"""
+        training_jobs[job_id]['status'] = status
+        training_jobs[job_id]['progress'] = progress
+        training_jobs[job_id]['current_step'] = step
+        
+        # Broadcast to session
+        await manager.broadcast_to_session(session_id, {
+            "type": "training_update",
+            "job_id": job_id,
+            "status": status,
+            "progress": progress,
+            "step": step
+        })
+
     try:
-        training_jobs[job_id]['status'] = 'training'
-        training_jobs[job_id]['progress'] = 10
-        training_jobs[job_id]['current_step'] = 'Loading data...'
+        await update_status(10, 'Loading data...')
         
         # Get data
         if session_id not in training_jobs:
@@ -854,8 +871,7 @@ async def run_training(
              
         df = pd.DataFrame(training_jobs[session_id]['data'])
         
-        training_jobs[job_id]['progress'] = 20
-        training_jobs[job_id]['current_step'] = 'Preparing features...'
+        await update_status(20, 'Preparing features...')
         
         # Initialize Model Router
         from app.services.model_router import ModelRouter
@@ -872,11 +888,16 @@ async def run_training(
         router = ModelRouter()
         
         # Check circuit breaker before attempting training
-        if use_circuit_breaker and not ml_training_breaker.can_execute():
+        if use_circuit_breaker and ml_training_breaker.state.value == 'open':
             logger.error(f"⚡ Circuit breaker OPEN for ml_training - refusing training job {job_id}")
             training_jobs[job_id]['status'] = 'failed'
             training_jobs[job_id]['error'] = 'ML training service temporarily unavailable (circuit breaker open). Please try again in 2 minutes.'
             save_jobs()
+            await manager.broadcast_to_session(session_id, {
+                "type": "training_error",
+                "job_id": job_id,
+                "error": training_jobs[job_id]['error']
+            })
             return
         
         # Determine model candidates
@@ -910,7 +931,7 @@ async def run_training(
                 continue
                 
             try:
-                training_jobs[job_id]['current_step'] = f'Training {candidate}...'
+                await update_status(training_jobs[job_id]['progress'] + 5, f'Training {candidate}...')
                 logger.info(f"Attempting to train {candidate}...")
                 
                 model_instance = model_classes[candidate]()
@@ -938,17 +959,14 @@ async def run_training(
         
         if trained_model is None:
             raise ValueError("All model candidates failed training.")
-
             
         training_jobs[job_id]['model_type'] = used_model_name # Update actual used model
-        training_jobs[job_id]['progress'] = 70
-        training_jobs[job_id]['current_step'] = 'Generating forecasts...'
+        await update_status(70, 'Generating forecasts...')
         
         # Generate forecast
         forecast = trained_model.predict(forecast_periods, confidence_level)
         
-        training_jobs[job_id]['progress'] = 90
-        training_jobs[job_id]['current_step'] = 'Finalizing results...'
+        await update_status(90, 'Finalizing results...')
         
         # Store results
         training_jobs[job_id]['status'] = 'completed'
@@ -970,6 +988,7 @@ async def run_training(
             'dates': forecast.dates,
             'predictions': forecast.predictions,
             'lower_bound': forecast.lower_bound,
+
             'upper_bound': forecast.upper_bound,
             'confidence_level': forecast.confidence_level
         }
