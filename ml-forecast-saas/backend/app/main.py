@@ -152,6 +152,52 @@ async def health_check():
             "version": settings.VERSION
         }
 
+@app.get("/api/health/detailed")
+async def detailed_health_check():
+    """Detailed health check with circuit breaker states and pipeline info"""
+    import psutil
+    import os
+    
+    health_data = {
+        "status": "operational",
+        "version": settings.VERSION,
+        "environment": settings.ENVIRONMENT,
+        "timestamp": __import__('datetime').datetime.utcnow().isoformat(),
+        "system": {}
+    }
+    
+    # System metrics
+    try:
+        health_data["system"] = {
+            "cpu_percent": psutil.cpu_percent(interval=0.1),
+            "memory_percent": psutil.virtual_memory().percent,
+            "disk_percent": psutil.disk_usage('/').percent
+        }
+    except Exception:
+        health_data["system"] = {"error": "psutil not available"}
+    
+    # Circuit breaker states
+    try:
+        from app.utils.circuit_breaker import ml_training_breaker, data_profiling_breaker, database_breaker
+        health_data["circuit_breakers"] = {
+            "ml_training": ml_training_breaker.get_status(),
+            "data_profiling": data_profiling_breaker.get_status(),
+            "database": database_breaker.get_status()
+        }
+    except Exception as e:
+        health_data["circuit_breakers"] = {"error": str(e)}
+    
+    # Active sessions count
+    try:
+        from app.api.analysis import training_jobs
+        health_data["active_sessions"] = len(training_jobs)
+    except Exception:
+        health_data["active_sessions"] = "unknown"
+    
+    return health_data
+
+
+
 if __name__ == "__main__":
     import uvicorn
     port = int(os.getenv("PORT", 8080))

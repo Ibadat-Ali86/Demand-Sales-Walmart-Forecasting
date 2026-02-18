@@ -190,6 +190,162 @@ async def init_session_from_path(request: InitSessionRequest):
         raise HTTPException(status_code=500, detail=str(e))
 
 
+@router.post("/detect-columns")
+async def detect_columns(file: UploadFile = File(...)):
+    """
+    Detect and classify columns in an uploaded file.
+    Returns column roles with confidence scores for SmartUploadZone.
+    Supports CSV, Excel, TSV files.
+    """
+    logger.info(f"🔍 Column detection request: {file.filename}")
+
+    allowed_extensions = {'.csv', '.xlsx', '.xls', '.tsv'}
+    ext = '.' + file.filename.rsplit('.', 1)[-1].lower() if '.' in file.filename else ''
+
+    if ext not in allowed_extensions:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Unsupported file format '{ext}'. Supported: {', '.join(allowed_extensions)}"
+        )
+
+    try:
+        contents = await file.read()
+
+        # Parse file based on extension
+        if ext == '.csv' or ext == '.tsv':
+            sep = '\t' if ext == '.tsv' else ','
+            decoded = None
+            for encoding in ['utf-8', 'latin-1', 'cp1252', 'ISO-8859-1']:
+                try:
+                    decoded = contents.decode(encoding)
+                    break
+                except UnicodeDecodeError:
+                    continue
+            if decoded is None:
+                raise HTTPException(status_code=400, detail="Could not decode file encoding.")
+            df = pd.read_csv(io.StringIO(decoded), sep=sep, nrows=100)
+        elif ext in ('.xlsx', '.xls'):
+            df = pd.read_excel(io.BytesIO(contents), nrows=100)
+        else:
+            raise HTTPException(status_code=400, detail="Unsupported file format")
+
+        # Use DataAdapter for intelligent column detection
+        adapter = DataAdapter()
+        df_adapted, metadata = adapter.adapt_dataframe(df)
+
+        detected_columns = metadata.get('detected_columns', {})
+        original_columns = list(df.columns)
+
+        # Build response with confidence scores
+        column_info = {}
+        for col in original_columns:
+            role = None
+            confidence = 0.0
+            suggestions = []
+
+            # Check if this column was mapped to a role
+            for role_name, mapped_col in detected_columns.items():
+                if mapped_col == col:
+                    role = role_name
+                    # Assign confidence based on detection quality
+                    if role_name == 'date':
+                        try:
+                            pd.to_datetime(df[col].dropna().head(10))
+                            confidence = 0.95
+                        except Exception:
+                            confidence = 0.60
+                    elif role_name == 'target':
+                        if pd.api.types.is_numeric_dtype(df[col]):
+                            confidence = 0.90
+                        else:
+                            confidence = 0.55
+                    elif role_name in ('store', 'product', 'category'):
+                        confidence = 0.75
+                    else:
+                        confidence = 0.70
+                    break
+
+            # If not detected, try heuristics
+            if role is None:
+                col_lower = col.lower()
+                if any(kw in col_lower for kw in ['date', 'time', 'week', 'month', 'year', 'day', 'period']):
+                    role = 'date'
+                    confidence = 0.70
+                elif any(kw in col_lower for kw in ['sales', 'revenue', 'amount', 'qty', 'quantity', 'units', 'demand', 'target', 'value']):
+                    role = 'target'
+                    confidence = 0.65
+                elif any(kw in col_lower for kw in ['store', 'shop', 'location', 'branch', 'outlet']):
+                    role = 'store'
+                    confidence = 0.70
+                elif any(kw in col_lower for kw in ['product', 'item', 'sku', 'category', 'dept', 'department']):
+                    role = 'product'
+                    confidence = 0.70
+                else:
+                    role = 'unknown'
+                    confidence = 0.30
+
+            # Generate suggestions (alternative column names for this role)
+            role_suggestions = {
+                'date': ['Order Date', 'Transaction Date', 'Week', 'Period'],
+                'target': ['Sales', 'Revenue', 'Quantity', 'Demand', 'Units Sold'],
+                'store': ['Store ID', 'Location', 'Branch', 'Shop'],
+                'product': ['Product ID', 'SKU', 'Item', 'Category'],
+                'unknown': []
+            }
+            suggestions = [s for s in role_suggestions.get(role, []) if s != col][:3]
+
+            # Sample values for preview
+            sample_values = df[col].dropna().head(3).astype(str).tolist()
+
+            column_info[col] = {
+                'role': role,
+                'confidence': round(confidence, 2),
+                'suggestions': suggestions,
+                'dtype': str(df[col].dtype),
+                'sample_values': sample_values,
+                'missing_percent': round(df[col].isnull().mean() * 100, 1)
+            }
+
+        # Quality score
+        quality_score = metadata.get('quality_score', 100)
+        issues = metadata.get('issues', [])
+
+        logger.info(f"✅ Column detection complete: {len(column_info)} columns, quality={quality_score}")
+
+        # Derive recommended columns from highest-confidence detections
+        recommended_date = None
+        recommended_target = None
+        best_date_conf = 0.0
+        best_target_conf = 0.0
+        for col_name, info in column_info.items():
+            if info['role'] == 'date' and info['confidence'] > best_date_conf:
+                recommended_date = col_name
+                best_date_conf = info['confidence']
+            elif info['role'] == 'target' and info['confidence'] > best_target_conf:
+                recommended_target = col_name
+                best_target_conf = info['confidence']
+
+        return {
+            'success': True,
+            'filename': file.filename,
+            'total_rows': len(df),
+            'total_columns': len(original_columns),
+            'columns': column_info,
+            'quality_score': quality_score,
+            'issues': issues,
+            'recommended_date_column': recommended_date,
+            'recommended_target_column': recommended_target,
+            'sample_data': df.head(5).replace({np.nan: None}).to_dict('records')
+        }
+
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Column detection failed: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail=f"Column detection failed: {str(e)}")
+
+
 @router.post("/upload")
 async def upload_dataset(file: UploadFile = File(...)):
     """

@@ -14,7 +14,8 @@ import { useFlow } from '../context/FlowContext';
 import { API_BASE_URL } from '../utils/constants';
 import ColumnMapper from '../components/pipeline/ColumnMapper';
 import GapAnalysisReport from '../components/pipeline/GapAnalysisReport';
-import SmartUploadZone from '../components/upload/SmartUploadZone'; // Enterprise Component
+import SmartUploadZone from '../components/upload/SmartUploadZone';
+import ValidationFeedback from '../components/common/ValidationFeedback';
 import Card from '../components/ui/Card';
 import Button from '../components/ui/Button';
 import ProgressBar from '../components/ui/ProgressBar';
@@ -33,6 +34,8 @@ const DataUpload = () => {
     const [uploadSuccess, setUploadSuccess] = useState(false);
     const [isProcessingBackend, setIsProcessingBackend] = useState(false);
     const [currentFile, setCurrentFile] = useState(null);
+    const [validationResults, setValidationResults] = useState(null);
+    const [uploadedSessionId, setUploadedSessionId] = useState(null);
 
     // Mapper State
     const [showMapper, setShowMapper] = useState(false);
@@ -67,15 +70,55 @@ const DataUpload = () => {
     ]);
 
     const handleFileSelect = (result) => {
-        if (result) {
-            // Check if it's the SmartUploadZone payload
-            if (result.file) {
-                processFile(result.file);
-            } else {
-                // Direct file fallback
-                processFile(result);
-            }
+        if (!result) return;
+
+        const file = result.file || result;
+        const sessionId = result.sessionId || null;
+        const rows = result.rows || 0;
+        const columns = result.columns || [];
+        const adapterInfo = result.adapterInfo || {};
+
+        setCurrentFile(file);
+
+        // Store real sessionId from backend upload
+        if (sessionId) {
+            setUploadedSessionId(sessionId);
+            sessionStorage.setItem('currentSessionId', sessionId);
+            console.log('✅ Real sessionId stored:', sessionId);
         }
+
+        // Build validation results for display
+        if (adapterInfo.issues && adapterInfo.issues.length > 0) {
+            setValidationResults({
+                passed: Object.keys(adapterInfo.detected_columns || {}).map(k => `${k}_detected`),
+                failed: [],
+                warnings: adapterInfo.issues.map(issue => ({ message: issue }))
+            });
+        } else if (sessionId) {
+            // Upload succeeded - show positive validation
+            setValidationResults({
+                passed: ['file_format', 'file_size', 'encoding', 'column_detection'],
+                failed: [],
+                warnings: []
+            });
+        }
+
+        // Update flow context with real data
+        const uploadData = {
+            sessionId,
+            rawData: [],
+            allData: [],
+            columns: columns,
+            fileName: file.name,
+            totalRows: rows,
+            uploadedAt: new Date().toISOString(),
+            qualityScore: adapterInfo.quality_score || 100
+        };
+        completeStep('upload', uploadData);
+        setUploadSuccess(true);
+
+        // Also process file locally for preview
+        processFile(file);
     };
 
     // Removed handleFiles and simulateUpload as they were redundant/conflicting
@@ -150,8 +193,10 @@ const DataUpload = () => {
     };
 
     const handleProceedToAnalysis = async () => {
-        // Since SmartUploadZone already validated and processFile already called completeStep('upload')
-        // We can navigate directly to analysis
+        // Use real sessionId if available, otherwise navigate anyway
+        if (uploadedSessionId) {
+            sessionStorage.setItem('currentSessionId', uploadedSessionId);
+        }
         navigate('/analysis');
     };
 
@@ -306,6 +351,22 @@ const DataUpload = () => {
                         </AnimatePresence>
                     </Card>
 
+                    {/* Validation Feedback */}
+                    <AnimatePresence>
+                        {validationResults && (
+                            <motion.div
+                                initial={{ opacity: 0, y: 10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                            >
+                                <ValidationFeedback
+                                    results={validationResults}
+                                    qualityScore={validationResults.failed.length === 0 ? 95 : 60}
+                                    compact={true}
+                                />
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
+
                     {/* Success Banner */}
                     <AnimatePresence>
                         {uploadSuccess && (
@@ -320,7 +381,11 @@ const DataUpload = () => {
                                     </div>
                                     <div>
                                         <h3 className="text-lg font-bold text-emerald-900">Upload Complete</h3>
-                                        <p className="text-emerald-700 text-sm">Your dataset is ready for analysis.</p>
+                                        <p className="text-emerald-700 text-sm">
+                                            {uploadedSessionId
+                                                ? `Session ready: ${uploadedSessionId.slice(0, 16)}...`
+                                                : 'Your dataset is ready for analysis.'}
+                                        </p>
                                     </div>
                                 </div>
                                 <Button

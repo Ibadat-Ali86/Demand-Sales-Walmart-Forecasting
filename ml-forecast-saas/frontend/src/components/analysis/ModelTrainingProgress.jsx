@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { API_BASE_URL } from '../../utils/constants';
 import AnalysisStatCard from './AnalysisStatCard';
+import PipelineProgress from '../pipeline/PipelineProgress';
 
 /**
  * ModelTrainingProgress - Shows real-time model training progress and metrics
@@ -189,32 +190,28 @@ const ModelTrainingProgress = ({ data, onTrainingComplete, sessionId }) => {
                     </div>
                 </div>
 
-                {/* Training Progress */}
+                {/* Training Progress - Use PipelineProgress for rich UI */}
                 {progress.status === 'training' && (
-                    <div className="space-y-4">
-                        <div className="flex items-center justify-between mb-2">
-                            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                                Training Progress
-                            </span>
-                            <span className="text-sm font-bold text-purple-600 dark:text-purple-400">
-                                {progress.percentage}%
-                            </span>
-                        </div>
-
-                        <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-4 overflow-hidden">
-                            <motion.div
-                                className="h-4 rounded-full bg-gradient-to-r from-purple-500 to-blue-500"
-                                initial={{ width: 0 }}
-                                animate={{ width: `${progress.percentage}%` }}
-                                transition={{ duration: 0.5 }}
-                            />
-                        </div>
-
-                        <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
-                            <Activity className="w-4 h-4 animate-pulse text-purple-500" />
-                            <span>{progress.currentStep}</span>
-                        </div>
-                    </div>
+                    <PipelineProgress
+                        currentStage={(() => {
+                            const pct = progress.percentage;
+                            if (pct < 15) return 'upload';
+                            if (pct < 30) return 'validation';
+                            if (pct < 45) return 'profiling';
+                            if (pct < 60) return 'preprocessing';
+                            if (pct < 90) return 'training';
+                            return 'ensemble';
+                        })()}
+                        stageProgress={(() => {
+                            const pct = progress.percentage;
+                            if (pct < 15) return Math.round((pct / 15) * 100);
+                            if (pct < 30) return Math.round(((pct - 15) / 15) * 100);
+                            if (pct < 45) return Math.round(((pct - 30) / 15) * 100);
+                            if (pct < 60) return Math.round(((pct - 45) / 15) * 100);
+                            if (pct < 90) return Math.round(((pct - 60) / 30) * 100);
+                            return Math.round(((pct - 90) / 10) * 100);
+                        })()}
+                    />
                 )}
 
                 {/* Training Complete Header - Only show if NO metrics yet (loading state gap) or keep simple */}
