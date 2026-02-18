@@ -1,6 +1,7 @@
 /**
  * Phase 2: Column Mapping Interface
  * Interactive drag-drop UI for mapping user columns to required schema
+ * Enhanced with detect-columns confidence scores and role badges
  */
 
 import React, { useState } from 'react';
@@ -13,7 +14,9 @@ import {
     TrendingUp,
     HelpCircle,
     Sparkles,
-    RefreshCw
+    RefreshCw,
+    ShieldCheck,
+    AlertTriangle
 } from 'lucide-react';
 
 const REQUIRED_COLUMNS = [
@@ -22,16 +25,48 @@ const REQUIRED_COLUMNS = [
         label: 'Date Column',
         description: 'Timeline for your forecast',
         icon: Calendar,
-        examples: ['date', 'timestamp', 'order_date', 'datetime']
+        examples: ['date', 'timestamp', 'order_date', 'datetime'],
+        color: 'blue'
     },
     {
         id: 'target',
         label: 'Target Column',
         description: 'Value to predict (e.g., sales, demand)',
         icon: TrendingUp,
-        examples: ['sales', 'revenue', 'quantity', 'demand', 'value']
+        examples: ['sales', 'revenue', 'quantity', 'demand', 'value'],
+        color: 'purple'
     }
 ];
+
+const ConfidenceBadge = ({ confidence }) => {
+    if (!confidence) return null;
+    const pct = Math.round(confidence * 100);
+    const color = pct >= 80 ? 'text-green-600 bg-green-50 border-green-200'
+        : pct >= 60 ? 'text-yellow-600 bg-yellow-50 border-yellow-200'
+            : 'text-red-600 bg-red-50 border-red-200';
+    const Icon = pct >= 80 ? ShieldCheck : AlertTriangle;
+    return (
+        <span className={`inline-flex items-center gap-1 px-2 py-0.5 text-xs font-medium rounded-full border ${color}`}>
+            <Icon className="w-3 h-3" />
+            {pct}% confident
+        </span>
+    );
+};
+
+const RoleBadge = ({ role }) => {
+    if (!role || role === 'unknown') return null;
+    const colors = {
+        date: 'bg-blue-100 text-blue-700',
+        target: 'bg-purple-100 text-purple-700',
+        store: 'bg-orange-100 text-orange-700',
+        product: 'bg-green-100 text-green-700',
+    };
+    return (
+        <span className={`px-1.5 py-0.5 text-xs rounded font-medium ${colors[role] || 'bg-gray-100 text-gray-600'}`}>
+            {role}
+        </span>
+    );
+};
 
 export default function ColumnMappingUI({ detectedColumns, onMappingComplete }) {
     const [mappings, setMappings] = useState({});
@@ -43,15 +78,40 @@ export default function ColumnMappingUI({ detectedColumns, onMappingComplete }) 
             const autoMappings = {};
 
             REQUIRED_COLUMNS.forEach(req => {
+                // Support both old format (array) and new detect-columns format (object with role)
                 const detected = detectedColumns[req.id];
                 if (detected && detected[0]) {
-                    autoMappings[req.id] = detected[0]; // First match
+                    // Old format: { date: ['Date', 0.95] }
+                    autoMappings[req.id] = detected[0];
+                } else {
+                    // New format: { Date: { role: 'date', confidence: 0.95 } }
+                    const matchingCol = Object.entries(detectedColumns).find(
+                        ([, info]) => typeof info === 'object' && info.role === req.id
+                    );
+                    if (matchingCol) {
+                        autoMappings[req.id] = matchingCol[0];
+                    }
                 }
             });
 
-            setMappings(autoMappings);
+            if (Object.keys(autoMappings).length > 0) {
+                setMappings(autoMappings);
+            }
         }
     }, [detectedColumns]);
+
+    const getColumnInfo = (colName) => {
+        const info = detectedColumns?.[colName];
+        if (!info) return { confidence: null, role: null, sampleValues: [] };
+        if (typeof info === 'object' && !Array.isArray(info)) {
+            return {
+                confidence: info.confidence,
+                role: info.role,
+                sampleValues: info.sampleValues || info.sample_values || []
+            };
+        }
+        return { confidence: info[1] || null, role: null, sampleValues: [] };
+    };
 
     const handleDragStart = (e, columnName) => {
         setDraggedColumn(columnName);
@@ -65,22 +125,14 @@ export default function ColumnMappingUI({ detectedColumns, onMappingComplete }) 
 
     const handleDrop = (e, targetId) => {
         e.preventDefault();
-
         if (draggedColumn) {
-            setMappings(prev => ({
-                ...prev,
-                [targetId]: draggedColumn
-            }));
+            setMappings(prev => ({ ...prev, [targetId]: draggedColumn }));
         }
-
         setDraggedColumn(null);
     };
 
     const handleSelect = (targetId, columnName) => {
-        setMappings(prev => ({
-            ...prev,
-            [targetId]: columnName
-        }));
+        setMappings(prev => ({ ...prev, [targetId]: columnName }));
     };
 
     const handleRemove = (targetId) => {
@@ -92,16 +144,18 @@ export default function ColumnMappingUI({ detectedColumns, onMappingComplete }) 
     };
 
     const handleAutoDetect = () => {
-        // Trigger auto-detection (this would call backend adapter)
         const autoMappings = {};
-
         REQUIRED_COLUMNS.forEach(req => {
             const detected = detectedColumns?.[req.id];
             if (detected && detected[0]) {
                 autoMappings[req.id] = detected[0];
+            } else {
+                const matchingCol = Object.entries(detectedColumns || {}).find(
+                    ([, info]) => typeof info === 'object' && info.role === req.id
+                );
+                if (matchingCol) autoMappings[req.id] = matchingCol[0];
             }
         });
-
         setMappings(autoMappings);
     };
 
@@ -169,7 +223,7 @@ export default function ColumnMappingUI({ detectedColumns, onMappingComplete }) 
                         {REQUIRED_COLUMNS.map((req) => {
                             const Icon = req.icon;
                             const mapped = mappings[req.id];
-                            const confidence = detectedColumns?.[req.id]?.[1] || 0;
+                            const mappedInfo = mapped ? getColumnInfo(mapped) : null;
 
                             return (
                                 <motion.div
@@ -177,29 +231,27 @@ export default function ColumnMappingUI({ detectedColumns, onMappingComplete }) 
                                     initial={{ opacity: 0, y: 20 }}
                                     animate={{ opacity: 1, y: 0 }}
                                     className={`
-                    relative p-4 rounded-xl border-2 border-dashed transition-all
-                    ${mapped
+                                        relative p-4 rounded-xl border-2 border-dashed transition-all
+                                        ${mapped
                                             ? 'border-green-400 bg-green-50'
                                             : 'border-gray-300 bg-white hover:border-purple-300'
                                         }
-                  `}
+                                    `}
                                     onDragOver={handleDragOver}
                                     onDrop={(e) => handleDrop(e, req.id)}
                                 >
                                     <div className="flex items-start gap-3">
                                         <div className={`
-                      w-10 h-10 rounded-lg flex items-center justify-center
-                      ${mapped ? 'bg-green-500 text-white' : 'bg-gray-100 text-gray-500'}
-                    `}>
+                                            w-10 h-10 rounded-lg flex items-center justify-center
+                                            ${mapped ? 'bg-green-500 text-white' : 'bg-gray-100 text-gray-500'}
+                                        `}>
                                             <Icon className="w-5 h-5" />
                                         </div>
 
                                         <div className="flex-1">
                                             <div className="flex items-center justify-between mb-1">
                                                 <h4 className="font-semibold text-gray-800">{req.label}</h4>
-                                                {mapped && (
-                                                    <CheckCircle2 className="w-5 h-5 text-green-500" />
-                                                )}
+                                                {mapped && <CheckCircle2 className="w-5 h-5 text-green-500" />}
                                             </div>
 
                                             <p className="text-sm text-gray-600 mb-2">{req.description}</p>
@@ -213,23 +265,28 @@ export default function ColumnMappingUI({ detectedColumns, onMappingComplete }) 
                                                     ))}
                                                 </div>
                                             ) : (
-                                                <div className="flex items-center justify-between">
-                                                    <div className="flex items-center gap-2">
-                                                        <span className="px-3 py-1 bg-white rounded-lg font-medium text-green-700 text-sm border border-green-200">
-                                                            {mapped}
-                                                        </span>
-                                                        {confidence > 0.7 && (
-                                                            <span className="text-xs text-green-600">
-                                                                {Math.round(confidence * 100)}% confident
+                                                <div className="space-y-2">
+                                                    <div className="flex items-center justify-between">
+                                                        <div className="flex items-center gap-2 flex-wrap">
+                                                            <span className="px-3 py-1 bg-white rounded-lg font-medium text-green-700 text-sm border border-green-200">
+                                                                {mapped}
                                                             </span>
-                                                        )}
+                                                            {mappedInfo?.confidence && (
+                                                                <ConfidenceBadge confidence={mappedInfo.confidence} />
+                                                            )}
+                                                        </div>
+                                                        <button
+                                                            onClick={() => handleRemove(req.id)}
+                                                            className="text-sm text-red-600 hover:text-red-700 ml-2"
+                                                        >
+                                                            Remove
+                                                        </button>
                                                     </div>
-                                                    <button
-                                                        onClick={() => handleRemove(req.id)}
-                                                        className="text-sm text-red-600 hover:text-red-700"
-                                                    >
-                                                        Remove
-                                                    </button>
+                                                    {mappedInfo?.sampleValues?.length > 0 && (
+                                                        <p className="text-xs text-gray-500">
+                                                            Sample: {mappedInfo.sampleValues.slice(0, 3).join(', ')}
+                                                        </p>
+                                                    )}
                                                 </div>
                                             )}
                                         </div>
@@ -249,21 +306,39 @@ export default function ColumnMappingUI({ detectedColumns, onMappingComplete }) 
 
                     {unmappedColumns.length > 0 ? (
                         <div className="grid grid-cols-2 gap-3">
-                            {unmappedColumns.map((col) => (
-                                <motion.div
-                                    key={col}
-                                    draggable
-                                    onDragStart={(e) => handleDragStart(e, col)}
-                                    whileHover={{ scale: 1.05 }}
-                                    whileTap={{ scale: 0.95 }}
-                                    className="px-4 py-3 bg-white border-2 border-gray-200 rounded-lg cursor-move hover:border-purple-300 hover:shadow-md transition-all"
-                                >
-                                    <div className="flex items-center justify-between">
-                                        <span className="font-medium text-gray-700">{col}</span>
-                                        <ArrowRight className="w-4 h-4 text-gray-400" />
-                                    </div>
-                                </motion.div>
-                            ))}
+                            {unmappedColumns.map((col) => {
+                                const info = getColumnInfo(col);
+                                return (
+                                    <motion.div
+                                        key={col}
+                                        draggable
+                                        onDragStart={(e) => handleDragStart(e, col)}
+                                        whileHover={{ scale: 1.05 }}
+                                        whileTap={{ scale: 0.95 }}
+                                        className="px-4 py-3 bg-white border-2 border-gray-200 rounded-lg cursor-move hover:border-purple-300 hover:shadow-md transition-all"
+                                    >
+                                        <div className="flex items-center justify-between mb-1">
+                                            <span className="font-medium text-gray-700 text-sm truncate">{col}</span>
+                                            <ArrowRight className="w-4 h-4 text-gray-400 flex-shrink-0" />
+                                        </div>
+                                        <div className="flex items-center gap-1 flex-wrap">
+                                            {info.role && info.role !== 'unknown' && (
+                                                <RoleBadge role={info.role} />
+                                            )}
+                                            {info.confidence && (
+                                                <span className="text-xs text-gray-400">
+                                                    {Math.round(info.confidence * 100)}%
+                                                </span>
+                                            )}
+                                        </div>
+                                        {info.sampleValues?.length > 0 && (
+                                            <p className="text-xs text-gray-400 mt-1 truncate">
+                                                {info.sampleValues[0]}
+                                            </p>
+                                        )}
+                                    </motion.div>
+                                );
+                            })}
                         </div>
                     ) : (
                         <div className="p-8 bg-gray-50 rounded-xl border-2 border-dashed border-gray-300 text-center">
@@ -304,12 +379,12 @@ export default function ColumnMappingUI({ detectedColumns, onMappingComplete }) 
                     onClick={handleContinue}
                     disabled={!isComplete}
                     className={`
-            px-8 py-3 rounded-xl font-semibold text-white flex items-center gap-2 shadow-lg transition-all
-            ${isComplete
+                        px-8 py-3 rounded-xl font-semibold text-white flex items-center gap-2 shadow-lg transition-all
+                        ${isComplete
                             ? 'bg-gradient-to-r from-purple-600 to-blue-600 hover:shadow-xl cursor-pointer'
                             : 'bg-gray-300 cursor-not-allowed'
                         }
-          `}
+                    `}
                 >
                     {isComplete ? (
                         <>

@@ -861,7 +861,23 @@ async def run_training(
         from app.services.model_router import ModelRouter
         from app.ml.baseline_models import NaiveForecaster, MovingAverageForecaster
         
+        # Import circuit breaker for resilience
+        try:
+            from app.utils.circuit_breaker import ml_training_breaker
+            use_circuit_breaker = True
+        except ImportError:
+            use_circuit_breaker = False
+            logger.warning("Circuit breaker not available, proceeding without it")
+        
         router = ModelRouter()
+        
+        # Check circuit breaker before attempting training
+        if use_circuit_breaker and not ml_training_breaker.can_execute():
+            logger.error(f"⚡ Circuit breaker OPEN for ml_training - refusing training job {job_id}")
+            training_jobs[job_id]['status'] = 'failed'
+            training_jobs[job_id]['error'] = 'ML training service temporarily unavailable (circuit breaker open). Please try again in 2 minutes.'
+            save_jobs()
+            return
         
         # Determine model candidates
         candidates = []
@@ -888,7 +904,7 @@ async def run_training(
         metrics = None
         used_model_name = None
         
-        # Iterate through candidates (Fallback Loop)
+        # Iterate through candidates (Fallback Loop with circuit breaker)
         for candidate in candidates:
             if candidate not in model_classes:
                 continue
@@ -904,7 +920,9 @@ async def run_training(
                 if metrics_result.mape is None or np.isnan(metrics_result.mape):
                     raise ValueError("Model returned invalid metrics")
                 
-                # Success!
+                # Success! Record on circuit breaker
+                if use_circuit_breaker:
+                    ml_training_breaker._on_success()
                 trained_model = model_instance
                 metrics = metrics_result
                 used_model_name = candidate
@@ -913,10 +931,14 @@ async def run_training(
                 
             except Exception as e:
                 logger.warning(f"Training failed for {candidate}: {e}")
+                # Record failure on circuit breaker only for primary model
+                if use_circuit_breaker and candidate == candidates[0]:
+                    ml_training_breaker._on_failure(e)
                 continue
         
         if trained_model is None:
             raise ValueError("All model candidates failed training.")
+
             
         training_jobs[job_id]['model_type'] = used_model_name # Update actual used model
         training_jobs[job_id]['progress'] = 70
