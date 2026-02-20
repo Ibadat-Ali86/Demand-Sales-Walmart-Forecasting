@@ -40,3 +40,4 @@ data/processed/
 *.csv
 !test_dataset.csv
 !test_upload.csv
+backend/training_jobs.json

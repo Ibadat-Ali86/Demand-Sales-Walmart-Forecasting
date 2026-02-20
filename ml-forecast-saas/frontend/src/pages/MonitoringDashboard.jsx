@@ -12,8 +12,6 @@ import {
     ArrowDownRight
 } from 'lucide-react';
 import {
-    LineChart,
-    Line,
     XAxis,
     YAxis,
     CartesianGrid,
@@ -38,7 +36,7 @@ const MonitoringDashboard = () => {
     const [isChecking, setIsChecking] = useState(false);
     const [wsStatus, setWsStatus] = useState('disconnected');
 
-    // Fetch initial data
+    // ── Data fetching ──────────────────────────────────────────────────────
     const fetchData = async () => {
         try {
             const headers = { Authorization: `Bearer ${token}` };
@@ -49,16 +47,15 @@ const MonitoringDashboard = () => {
                 fetch(`${API_URL}/api/monitoring/alerts?limit=5`, { headers })
             ]);
 
-            const healthData = await healthRes.json();
-            const metricsData = await metricsRes.json();
-            const alertsData = await alertsRes.json();
-
-            setHealth(healthData);
-            setMetrics(metricsData);
-            setAlerts(alertsData.alerts);
+            if (healthRes.ok) setHealth(await healthRes.json());
+            if (metricsRes.ok) setMetrics(await metricsRes.json());
+            if (alertsRes.ok) {
+                const alertsData = await alertsRes.json();
+                setAlerts(alertsData?.alerts ?? []);
+            }
         } catch (error) {
-            console.error("Failed to fetch monitoring data:", error);
-            showToast("Failed to load monitoring data", "error");
+            console.error('Failed to fetch monitoring data:', error);
+            showToast('Monitoring API unreachable — backend may be offline', 'warning');
         } finally {
             setIsLoading(false);
         }
@@ -66,74 +63,97 @@ const MonitoringDashboard = () => {
 
     useEffect(() => {
         fetchData();
-
-        // Auto-refresh every 30s
         const interval = setInterval(fetchData, 30000);
         return () => clearInterval(interval);
     }, [token]);
 
-    // WebSocket Connection (Phase 8 Real-time)
+    // ── WebSocket (graceful — never crash-loops) ──────────────────────────
     useEffect(() => {
-        const clientId = `user:${Math.random().toString(36).substr(2, 9)}`;
-        const wsUrl = API_URL.replace('http', 'ws') + `/ws/${clientId}`;
-        const ws = new WebSocket(wsUrl);
+        let ws = null;
+        try {
+            const clientId = `user:${Math.random().toString(36).substr(2, 9)}`;
+            const wsUrl = API_URL.replace('http', 'ws') + `/ws/${clientId}`;
+            ws = new WebSocket(wsUrl);
 
-        ws.onopen = () => setWsStatus('connected');
-        ws.onclose = () => setWsStatus('disconnected');
-        ws.onerror = () => setWsStatus('error');
+            ws.onopen = () => setWsStatus('connected');
+            ws.onclose = () => setWsStatus('disconnected');
+            ws.onerror = () => setWsStatus('error');
 
-        ws.onmessage = (event) => {
-            const data = JSON.parse(event.data);
-            if (data.type === 'alert') {
-                showToast(data.message, data.severity || 'info');
-                fetchData(); // Refresh data on alert
-            }
-        };
-
-        return () => ws.close();
+            ws.onmessage = (event) => {
+                try {
+                    const data = JSON.parse(event.data);
+                    if (data.type === 'alert') {
+                        showToast(data.message, data.severity || 'info');
+                        fetchData();
+                    }
+                } catch (_) { /* ignore malformed WS messages */ }
+            };
+        } catch (_) {
+            setWsStatus('error');
+        }
+        return () => { try { ws?.close(); } catch (_) { } };
     }, []);
 
+    // ── Drift check ────────────────────────────────────────────────────────
     const handleRunDriftCheck = async () => {
         setIsChecking(true);
         try {
-            // Trigger manual drift check (mock payload for now)
             const res = await fetch(`${API_URL}/api/monitoring/check-drift`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
+                    Authorization: `Bearer ${token}`
                 },
                 body: JSON.stringify({
-                    feature_data: { "sales": [100, 102, 98, 95, 110] }, // Mock
+                    feature_data: { sales: [100, 102, 98, 95, 110] },
                     predictions: [101, 103, 99, 94, 108]
                 })
             });
-
             const result = await res.json();
             if (result.alert_triggered) {
-                showToast(`Drift Detected: ${result.severity}`, "warning");
+                showToast(`Drift Detected: ${result.severity}`, 'warning');
             } else {
-                showToast("System Healthy: No drift detected", "success");
+                showToast('System Healthy: No drift detected', 'success');
             }
             fetchData();
-        } catch (error) {
-            showToast("Drift check failed", "error");
+        } catch {
+            showToast('Drift check failed — ensure backend is running', 'error');
         } finally {
             setIsChecking(false);
         }
     };
 
+    // ── Safe derived values ────────────────────────────────────────────────
+    const healthStatus = health?.status ?? 'unknown';
+    const modelVersion = health?.model_version ?? 'N/A';
+    const currentMape = health?.current_mape ?? 0;
+    const referenceMape = health?.reference_mape ?? 0;
+    const uptimeHours = health?.uptime_hours ?? 0;
+    const predictionsToday = health?.n_predictions_today ?? 0;
+
+    // Frontend reads metrics.trend.mape_7d; backend also sends mapes as fallback
+    const rawMapes = metrics?.trend?.mape_7d ?? metrics?.trend?.mapes ?? [];
+    const mapeChartData = rawMapes.map((v, i) => ({
+        day: `Day ${i + 1}`,
+        value: typeof v === 'number' ? v : 0
+    }));
+
+    // ── Loading skeleton ───────────────────────────────────────────────────
     if (isLoading) {
         return (
             <div className="flex items-center justify-center min-h-[60vh]">
-                <RefreshCw className="w-8 h-8 animate-spin text-brand-600" />
+                <div className="flex flex-col items-center gap-4">
+                    <RefreshCw className="w-8 h-8 animate-spin text-brand-600" />
+                    <p className="text-text-secondary text-sm">Loading monitoring data…</p>
+                </div>
             </div>
         );
     }
 
     return (
         <div className="space-y-6 animate-enter">
-            {/* Header */}
+
+            {/* ── Header ─────────────────────────────────────────────────── */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
                     <h1 className="text-2xl font-bold text-text-primary font-display flex items-center gap-3">
@@ -153,31 +173,39 @@ const MonitoringDashboard = () => {
                     className="flex items-center justify-center gap-2 px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-lg shadow-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                     <Activity className={`w-4 h-4 ${isChecking ? 'animate-spin' : ''}`} />
-                    {isChecking ? 'Checking...' : 'Run Diagnostics'}
+                    {isChecking ? 'Checking…' : 'Run Diagnostics'}
                 </button>
             </div>
 
-            {/* Key Metrics Grid */}
+            {/* ── Offline banner ─────────────────────────────────────────── */}
+            {!health && (
+                <div className="p-4 bg-amber-50 border border-amber-200 rounded-xl text-amber-800 text-sm flex items-center gap-3">
+                    <AlertTriangle className="w-5 h-5 flex-shrink-0" />
+                    <span>Monitoring API is unreachable. Metrics will appear once the backend is online.</span>
+                </div>
+            )}
+
+            {/* ── KPI Grid ───────────────────────────────────────────────── */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 <MetricCard
                     title="Model Health"
-                    value={health.status === 'healthy' ? 'Healthy' : 'At Risk'}
+                    value={healthStatus === 'healthy' ? 'Healthy' : healthStatus === 'unknown' ? 'Unknown' : 'At Risk'}
                     icon={ShieldCheck}
-                    trend={health.status === 'healthy' ? 'positive' : 'negative'}
-                    subValue={`Version ${health.model_version}`}
-                    color={health.status === 'healthy' ? 'green' : 'red'}
+                    trend={healthStatus === 'healthy' ? 'positive' : 'negative'}
+                    subValue={`Version ${modelVersion}`}
+                    color={healthStatus === 'healthy' ? 'green' : 'red'}
                 />
                 <MetricCard
                     title="Current MAPE"
-                    value={`${health.current_mape}%`}
+                    value={`${currentMape}%`}
                     icon={Zap}
-                    trend={health.current_mape < health.reference_mape ? 'positive' : 'negative'}
-                    subValue={`Target: <${health.reference_mape}%`}
+                    trend={currentMape < referenceMape ? 'positive' : 'negative'}
+                    subValue={`Target: <${referenceMape}%`}
                     color="blue"
                 />
                 <MetricCard
                     title="Uptime"
-                    value={`${health.uptime_hours}h`}
+                    value={`${uptimeHours}h`}
                     icon={Clock}
                     trend="neutral"
                     subValue="Since last restart"
@@ -185,7 +213,7 @@ const MonitoringDashboard = () => {
                 />
                 <MetricCard
                     title="Predictions Today"
-                    value={health.n_predictions_today}
+                    value={predictionsToday}
                     icon={Server}
                     trend="positive"
                     subValue="Total requests"
@@ -193,8 +221,9 @@ const MonitoringDashboard = () => {
                 />
             </div>
 
-            {/* Charts Section */}
+            {/* ── Charts ─────────────────────────────────────────────────── */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
                 {/* Performance Trend */}
                 <div className="lg:col-span-2 bg-bg-secondary border border-border-subtle rounded-xl p-6 shadow-sm">
                     <h3 className="text-lg font-semibold text-text-primary mb-6 flex items-center gap-2">
@@ -202,26 +231,27 @@ const MonitoringDashboard = () => {
                         Performance Trend (MAPE)
                     </h3>
                     <div className="h-[300px] w-full">
-                        <ResponsiveContainer width="100%" height="100%">
-                            <AreaChart data={metrics?.trend?.mape_7d?.map((v, i) => ({
-                                day: `Day ${i + 1}`,
-                                value: v
-                            })) || []}>
-                                <defs>
-                                    <linearGradient id="colorMape" x1="0" y1="0" x2="0" y2="1">
-                                        <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.1} />
-                                        <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0} />
-                                    </linearGradient>
-                                </defs>
-                                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
-                                <XAxis dataKey="day" axisLine={false} tickLine={false} tick={{ fill: '#6b7280' }} />
-                                <YAxis axisLine={false} tickLine={false} tick={{ fill: '#6b7280' }} domain={['auto', 'auto']} />
-                                <Tooltip
-                                    contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
-                                />
-                                <Area type="monotone" dataKey="value" stroke="#8b5cf6" fillOpacity={1} fill="url(#colorMape)" strokeWidth={2} />
-                            </AreaChart>
-                        </ResponsiveContainer>
+                        {mapeChartData.length > 0 ? (
+                            <ResponsiveContainer width="100%" height="100%">
+                                <AreaChart data={mapeChartData}>
+                                    <defs>
+                                        <linearGradient id="colorMape" x1="0" y1="0" x2="0" y2="1">
+                                            <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.1} />
+                                            <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0} />
+                                        </linearGradient>
+                                    </defs>
+                                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
+                                    <XAxis dataKey="day" axisLine={false} tickLine={false} tick={{ fill: '#6b7280' }} />
+                                    <YAxis axisLine={false} tickLine={false} tick={{ fill: '#6b7280' }} domain={['auto', 'auto']} />
+                                    <Tooltip contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }} />
+                                    <Area type="monotone" dataKey="value" stroke="#8b5cf6" fillOpacity={1} fill="url(#colorMape)" strokeWidth={2} />
+                                </AreaChart>
+                            </ResponsiveContainer>
+                        ) : (
+                            <div className="flex items-center justify-center h-full text-text-tertiary text-sm">
+                                No trend data available yet
+                            </div>
+                        )}
                     </div>
                 </div>
 
@@ -231,7 +261,6 @@ const MonitoringDashboard = () => {
                         <AlertTriangle className="w-5 h-5 text-amber-500" />
                         Recent Alerts
                     </h3>
-
                     <div className="flex-1 overflow-y-auto pr-2 space-y-3 scrollbar-thin">
                         {alerts.length === 0 ? (
                             <div className="text-center py-10 text-text-tertiary">
@@ -239,26 +268,33 @@ const MonitoringDashboard = () => {
                                 <p>All systems normal</p>
                             </div>
                         ) : (
-                            alerts.map(alert => (
-                                <div key={alert.id} className={`p-3 rounded-lg border ${alert.severity === 'critical' ? 'bg-red-50 border-red-100' :
-                                        alert.severity === 'high' ? 'bg-orange-50 border-orange-100' :
-                                            'bg-blue-50 border-blue-100'
-                                    }`}>
-                                    <div className="flex justify-between items-start mb-1">
-                                        <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${alert.severity === 'critical' ? 'bg-red-200 text-red-800' :
-                                                alert.severity === 'high' ? 'bg-orange-200 text-orange-800' :
-                                                    'bg-blue-200 text-blue-800'
-                                            }`}>
-                                            {alert.severity.toUpperCase()}
-                                        </span>
-                                        <span className="text-[10px] text-text-tertiary">
-                                            {new Date(alert.timestamp).toLocaleTimeString()}
-                                        </span>
+                            alerts.map(alert => {
+                                const sev = alert.severity ?? 'info';
+                                const sevClass = sev === 'critical'
+                                    ? 'bg-red-50 border-red-100'
+                                    : sev === 'high'
+                                        ? 'bg-orange-50 border-orange-100'
+                                        : 'bg-blue-50 border-blue-100';
+                                const badgeClass = sev === 'critical'
+                                    ? 'bg-red-200 text-red-800'
+                                    : sev === 'high'
+                                        ? 'bg-orange-200 text-orange-800'
+                                        : 'bg-blue-200 text-blue-800';
+                                return (
+                                    <div key={alert.id} className={`p-3 rounded-lg border ${sevClass}`}>
+                                        <div className="flex justify-between items-start mb-1">
+                                            <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${badgeClass}`}>
+                                                {sev.toUpperCase()}
+                                            </span>
+                                            <span className="text-[10px] text-text-tertiary">
+                                                {alert.timestamp ? new Date(alert.timestamp).toLocaleTimeString() : '—'}
+                                            </span>
+                                        </div>
+                                        <h4 className="text-sm font-medium text-text-primary mb-1">{alert.title}</h4>
+                                        <p className="text-xs text-text-secondary">{alert.description}</p>
                                     </div>
-                                    <h4 className="text-sm font-medium text-text-primary mb-1">{alert.title}</h4>
-                                    <p className="text-xs text-text-secondary">{alert.description}</p>
-                                </div>
-                            ))
+                                );
+                            })
                         )}
                     </div>
                 </div>
@@ -267,6 +303,7 @@ const MonitoringDashboard = () => {
     );
 };
 
+// ── MetricCard sub-component ────────────────────────────────────────────────
 const MetricCard = ({ title, value, icon: Icon, trend, subValue, color }) => (
     <div className="bg-bg-secondary border border-border-subtle rounded-xl p-5 shadow-sm hover:shadow-md transition-shadow">
         <div className="flex justify-between items-start">

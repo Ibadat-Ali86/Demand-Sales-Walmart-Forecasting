@@ -15,8 +15,8 @@ if [ -f "venv/bin/activate" ]; then
     echo "✅ Virtual environment activated"
 fi
 
-# Create logs directory if it doesn't exist
-mkdir -p logs
+# Create required directories before starting
+mkdir -p logs data temp uploads
 
 uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload &
 BACKEND_PID=$!
