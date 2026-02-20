@@ -315,7 +315,7 @@ const AnalysisDashboard = () => {
                                     <ForecastVisualizationSuite forecastData={analysisData} historicalData={uploadedData} />
                                 )}
                                 {activeTab === 'sanity' && (
-                                    <SanityCheck forecastData={analysisData} historicalData={uploadedData} />
+                                    <SanityCheck forecastData={analysisData?.forecast || analysisData} historicalData={uploadedData} />
                                 )}
                                 {activeTab === 'actions' && (
                                     <ActionableRecommendations forecastData={analysisData} insights={modelMetrics} />

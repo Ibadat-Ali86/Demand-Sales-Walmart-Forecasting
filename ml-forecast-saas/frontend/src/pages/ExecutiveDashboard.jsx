@@ -276,22 +276,27 @@ const ExecutiveDashboard = () => {
     // Dynamic insights based on analysis
     const insights = useMemo(() => {
         if (analysisResults?.insights) {
+            const bi = analysisResults.insights;
+            const es = bi.executive_summary || {};
+            const ops = bi.opportunity_analysis || [];
+            const risks = bi.risk_assessment?.identified_risks || [];
+
             return [
                 {
                     type: 'success',
                     title: 'Analysis Complete',
-                    description: analysisResults.insights.summary || 'Forecast model trained successfully'
+                    description: es.headline || 'Forecast model trained successfully'
                 },
-                ...(analysisResults.insights.trends || []).slice(0, 1).map(trend => ({
+                ...(ops.slice(0, 1).map(op => ({
                     type: 'info',
-                    title: 'Trend Detected',
-                    description: trend
-                })),
-                ...(analysisResults.insights.risks || []).slice(0, 1).map(risk => ({
+                    title: op.title || 'Opportunity Identified',
+                    description: op.description
+                }))),
+                ...(risks.slice(0, 1).map(risk => ({
                     type: 'warning',
-                    title: 'Risk Identified',
-                    description: risk
-                }))
+                    title: risk.type ? risk.type.replace('_', ' ').toUpperCase() : 'Risk Identified',
+                    description: risk.description
+                })))
             ];
         }
 
@@ -300,10 +305,28 @@ const ExecutiveDashboard = () => {
         ];
     }, [analysisResults]);
 
-    const [alerts, setAlerts] = useState([
-        { id: 1, severity: 'medium', title: 'Feature Drift Detected', description: 'Temperature feature showing distribution shift', timestamp: '2 hours ago', acknowledged: false },
-        { id: 2, severity: 'low', title: 'Performance Stable', description: 'Model MAPE within target range', timestamp: '5 hours ago', acknowledged: true }
-    ]);
+    const [alerts, setAlerts] = useState([]);
+
+    // Populate alerts from real analysis dataset risks
+    useEffect(() => {
+        if (analysisResults?.insights?.risk_assessment?.identified_risks) {
+            const risks = analysisResults.insights.risk_assessment.identified_risks;
+            setAlerts(risks.map((r, i) => ({
+                id: i + 1,
+                severity: r.level === 'high' ? 'critical' : r.level,
+                title: r.type ? r.type.replace('_', ' ').toUpperCase() : 'Risk Alert',
+                description: r.description,
+                timestamp: 'Just now',
+                acknowledged: false
+            })));
+        } else if (!analysisResults) {
+            // Placeholder alerts if no analysis run yet
+            setAlerts([
+                { id: 1, severity: 'medium', title: 'Awaiting Run', description: 'Run full pipeline to generate system alerts', timestamp: 'Now', acknowledged: false },
+                { id: 2, severity: 'low', title: 'System Active', description: 'Platform is ready for analysis', timestamp: 'Now', acknowledged: true }
+            ]);
+        }
+    }, [analysisResults]);
 
     const [modelHealth, setModelHealth] = useState({
         status: 'healthy',

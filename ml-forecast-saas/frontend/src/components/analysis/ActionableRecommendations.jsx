@@ -65,11 +65,11 @@ const ActionableRecommendations = ({ forecastData, insights, onExport, analysisD
             <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg border border-gray-200 dark:border-gray-700">
                 <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
                     <Megaphone className="w-5 h-5 text-purple-500" />
-                    Marketing Strategy Recommendations
+                    Strategic Initiatives
                 </h3>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {recommendations.marketing.map((strategy, idx) => (
+                    {recommendations.strategies.map((strategy, idx) => (
                         <motion.div
                             key={idx}
                             initial={{ opacity: 0, y: 20 }}
@@ -407,59 +407,35 @@ const ExportSection = ({ analysisData }) => {
 /**
  * Generate recommendations from data
  */
-const generateRecommendations = (forecastData, insights) => {
-    return {
-        marketing: [
-            {
-                name: 'High-Performer Amplification Campaign',
-                description: 'Focus marketing resources on products showing strongest demand signals.',
-                budget: '40% of marketing budget',
-                roi: 'High',
-                channels: ['Digital Ads', 'Email', 'Social'],
-                tactics: [
-                    'Create product-specific landing pages optimized for conversion',
-                    'Develop customer testimonial and case study content',
-                    'Implement retargeting campaigns for cart abandoners',
-                    'Launch influencer partnerships for social proof'
-                ]
-            },
-            {
-                name: 'Demand Revival Strategy',
-                description: 'Targeted campaigns to boost underperforming product categories.',
-                budget: '25% of marketing budget',
-                roi: 'Medium',
-                channels: ['Content', 'SEO', 'PR'],
-                tactics: [
-                    'Develop educational content highlighting unique value propositions',
-                    'Launch limited-time promotions and bundle deals',
-                    'Partner with complementary brands for cross-promotion',
-                    'Optimize product descriptions and search visibility'
-                ]
+const generateRecommendations = (forecastData, metrics) => {
+    const bi = metrics?.insights || metrics?.business_insights;
+    if (bi && !bi.error && Object.keys(bi).length > 0) {
+        return {
+            strategies: (bi.strategic_recommendations || []).map(rec => ({
+                name: rec.title || 'Strategic Initiative',
+                description: rec.description,
+                budget: 'TBD',
+                roi: rec.priority === 'high' ? 'High' : rec.priority === 'medium' ? 'Medium' : 'Low',
+                channels: [(rec.category || 'General').toUpperCase()],
+                tactics: [rec.expected_impact || 'Positive ROI']
+            })),
+            inventory: [
+                { category: 'Enterprise Demo', recommendedStock: 2500, safetyStock: 375, reorderPoint: 625, risk: 'Low' },
+                { category: 'Core Product', recommendedStock: 4200, safetyStock: 630, reorderPoint: 1050, risk: 'Medium' }
+            ],
+            actions: {
+                immediate: (bi.action_plan?.[0]?.actions || []).map(a => ({ action: a, department: 'Operations', impact: 'High' })),
+                shortTerm: (bi.action_plan?.[1]?.actions || []).map(a => ({ action: a, department: 'Strategy', impact: 'Medium' })),
+                strategic: (bi.action_plan?.[2]?.actions || []).map(a => ({ action: a, department: 'Leadership', impact: 'High' }))
             }
-        ],
-        inventory: [
-            { category: 'Electronics', recommendedStock: 2500, safetyStock: 375, reorderPoint: 625, risk: 'Low' },
-            { category: 'Clothing', recommendedStock: 4200, safetyStock: 630, reorderPoint: 1050, risk: 'Medium' },
-            { category: 'Food & Beverage', recommendedStock: 8500, safetyStock: 1275, reorderPoint: 2125, risk: 'Low' },
-            { category: 'Home & Garden', recommendedStock: 1800, safetyStock: 270, reorderPoint: 450, risk: 'High' }
-        ],
-        actions: {
-            immediate: [
-                { action: 'Increase safety stock for top 5 high-velocity products by 20%', department: 'Operations', impact: 'High' },
-                { action: 'Launch promotional campaign for low-demand products', department: 'Marketing', impact: 'Medium' },
-                { action: 'Review and adjust reorder points based on new forecasts', department: 'Procurement', impact: 'High' }
-            ],
-            shortTerm: [
-                { action: 'Implement dynamic pricing for peak demand periods', department: 'Pricing', impact: 'Medium' },
-                { action: 'Cross-train staff for flexible demand response', department: 'HR', impact: 'Medium' },
-                { action: 'Negotiate flexible supplier agreements', department: 'Procurement', impact: 'High' }
-            ],
-            strategic: [
-                { action: 'Evaluate product portfolio based on demand trends', department: 'Product', impact: 'High' },
-                { action: 'Develop automated inventory replenishment system', department: 'IT', impact: 'Medium' },
-                { action: 'Explore new market segments identified by demand patterns', department: 'Strategy', impact: 'High' }
-            ]
-        }
+        };
+    }
+
+    // Fallback if no backend insights provided
+    return {
+        strategies: [],
+        inventory: [],
+        actions: { immediate: [], shortTerm: [], strategic: [] }
     };
 };
 

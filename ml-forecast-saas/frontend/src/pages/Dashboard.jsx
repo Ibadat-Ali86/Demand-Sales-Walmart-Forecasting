@@ -22,10 +22,12 @@ import {
     BarChart3
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { useFlow } from '../context/FlowContext';
 
 const Dashboard = () => {
     const navigate = useNavigate();
     const { user } = useAuth();
+    const { analysisResults } = useFlow();
     const [dashboardData, setDashboardData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [dateRange, setDateRange] = useState('30');
@@ -33,29 +35,61 @@ const Dashboard = () => {
 
     useEffect(() => {
         fetchDashboardData();
-    }, [dateRange]);
+    }, [dateRange, analysisResults]);
 
     const fetchDashboardData = async () => {
         try {
             setLoading(true);
-            // Mock data - would be replaced by API call
-            const mockData = {
-                kpis: {
-                    mape: { value: '1.23%', change: '-0.15%', trend: 'up' }, // Note: In KPICard 'up' = positive/good color usually. For MAPE lower is better, so we might need to handle logic or just pass 'up' if we want green.
-                    savings: { value: '$2.5M', change: '+12.3%', trend: 'up' },
-                    products: { value: '1,234', change: '+45', trend: 'up' },
-                    stockouts: { value: '23', change: '-8', trend: 'up' },
-                },
-                chartData: {
-                    labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4', 'Week 5', 'Week 6', 'Week 7', 'Week 8'],
-                    actual: [15000, 18000, 16500, 19200, 17800, 20500, 19000, 21000],
-                    forecast: [16000, 17500, 17000, 19000, 18500, 20000, 19500, 20800],
-                },
-            };
-            setTimeout(() => {
+
+            if (analysisResults?.forecast?.predictions && analysisResults?.metrics) {
+                // Use real pipeline data
+                const { forecast, metrics, insights } = analysisResults;
+                const ri = insights?.revenue_impact || {};
+
+                const realData = {
+                    kpis: {
+                        mape: {
+                            value: `${(metrics.mape || 0).toFixed(2)}%`,
+                            change: 'From model validation',
+                            trend: (metrics.mape < 10) ? 'up' : 'down'
+                        },
+                        savings: {
+                            value: ri.projected_revenue ? `$${(ri.projected_revenue).toLocaleString(undefined, { maximumFractionDigits: 0 })}` : 'TBD',
+                            change: ri.revenue_delta_pct > 0 ? `+${ri.revenue_delta_pct.toFixed(1)}%` : ri.revenue_delta_pct < 0 ? `${ri.revenue_delta_pct.toFixed(1)}%` : 'New',
+                            trend: ri.revenue_delta_pct >= 0 ? 'up' : 'down'
+                        },
+                        products: { value: 'Optimized', change: 'Model Active', trend: 'up' },
+                        stockouts: {
+                            value: insights?.risk_assessment?.risk_level || 'Low',
+                            change: `Score: ${insights?.risk_assessment?.overall_risk_score || 0}`,
+                            trend: (insights?.risk_assessment?.overall_risk_score > 50) ? 'down' : 'up'
+                        },
+                    },
+                    chartData: {
+                        labels: forecast.dates?.slice(0, 30) || [],
+                        actual: [], // In forecast mode, we might just show predictions, so chart component handles it
+                        forecast: forecast.predictions?.slice(0, 30) || [],
+                    },
+                };
+                setDashboardData(realData);
+            } else {
+                // Mock data fallback - run analysis to see real data
+                const mockData = {
+                    kpis: {
+                        mape: { value: 'N/A', change: 'Ready for analysis', trend: 'up' },
+                        savings: { value: 'N/A', change: 'Upload data', trend: 'up' },
+                        products: { value: 'N/A', change: 'Upload data', trend: 'up' },
+                        stockouts: { value: 'N/A', change: 'Ready for analysis', trend: 'up' },
+                    },
+                    chartData: {
+                        labels: ['Upload', 'Analyze', 'Forecast', 'Optimize'],
+                        actual: [0, 0, 0, 0],
+                        forecast: [10, 20, 30, 40],
+                    },
+                };
                 setDashboardData(mockData);
-                setLoading(false);
-            }, 800);
+            }
+            setLoading(false);
         } catch (error) {
             console.error('Error fetching dashboard data:', error);
             setLoading(false);

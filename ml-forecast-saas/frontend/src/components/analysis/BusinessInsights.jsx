@@ -271,8 +271,8 @@ const BusinessInsights = ({ forecastData, metrics, onContinue }) => {
  */
 const generateBusinessInsights = (forecastData, metrics) => {
     // If real business insights are provided from backend, use them
-    if (metrics?.business_insights && !metrics.business_insights.error) {
-        const bi = metrics.business_insights;
+    const bi = metrics?.insights || metrics?.business_insights;
+    if (bi && !bi.error && Object.keys(bi).length > 0) {
         return {
             executive: {
                 headline: bi.executive_summary.headline,
