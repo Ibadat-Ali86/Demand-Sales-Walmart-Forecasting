@@ -454,6 +454,7 @@ Height: 64px
 ### 6.4 Dashboard (`/dashboard`)
 
 **Layout:** Sidebar + Main Content
+**Data Source:** Reactive bindings via `FlowContext` to Python `BusinessTranslator` ML outputs.
 
 **Components:**
 1. **Welcome Banner**
@@ -461,10 +462,10 @@ Height: 64px
    - Quick action buttons
 
 2. **KPI Cards Row** (4 columns)
-   - Total Forecasts
-   - Active Sessions
-   - Accuracy Rate
-   - Saved Models
+   - Model MAPE (Mean Absolute Percentage Error)
+   - Projected Savings/Revenue Impact
+   - Systems Optimized (Active Models)
+   - Risk Alerts (Stockouts, Anomalies)
 
 3. **Quick Actions**
    - Start Analysis (primary)
@@ -476,10 +477,10 @@ Height: 64px
    - Timestamps
    - Status badges
 
-5. **System Health**
-   - Backend status
-   - Frontend status
-   - Last sync time
+5. **AI Insights & System Health**
+   - Real-time backend training status via `FlowContext`
+   - Frontend and Backend uptime indicators
+   - Fallback rendering (Mock Data) when pipeline hasn't been executed yet.
 
 ---
 
@@ -536,11 +537,28 @@ Height: 64px
 
 ### 6.7 Reports (`/reports`)
 
+**Features:**
+- Intelligent parsing mapping directly to the `BusinessTranslator` payload.
+- Fallback alerts preventing report generation without a pipeline execution (`analysisResults` check).
+
 **Components:**
-- Report history table
-- Date range filters
-- Export buttons (PDF, CSV)
-- Report preview modal
+- Analysis Summary Hero (Accuracy Rating, Shape, Records)
+- Date range filters and Report Type (Comprehensive, Forecast, Metrics, Insights)
+- Export Format Buttons (PDF, Excel, CSV)
+- PDF Generation logic mapping problem formulations, revenue impact, risks, and strategic action plans to jsPDF buffers.
+
+---
+
+### 6.8 Executive Dashboard (`/executive`)
+
+**Features:**
+- Real-time data consumption directly from `FlowContext.analysisResults`.
+- Reactive alerts populated strictly from the AI models' risk assessment output.
+
+**Components:**
+- 4-Column Business KPI Grid (Revenue Impact, Accuracy vs Target, Model MAPE).
+- Real-time AI Insights Panel (Trends, Opportunities, Action Plans from backend).
+- Dynamic Monitoring Alerts Array (Warnings, Feature Drift).
 
 ---
 
