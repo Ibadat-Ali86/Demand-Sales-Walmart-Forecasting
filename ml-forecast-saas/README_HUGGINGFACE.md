@@ -1,9 +1,9 @@
 # HuggingFace Spaces Configuration
 ---
-title: ForecastAI Enterprise Platform
-emoji: 📊
+title: AdaptIQ Enterprise Platform (v3.0)
+emoji: 🧠
 colorFrom: blue
-colorTo: purple
+colorTo: indigo
 sdk: docker
 app_port: 8000
 pinned: false

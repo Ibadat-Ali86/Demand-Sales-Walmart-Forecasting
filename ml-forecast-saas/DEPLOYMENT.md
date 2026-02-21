@@ -32,9 +32,9 @@ SECRET_KEY=your_long_random_secret_key_here
 JWT_SECRET_KEY=another_long_random_secret
 
 # URLs (update with your Space URL)
-FRONTEND_URL=https://your-username-forecastai-enterprise.hf.space
-BACKEND_URL=https://your-username-forecastai-enterprise.hf.space
-ALLOWED_ORIGINS=https://your-username-forecastai-enterprise.hf.space
+FRONTEND_URL=https://ibadat-ali86-forecastai-enterprise.hf.space
+BACKEND_URL=https://ibadat-ali86-forecastai-enterprise.hf.space
+ALLOWED_ORIGINS=https://ibadat-ali86-forecastai-enterprise.hf.space
 
 # Database (optional - for production)
 DATABASE_URL=postgresql://user:password@host:port/dbname
@@ -48,7 +48,7 @@ DATABASE_URL=postgresql://user:password@host:port/dbname
 3. Edit your OAuth 2.0 Client ID
 4. Add authorized redirect URI:
    ```
-   https://your-username-forecastai-enterprise.hf.space/api/auth/callback/google
+   https://ibadat-ali86-forecastai-enterprise.hf.space/api/auth/callback/google
    ```
 
 ### GitHub OAuth App
@@ -56,7 +56,7 @@ DATABASE_URL=postgresql://user:password@host:port/dbname
 2. Edit your OAuth App
 3. Update "Authorization callback URL":
    ```
-   https://your-username-forecastai-enterprise.hf.space/api/auth/callback/github
+   https://ibadat-ali86-forecastai-enterprise.hf.space/api/auth/callback/github
    ```
 
 ## Step 4: Deploy to HuggingFace
@@ -65,7 +65,7 @@ DATABASE_URL=postgresql://user:password@host:port/dbname
 
 ```bash
 # Add HuggingFace remote
-git remote add huggingface https://huggingface.co/spaces/YOUR_USERNAME/forecastai-enterprise
+git remote add huggingface https://huggingface.co/spaces/Ibadat-Ali86/forecastai-enterprise
 
 # Push to HuggingFace
 git push huggingface main
