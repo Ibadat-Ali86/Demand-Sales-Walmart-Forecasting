@@ -46,12 +46,12 @@ class PipelineValidator:
             'info': {}
         }
         
-        # Check 1: Minimum rows
-        if len(df) < 10:
+        # Check 1: Minimum rows (Blueprint spec: 50)
+        if len(df) < 50:
             raise ValidationError(
                 stage='upload',
-                message=f"Insufficient data: only {len(df)} rows found",
-                suggestion="Need at least 10 data points for reliable forecasting. Please upload more historical data."
+                message=f"Your dataset has only {len(df)} rows. Minimum 50 required for reliable forecasting.",
+                suggestion="Minimum 50 required for reliable forecasting. Please upload more historical data."
             )
         
         result['info']['row_count'] = len(df)
@@ -65,6 +65,33 @@ class PipelineValidator:
             )
         
         result['info']['column_count'] = len(df.columns)
+
+        # Check 3: Check for Date column (if adapted)
+        if 'date' in df.columns:
+            try:
+                # Test parsing head
+                pd.to_datetime(df['date'].head(10))
+            except Exception:
+                raise ValidationError(
+                    stage='upload',
+                    message="Date column could not be parsed. Supported formats: YYYY-MM-DD, MM/DD/YYYY, DD-Mon-YYYY.",
+                    suggestion="Ensure dates are in a consistent format."
+                )
+
+        # Check 4: Check for Target column (if adapted)
+        if 'target' in df.columns:
+            if not pd.api.types.is_numeric_dtype(df['target']):
+                raise ValidationError(
+                    stage='upload',
+                    message="Sales/Target column contains non-numeric data.",
+                    suggestion="Please review your target column for text or invalid characters."
+                )
+            if (df['target'].dropna() < 0).any():
+                raise ValidationError(
+                    stage='upload',
+                    message="Sales/Target column contains negative values.",
+                    suggestion="Please review target data. Demand cannot be negative."
+                )
         
         # Warning for small dataset
         if len(df) < 30:
@@ -285,7 +312,7 @@ class PipelineValidator:
 
 
 # Standalone validation functions for common checks
-def check_data_size(df: pd.DataFrame, min_rows: int = 10) -> bool:
+def check_data_size(df: pd.DataFrame, min_rows: int = 50) -> bool:
     """Quick check if dataframe has minimum rows"""
     return len(df) >= min_rows
 

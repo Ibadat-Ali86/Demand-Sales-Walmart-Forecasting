@@ -365,6 +365,80 @@ class DataAdapter:
         
         return df, metadata
 
+    def normalize_dataset(self, df: pd.DataFrame) -> Tuple[pd.DataFrame, Dict]:
+        """
+        Normalize dataset for ML processing:
+        - Detects and renames columns
+        - Standardizes dates
+        - Imputes missing values
+        - Returns cleaned dataframe and transformation report
+        """
+        report = {'transformations': []}
+        
+        # 1. Column Detection & Renaming
+        detected = self.detect_columns(df)
+        
+        # Sort detected by confidence descending to avoid collisions (best match wins)
+        # detected structure: {standard_name: (original_col, confidence)}
+        sorted_detected = sorted(
+            detected.items(), 
+            key=lambda item: item[1][1], 
+            reverse=True
+        )
+        
+        rename_map = {}
+        mapped_columns = set()
+        
+        for standard_name, (original_col, confidence) in sorted_detected:
+            # Map if original col not already mapped to a better standard name
+            # And standard name not already taken (though detected keys are unique standard names)
+            if original_col not in mapped_columns:
+                if original_col != standard_name:
+                    rename_map[original_col] = standard_name
+                mapped_columns.add(original_col)
+        
+        if rename_map:
+            df = df.rename(columns=rename_map)
+            report['transformations'].append(f"Renamed {len(rename_map)} columns to standard names")
+            
+        # 2. Date Parsing
+        date_col = 'date' if 'date' in df.columns else self.detect_date_column(df)
+        if date_col:
+            try:
+                # Rename detected date column to 'date' if not already
+                if date_col != 'date':
+                    df = df.rename(columns={date_col: 'date'})
+                    date_col = 'date'
+                    report['transformations'].append(f"Renamed date column '{date_col}' to 'date'")
+                
+                df = self.parse_dates(df, date_col)
+                report['transformations'].append("Standardized 'date' column format")
+            except Exception as e:
+                report['transformations'].append(f"Date parsing warning: {str(e)}")
+
+        # 3. Numeric conversions for target (sales)
+        # Check if 'sales' exists (either naturally or renamed)
+        if 'sales' in df.columns:
+            # Force numeric, coerce errors to NaN
+            df['sales'] = pd.to_numeric(df['sales'], errors='coerce')
+            report['transformations'].append("Ensured 'sales' column is numeric")
+            
+        # 4. Fill Missing Values (Simple imputation)
+        initial_missing = df.isnull().sum().sum()
+        if initial_missing > 0:
+            # Forward fill then backward fill for time series compatibility
+            df = df.ffill().bfill()
+            # If still missing (e.g. empty columns), fill with 0
+            df = df.fillna(0)
+            
+            final_missing = df.isnull().sum().sum()
+            filled_count = initial_missing - final_missing
+            if filled_count > 0:
+                report['transformations'].append(f"Imputed {filled_count} missing values")
+            
+        return df, report
+
+
 
 def validate_adapted_data(df: pd.DataFrame, metadata: Dict) -> List[str]:
     """

@@ -32,9 +32,9 @@ SECRET_KEY=your_long_random_secret_key_here
 JWT_SECRET_KEY=another_long_random_secret
 
 # URLs (update with your Space URL)
-FRONTEND_URL=https://ibadat-ali86-forecastai-enterprise.hf.space
-BACKEND_URL=https://ibadat-ali86-forecastai-enterprise.hf.space
-ALLOWED_ORIGINS=https://ibadat-ali86-forecastai-enterprise.hf.space
+FRONTEND_URL=https://ibadatali-walmart-sales-forecasting-saas.hf.space
+BACKEND_URL=https://ibadatali-walmart-sales-forecasting-saas.hf.space
+ALLOWED_ORIGINS=https://ibadatali-walmart-sales-forecasting-saas.hf.space
 
 # Database (optional - for production)
 DATABASE_URL=postgresql://user:password@host:port/dbname
@@ -65,7 +65,7 @@ DATABASE_URL=postgresql://user:password@host:port/dbname
 
 ```bash
 # Add HuggingFace remote
-git remote add huggingface https://huggingface.co/spaces/Ibadat-Ali86/forecastai-enterprise
+git remote add huggingface https://huggingface.co/spaces/ibadatali/walmart-sales-forecasting-saas
 
 # Push to HuggingFace
 git push huggingface main

@@ -76,6 +76,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+from starlette.middleware.sessions import SessionMiddleware
+app.add_middleware(SessionMiddleware, secret_key=settings.SECRET_KEY)
+
 @app.middleware("http")
 async def log_requests(request: Request, call_next):
     logger.info(f"👉 Request: {request.method} {request.url} | Origin: {request.headers.get('origin')}")
@@ -175,6 +178,10 @@ async def health_check():
             "error": str(e),
             "version": settings.VERSION
         }
+
+@app.get("/api/health")
+async def health_check_alias():
+    return await health_check()
 
 @app.get("/api/health/detailed")
 async def detailed_health_check():

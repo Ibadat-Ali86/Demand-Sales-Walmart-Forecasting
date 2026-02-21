@@ -628,7 +628,7 @@ async def profile_dataset(session_id: str, request: DataProfileRequest):
 
     # --- Phase 2.2: Data Quality Scorecard ---
     try:
-        from app.services.data_adapter import DataAdapter
+        from app.utils.data_adapter import DataAdapter
         adapter = DataAdapter()
         scorecard = adapter.generate_quality_scorecard(df)
         profile['quality_scorecard'] = scorecard
@@ -703,7 +703,7 @@ async def preprocess_dataset(session_id: str):
         job = training_jobs[session_id]
         df = pd.DataFrame(job['data'])
         
-        from app.services.data_adapter import DataAdapter
+        from app.utils.data_adapter import DataAdapter
         adapter = DataAdapter()
         
         # Apply normalization and preprocessing
@@ -870,6 +870,31 @@ async def run_training(
              raise ValueError(f"Session {session_id} not found for data access")
              
         df = pd.DataFrame(training_jobs[session_id]['data'])
+        
+        # --- Handle Column Mismatches (Frontend vs Backend) ---
+        # Preprocessing standardizes columns to 'sales' and 'date'. 
+        # If the original frontend requested name is missing, fall back to the standardized names.
+        if target_col not in df.columns:
+            if 'sales' in df.columns:
+                logger.info(f"Mapping target '{target_col}' -> 'sales' (standardized)")
+                target_col = 'sales'
+            else:
+                for col in df.columns:
+                    if col.lower() == target_col.lower():
+                        logger.info(f"Mapping target '{target_col}' -> '{col}'")
+                        target_col = col
+                        break
+                    
+        if date_col not in df.columns:
+            if 'date' in df.columns:
+                logger.info(f"Mapping date '{date_col}' -> 'date' (standardized)")
+                date_col = 'date'
+            else:
+                 for col in df.columns:
+                    if col.lower() == date_col.lower():
+                        logger.info(f"Mapping date '{date_col}' -> '{col}'")
+                        date_col = col
+                        break
         
         await update_status(20, 'Preparing features...')
         
@@ -1061,6 +1086,51 @@ async def get_training_status(job_id: str):
         'completed_at': job.get('completed_at'),
         'error': job.get('error')
     }
+
+@router.get("/logs/{job_id}")
+async def stream_logs(job_id: str):
+    """
+    Stream real-time training logs via Server-Sent Events (SSE).
+    """
+    import asyncio
+    import json
+    from fastapi.responses import StreamingResponse
+
+    async def log_generator():
+        last_progress = -1
+        last_status = None
+        
+        while True:
+            # Check memory, fallback to load_jobs
+            if job_id not in training_jobs:
+                load_jobs()
+                if job_id not in training_jobs:
+                    yield f"data: {json.dumps({'status': 'error', 'step': 'Job not found'})}\n\n"
+                    break
+                    
+            job = training_jobs[job_id]
+            current_progress = job.get('progress', 0)
+            current_status = job.get('status', 'queued')
+            current_step = job.get('current_step', '')
+            
+            if current_progress != last_progress or current_status != last_status:
+                data = {
+                    'status': current_status,
+                    'progress': current_progress,
+                    'step': current_step,
+                    'timestamp': datetime.now().isoformat()
+                }
+                yield f"data: {json.dumps(data)}\n\n"
+                
+                last_progress = current_progress
+                last_status = current_status
+                
+            if current_status in ['completed', 'failed']:
+                break
+                
+            await asyncio.sleep(0.5)
+            
+    return StreamingResponse(log_generator(), media_type="text/event-stream")
 
 
 @router.get("/results/{job_id}")

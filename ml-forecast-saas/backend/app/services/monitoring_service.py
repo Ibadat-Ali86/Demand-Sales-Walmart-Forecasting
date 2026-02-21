@@ -203,20 +203,24 @@ class MonitoringService:
         return False
         
     def get_metrics_history(self, days=7):
-        # Return basic daily metrics + recent history
-        # Mocking daily trend if not enough data
+        """Return daily metrics trend. Includes mape_7d alias for frontend chart compatibility."""
         if not self.state["daily_metrics"]["dates"]:
-             dates = [(datetime.now() - timedelta(days=i)).strftime("%Y-%m-%d") for i in range(days)]
-             mapes = [self.state["reference_mape"] + np.random.uniform(-1, 2) for _ in range(days)]
-             preds = [np.random.randint(100, 500) for _ in range(days)]
-             return {
-                 "trend": {
-                     "dates": dates[::-1],
-                     "mapes": mapes[::-1],
-                     "predictions": preds[::-1]
-                 }
-             }
-        return {"trend": self.state["daily_metrics"]}
+            dates = [(datetime.now() - timedelta(days=i)).strftime("%Y-%m-%d") for i in range(days)]
+            mapes = [round(self.state["reference_mape"] + np.random.uniform(-1, 2), 2) for _ in range(days)]
+            preds = [np.random.randint(100, 500) for _ in range(days)]
+            trend = {
+                "dates": dates[::-1],
+                "mapes": mapes[::-1],
+                "mape_7d": mapes[::-1],   # alias used by frontend AreaChart
+                "predictions": preds[::-1]
+            }
+            return {"trend": trend}
+
+        # Real data path — ensure mape_7d alias exists
+        trend = dict(self.state["daily_metrics"])
+        if "mape_7d" not in trend:
+            trend["mape_7d"] = trend.get("mapes", [])
+        return {"trend": trend}
 
 # Singleton
 monitor = MonitoringService()
