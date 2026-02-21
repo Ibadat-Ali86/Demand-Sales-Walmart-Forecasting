@@ -25,8 +25,9 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy backend code
 COPY backend/app ./app
-# Copy models if they exist, otherwise ensure directory exists
-COPY backend/models ./models
+# Create models directory to ensure it exists, then safely copy any existing models using a wildcard
+RUN mkdir -p ./models
+COPY backend/model* ./models/
 
 # Copy frontend build to static directory
 # Ensure the destination directory exists (though COPY creates it)
