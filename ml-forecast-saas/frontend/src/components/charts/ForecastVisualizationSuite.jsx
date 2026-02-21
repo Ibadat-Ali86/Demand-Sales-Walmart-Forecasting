@@ -27,12 +27,16 @@ ChartJS.register(
     Filler
 );
 
+import { useTheme } from '../../context/ThemeContext';
+
 /**
  * ForecastVisualizationSuite - Comprehensive visualization suite for forecasts
  * Includes 6 chart types: Main Forecast, Trend Decomposition, Product Comparison,
  * Monthly Aggregation, Forecast vs Actual, and Risk Heatmap
  */
-const ForecastVisualizationSuite = ({ forecastData, historicalData, darkMode = false }) => {
+const ForecastVisualizationSuite = ({ forecastData, historicalData }) => {
+    const { isDark } = useTheme();
+    const darkMode = isDark;
     const chartData = generateChartData(forecastData, historicalData);
 
     return (

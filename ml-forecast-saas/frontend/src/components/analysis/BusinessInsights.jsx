@@ -158,67 +158,70 @@ const BusinessInsights = ({ forecastData, metrics, onContinue }) => {
                 </h3>
 
                 <div className="space-y-4">
-                    {insights.risks.map((risk, idx) => (
-                        <div
-                            key={idx}
-                            className={`p-4 rounded-lg border-l-4 ${risk.severity === 'high'
-                                ? 'bg-red-50 dark:bg-red-900/20 border-red-500'
-                                : risk.severity === 'medium'
-                                    ? 'bg-yellow-50 dark:bg-yellow-900/20 border-yellow-500'
-                                    : 'bg-blue-50 dark:bg-blue-900/20 border-blue-500'
-                                }`}
-                        >
-                            <div className="flex items-center justify-between mb-2">
-                                <h4 className={`font-semibold ${risk.severity === 'high'
-                                    ? 'text-red-900 dark:text-red-200'
-                                    : risk.severity === 'medium'
-                                        ? 'text-yellow-900 dark:text-yellow-200'
-                                        : 'text-blue-900 dark:text-blue-200'
+                    {insights.risks.map((risk, idx) => {
+                        const severity = (risk.severity || '').toLowerCase();
+                        return (
+                            <div
+                                key={idx}
+                                className={`p-4 rounded-lg border-l-4 ${severity === 'high'
+                                    ? 'bg-red-50 dark:bg-red-900/30 border-red-500'
+                                    : severity === 'medium'
+                                        ? 'bg-yellow-50 dark:bg-yellow-900/30 border-yellow-500'
+                                        : 'bg-blue-50 dark:bg-blue-900/30 border-blue-500'
+                                    }`}
+                            >
+                                <div className="flex items-center justify-between mb-2">
+                                    <h4 className={`font-semibold ${severity === 'high'
+                                        ? 'text-red-900 dark:text-red-100'
+                                        : severity === 'medium'
+                                            ? 'text-yellow-900 dark:text-yellow-100'
+                                            : 'text-blue-900 dark:text-blue-100'
+                                        }`}>
+                                        {risk.type}
+                                    </h4>
+                                    <span className={`text-xs px-2 py-1 rounded-full font-medium ${severity === 'high'
+                                        ? 'bg-red-200 dark:bg-red-700 text-red-900 dark:text-white'
+                                        : severity === 'medium'
+                                            ? 'bg-yellow-200 dark:bg-yellow-700 text-yellow-900 dark:text-white'
+                                            : 'bg-blue-200 dark:bg-blue-700 text-blue-900 dark:text-white'
+                                        }`}>
+                                        {(risk.severity || '').toUpperCase()}
+                                    </span>
+                                </div>
+                                <p className={`text-sm mb-3 ${severity === 'high'
+                                    ? 'text-red-800 dark:text-red-200'
+                                    : severity === 'medium'
+                                        ? 'text-yellow-800 dark:text-yellow-200'
+                                        : 'text-blue-800 dark:text-blue-200'
                                     }`}>
-                                    {risk.type}
-                                </h4>
-                                <span className={`text-xs px-2 py-1 rounded-full font-medium ${risk.severity === 'high'
-                                    ? 'bg-red-200 dark:bg-red-800 text-red-800 dark:text-red-200'
-                                    : risk.severity === 'medium'
-                                        ? 'bg-yellow-200 dark:bg-yellow-800 text-yellow-800 dark:text-yellow-200'
-                                        : 'bg-blue-200 dark:bg-blue-800 text-blue-800 dark:text-blue-200'
-                                    }`}>
-                                    {risk.severity.toUpperCase()}
-                                </span>
-                            </div>
-                            <p className={`text-sm mb-3 ${risk.severity === 'high'
-                                ? 'text-red-800 dark:text-red-300'
-                                : risk.severity === 'medium'
-                                    ? 'text-yellow-800 dark:text-yellow-300'
-                                    : 'text-blue-800 dark:text-blue-300'
-                                }`}>
-                                {risk.description}
-                            </p>
-                            <div>
-                                <p className={`text-xs font-medium mb-2 ${risk.severity === 'high'
-                                    ? 'text-red-700 dark:text-red-400'
-                                    : risk.severity === 'medium'
-                                        ? 'text-yellow-700 dark:text-yellow-400'
-                                        : 'text-blue-700 dark:text-blue-400'
-                                    }`}>
-                                    Mitigation Strategies:
+                                    {risk.description}
                                 </p>
-                                <ul className="space-y-1">
-                                    {risk.mitigation.map((m, i) => (
-                                        <li key={i} className={`text-sm flex items-start gap-2 ${risk.severity === 'high'
-                                            ? 'text-red-700 dark:text-red-300'
-                                            : risk.severity === 'medium'
-                                                ? 'text-yellow-700 dark:text-yellow-300'
-                                                : 'text-blue-700 dark:text-blue-300'
-                                            }`}>
-                                            <CheckCircle className="w-4 h-4 flex-shrink-0 mt-0.5" />
-                                            {m}
-                                        </li>
-                                    ))}
-                                </ul>
+                                <div>
+                                    <p className={`text-xs font-bold mb-2 ${severity === 'high'
+                                        ? 'text-red-700 dark:text-red-300'
+                                        : severity === 'medium'
+                                            ? 'text-yellow-700 dark:text-yellow-300'
+                                            : 'text-blue-700 dark:text-blue-300'
+                                        }`}>
+                                        Mitigation Strategies:
+                                    </p>
+                                    <ul className="space-y-1">
+                                        {risk.mitigation.map((m, i) => (
+                                            <li key={i} className={`text-sm flex items-start gap-2 ${severity === 'high'
+                                                ? 'text-red-800 dark:text-red-200'
+                                                : severity === 'medium'
+                                                    ? 'text-yellow-800 dark:text-yellow-200'
+                                                    : 'text-blue-800 dark:text-blue-200'
+                                                }`}>
+                                                <CheckCircle className="w-4 h-4 flex-shrink-0 mt-0.5" />
+                                                {m}
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
                             </div>
-                        </div>
-                    ))}
+                        )
+                    })}
                 </div>
             </div>
 
