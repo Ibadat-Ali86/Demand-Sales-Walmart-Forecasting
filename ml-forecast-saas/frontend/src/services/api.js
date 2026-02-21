@@ -16,6 +16,13 @@ api.interceptors.request.use(
         if (token) {
             config.headers.Authorization = `Bearer ${token}`;
         }
+
+        // CRITICAL: Let the browser set the Content-Type automatically for FormData
+        // otherwise it misses the multipart boundary and FastAPI throws a 422 Error
+        if (config.data instanceof FormData) {
+            delete config.headers['Content-Type'];
+        }
+
         return config;
     },
     (error) => Promise.reject(error)
