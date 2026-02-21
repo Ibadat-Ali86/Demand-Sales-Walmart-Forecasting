@@ -60,7 +60,10 @@ const AuthPage = () => {
         if (activeMode === 'register') {
             const passError = validatePassword(formData.password);
             if (passError) newErrors.password = passError;
-            if (!validateRequired(formData.name)) newErrors.name = 'Full Name is required';
+
+            const nameError = validateRequired(formData.name, 'Full Name');
+            if (nameError) newErrors.name = nameError;
+
             if (!formData.terms) newErrors.terms = 'Agreement required';
         } else {
             if (!formData.password) newErrors.password = 'Password is required';
