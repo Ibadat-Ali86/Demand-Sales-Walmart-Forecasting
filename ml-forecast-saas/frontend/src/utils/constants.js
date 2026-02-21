@@ -1,5 +1,11 @@
 // API base URL
-export const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+let baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+if (baseUrl === '/') {
+    baseUrl = '';
+} else if (baseUrl.endsWith('/')) {
+    baseUrl = baseUrl.slice(0, -1);
+}
+export const API_BASE_URL = baseUrl;
 
 // App routes
 export const ROUTES = {

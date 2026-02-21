@@ -6,7 +6,7 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Button from '../ui/Button';
-import { API_BASE_URL } from '../../utils/constants';
+import api from '../../services/api';
 
 
 const UploadState = {
@@ -79,16 +79,8 @@ const SmartUploadZone = ({ onUploadComplete, maxFileSize = 50 * 1024 * 1024 }) =
             const formData = new FormData();
             formData.append('file', selectedFile);
 
-            const response = await fetch(`${API_BASE_URL}/api/analysis/detect-columns`, {
-                method: 'POST',
-                body: formData
-            });
-
-            if (!response.ok) {
-                throw new Error(`Server error: ${response.status}`);
-            }
-
-            const data = await response.json();
+            const response = await api.post('/api/analysis/detect-columns', formData);
+            const data = response.data;
 
             // Transform API response to component format
             const detected = {};
@@ -163,19 +155,16 @@ const SmartUploadZone = ({ onUploadComplete, maxFileSize = 50 * 1024 * 1024 }) =
             formData.append('file', file);
 
             setProgress(30);
-            const response = await fetch(`${API_BASE_URL}/api/analysis/upload`, {
-                method: 'POST',
-                body: formData
+            const response = await api.post('/api/analysis/upload', formData, {
+                onUploadProgress: (progressEvent) => {
+                    const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+                    // Scale progress from 30 to 70
+                    setProgress(30 + Math.floor(percentCompleted * 0.4));
+                }
             });
 
             setProgress(70);
-
-            if (!response.ok) {
-                const errData = await response.json().catch(() => ({}));
-                throw new Error(errData.detail || `Upload failed: ${response.status}`);
-            }
-
-            const data = await response.json();
+            const data = response.data;
             setProgress(100);
 
             onUploadComplete?.({
@@ -188,9 +177,13 @@ const SmartUploadZone = ({ onUploadComplete, maxFileSize = 50 * 1024 * 1024 }) =
             });
         } catch (err) {
             console.error('Upload failed:', err);
+            const errorMessage = err.response?.data?.detail
+                ? (typeof err.response.data.detail === 'string' ? err.response.data.detail : JSON.stringify(err.response.data.detail))
+                : err.message || 'Upload failed';
+
             setError({
                 title: 'Upload Failed',
-                message: err.message,
+                message: errorMessage,
                 action: 'Please check your connection and try again'
             });
             setUploadState(UploadState.ERROR);
