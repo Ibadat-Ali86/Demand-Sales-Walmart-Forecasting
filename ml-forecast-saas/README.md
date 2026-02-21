@@ -1,3 +1,14 @@
+---
+title: AdaptIQ Enterprise Platform (v3.0)
+emoji: 🧠
+colorFrom: blue
+colorTo: indigo
+sdk: docker
+app_port: 8000
+pinned: false
+license: mit
+---
+
 # 🛒 Walmart Demand Sales Forecasting: End-to-End ML SaaS Platform
 
 <div align="center">
