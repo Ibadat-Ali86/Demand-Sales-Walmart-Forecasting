@@ -83,7 +83,11 @@ const AuthPage = () => {
             if (activeMode === 'signin') {
                 await login(formData.email, formData.password);
             } else {
-                await register(formData.name, formData.email, formData.password);
+                await register({
+                    full_name: formData.name,
+                    email: formData.email,
+                    password: formData.password
+                });
             }
             navigate('/dashboard');
         } catch (err) {
