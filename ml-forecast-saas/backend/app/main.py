@@ -151,19 +151,29 @@ if os.path.exists(static_dir):
             with open(index_path, "r") as f:
                 return HTMLResponse(content=f.read())
         return JSONResponse(status_code=404, content={"detail": "Frontend not found"})
+        
+    # Explicit mapping for the main root route
+    @app.get("/")
+    async def root_ui():
+        index_path = os.path.join(static_dir, "index.html")
+        if os.path.exists(index_path):
+            with open(index_path, "r") as f:
+                return HTMLResponse(content=f.read())
+        return JSONResponse(status_code=404, content={"detail": "Frontend not found"})
+
 else:
     logger.warning(f"Static directory not found at {static_dir}. Frontend will not be served.")
 
-@app.get("/")
-async def root():
-    """Root endpoint with service info"""
-    return {
-        "service": settings.APP_NAME,
-        "version": settings.VERSION,
-        "status": "operational",
-        "docs": "/docs",
-        "health": "/health"
-    }
+    @app.get("/")
+    async def root():
+        """Root endpoint with service info if static files are missing"""
+        return {
+            "service": settings.APP_NAME,
+            "version": settings.VERSION,
+            "status": "operational",
+            "docs": "/docs",
+            "health": "/health"
+        }
 
 @app.get("/health")
 async def health_check():
