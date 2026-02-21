@@ -3,47 +3,9 @@
  * Handles service worker lifecycle and provides utilities for PWA features
  */
 
-// Register service worker
+// Register service worker - Handled Automatically by VitePWA plugin
 export function registerServiceWorker() {
-    if ('serviceWorker' in navigator) {
-        window.addEventListener('load', async () => {
-            try {
-                const registration = await navigator.serviceWorker.register('/service-worker.js', {
-                    scope: '/'
-                });
-
-                console.log('[PWA] Service Worker registered:', registration.scope);
-
-                // Check for updates periodically
-                setInterval(() => {
-                    registration.update();
-                }, 60000); // Check every minute
-
-                // Listen for updates
-                registration.addEventListener('updatefound', () => {
-                    const newWorker = registration.installing;
-
-                    newWorker.addEventListener('statechange', () => {
-                        if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                            // New service worker available
-                            console.log('[PWA] New version available! Refresh to update.');
-
-                            // Notify user
-                            if (window.confirm('A new version is available! Refresh to update?')) {
-                                window.location.reload();
-                            }
-                        }
-                    });
-                });
-
-                return registration;
-            } catch (error) {
-                console.error('[PWA] Service Worker registration failed:', error);
-            }
-        });
-    } else {
-        console.warn('[PWA] Service Workers not supported in this browser');
-    }
+    console.log('[PWA] Service Worker registration is now managed automatically by vite-plugin-pwa.');
 }
 
 // Get install prompt event

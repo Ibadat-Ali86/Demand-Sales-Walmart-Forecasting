@@ -8,6 +8,7 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
+      injectRegister: 'auto',
       includeAssets: ['favicon.ico', 'robots.txt', 'apple-touch-icon.png'],
       manifest: {
         name: 'AdaptIQ - Advanced Sales Forecasting',
@@ -17,7 +18,7 @@ export default defineConfig({
         background_color: '#F8FAFC',
         display: 'standalone',
         orientation: 'portrait',
-        start_url: '/',
+        start_url: '.',
         icons: [
           {
             src: 'pwa-192x192.png',
