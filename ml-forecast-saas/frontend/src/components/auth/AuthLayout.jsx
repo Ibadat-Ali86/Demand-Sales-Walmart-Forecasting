@@ -5,6 +5,7 @@ import { Shield, Lock, FileCheck, CheckCircle2, Activity } from 'lucide-react';
 import AdaptIQLogo from '../ui/AdaptIQLogo';
 import AnimatedText from './AnimatedText';
 import RainbowMeshCursor from '../ui/RainbowMeshCursor';
+import PWAInstallBanner from '../pwa/PWAInstallBanner';
 
 const AuthLayout = ({ children }) => {
     return (
@@ -129,17 +130,28 @@ const AuthLayout = ({ children }) => {
             <div className="w-full lg:w-[45%] relative z-10 flex flex-col items-center justify-center p-6 lg:p-12 overflow-y-auto bg-[#0A0E1A]">
 
                 {/* Mobile Header */}
-                <div className="lg:hidden w-full max-w-[400px] flex flex-col items-center text-center mb-8">
-                    <Link to="/" className="flex items-center gap-3 mb-2 group">
+                <div className="lg:hidden w-full max-w-[400px] flex flex-col items-center text-center mb-4">
+                    <Link to="/" className="flex items-center gap-3 mb-1 group">
                         <div className="w-12 h-12 flex items-center justify-center transition-transform duration-300 group-hover:scale-105">
                             <AdaptIQLogo className="w-10 h-10 drop-shadow-md" />
                         </div>
                         <span className="text-2xl font-bold tracking-tight text-white font-display">AdaptIQ</span>
                     </Link>
+                    <p className="text-[#A3ADBF] text-xs">AI-Powered Demand Forecasting Platform</p>
+                </div>
+
+                {/* Mobile PWA Install Banner */}
+                <div className="lg:hidden w-full max-w-[400px] mb-4">
+                    <PWAInstallBanner />
                 </div>
 
                 {/* Form Wrapper */}
                 {children}
+
+                {/* PWA Install Banner — always visible below the form on desktop */}
+                <div className="hidden lg:block w-full max-w-[400px]">
+                    <PWAInstallBanner />
+                </div>
 
                 {/* System Status Badge (Top Right) */}
                 <div className="absolute top-6 right-6 hidden sm:flex items-center gap-2 px-4 py-2 rounded-full bg-[rgba(74,222,128,0.15)] border border-[rgba(74,222,128,0.3)] backdrop-blur-md shadow-[0_0_15px_rgba(74,222,128,0.1)]">
