@@ -24,7 +24,7 @@ license: mit
 
 **A production-ready SaaS solution reducing retail stockouts by 30% through accurate Machine Learning forecasting.**
 
-[Live Demo](#) • [Features](#-key-features) • [Installation](#-installation--setup) • [Docs](#-documentation)
+[Live Demo](https://huggingface.co/spaces/ibadatali/walmart-sales-forecasting-saas) • [Features](#-key-features) • [Installation](#-installation--setup) • [Docs](#-documentation)
 
 </div>
 
