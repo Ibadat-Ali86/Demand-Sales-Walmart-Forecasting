@@ -13,7 +13,11 @@
 [![Vite](https://img.shields.io/badge/Vite-5+-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.100+-009688?style=for-the-badge&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
 
----
+<br/>
+
+[![🚀 Live Demo](https://img.shields.io/badge/🚀%20Live%20Demo-AdaptIQ%20App%20on%20HuggingFace-6366F1?style=for-the-badge&logo=huggingface&logoColor=white)](https://huggingface.co/spaces/ibadatali/walmart-sales-forecasting-saas)
+
+<br/>
 
 **An end-to-end time series forecasting project that implements statistical, machine learning, and deep learning models to predict weekly retail sales, achieving 98.77% prediction accuracy through ensemble methods. Includes a full-stack SaaS platform with React frontend and FastAPI backend for data-driven forecasting workflows.**
 
