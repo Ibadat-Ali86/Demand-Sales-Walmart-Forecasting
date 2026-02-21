@@ -36,6 +36,9 @@ COPY backend/app ./app
 RUN mkdir -p ./models
 COPY backend/model* ./models/
 
+# Create data directory for SQLite database (with full write permissions for Hugging Face)
+RUN mkdir -p ./data && chmod 777 ./data
+
 # Copy frontend build to static directory
 # Ensure the destination directory exists (though COPY creates it)
 COPY --from=frontend-build /app/frontend/dist ./app/static
