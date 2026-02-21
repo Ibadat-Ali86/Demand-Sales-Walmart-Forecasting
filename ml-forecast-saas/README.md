@@ -24,7 +24,13 @@ license: mit
 
 **A production-ready SaaS solution reducing retail stockouts by 30% through accurate Machine Learning forecasting.**
 
-[Live Demo](https://huggingface.co/spaces/ibadatali/walmart-sales-forecasting-saas) • [Features](#-key-features) • [Installation](#-installation--setup) • [Docs](#-documentation)
+<br/>
+
+[![🚀 Live Demo](https://img.shields.io/badge/🚀%20Live%20Demo-AdaptIQ%20App-6366F1?style=for-the-badge&logoColor=white)](https://huggingface.co/spaces/ibadatali/walmart-sales-forecasting-saas)
+[![✨ Features](https://img.shields.io/badge/✨%20Features-View%20Capabilities-10B981?style=for-the-badge)](https://github.com/Ibadat-Ali86/Demand-Sales-Walmart-Forecasting#-key-features)
+[![🚀 Quick Start](https://img.shields.io/badge/🚀%20Quick%20Start-Installation%20Guide-3B82F6?style=for-the-badge)](https://github.com/Ibadat-Ali86/Demand-Sales-Walmart-Forecasting#-installation--setup)
+
+<br/>
 
 </div>
 
