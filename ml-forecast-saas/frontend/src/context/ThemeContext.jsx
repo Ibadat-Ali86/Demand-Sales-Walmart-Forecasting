@@ -4,10 +4,9 @@ const ThemeContext = createContext(null);
 
 export const ThemeProvider = ({ children }) => {
     const [theme, setTheme] = useState(() => {
-        // Check localStorage first, then system preference
-        const saved = localStorage.getItem('theme');
-        if (saved) return saved;
-        return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        // Enforce Enterprise Light Theme layout regardless of OS preference
+        // to prevent chimera rendering where dark cards appear on light backgrounds
+        return 'light';
     });
 
     useEffect(() => {

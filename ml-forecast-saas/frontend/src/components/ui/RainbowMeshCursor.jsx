@@ -48,18 +48,18 @@ export default function RainbowMeshCursor() {
 
     // ── Light-mode colors: warm vivid palette (fuchsia, sky, violet, amber)
     // ── Dark-mode colors: soft cool palette (blue, purple, cyan)
-    // OPACITY GREATLY REDUCED FOR VISIBILITY & CLARITY OF FORECAST REPORTS
+    // OPACITY INCREASED for maximum visual vibrancy per user request
     const primaryBg = isDark
-        ? "radial-gradient(circle at center, rgba(74,158,255,0.08) 0%, rgba(183,148,246,0.05) 35%, rgba(0,217,255,0.03) 60%, transparent 80%)"
-        : "radial-gradient(circle at center, rgba(217,70,239,0.15) 0%, rgba(99,102,241,0.10) 35%, rgba(14,165,233,0.05) 60%, transparent 82%)";
+        ? "radial-gradient(circle at center, rgba(74,158,255,0.30) 0%, rgba(183,148,246,0.20) 35%, rgba(0,217,255,0.15) 60%, transparent 80%)"
+        : "radial-gradient(circle at center, rgba(217,70,239,0.40) 0%, rgba(99,102,241,0.30) 35%, rgba(14,165,233,0.20) 60%, transparent 82%)";
 
     const ambientBg = isDark
-        ? "radial-gradient(circle at center, rgba(74,222,128,0.04) 0%, rgba(74,158,255,0.02) 50%, transparent 80%)"
-        : "radial-gradient(circle at center, rgba(245,158,11,0.12) 0%, rgba(239,68,68,0.08) 45%, transparent 80%)";
+        ? "radial-gradient(circle at center, rgba(74,222,128,0.15) 0%, rgba(74,158,255,0.10) 50%, transparent 80%)"
+        : "radial-gradient(circle at center, rgba(245,158,11,0.30) 0%, rgba(239,68,68,0.20) 45%, transparent 80%)";
 
     const accentBg = isDark
-        ? "radial-gradient(circle at center, rgba(183,148,246,0.05) 0%, rgba(74,158,255,0.03) 60%, transparent 80%)"
-        : "radial-gradient(circle at center, rgba(16,185,129,0.10) 0%, rgba(6,182,212,0.08) 50%, transparent 80%)";
+        ? "radial-gradient(circle at center, rgba(183,148,246,0.20) 0%, rgba(74,158,255,0.15) 60%, transparent 80%)"
+        : "radial-gradient(circle at center, rgba(16,185,129,0.30) 0%, rgba(6,182,212,0.25) 50%, transparent 80%)";
 
     return (
         <div
