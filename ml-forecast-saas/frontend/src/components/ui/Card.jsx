@@ -13,26 +13,28 @@ const Card = ({
     className = '',
     ...props
 }) => {
-    const baseStyles = 'bg-surface-default border border-border-default rounded-lg transition-all duration-200';
+    const baseStyles = 'card-premium transition-all duration-200 overflow-hidden';
 
     const variants = {
-        default: 'p-6 shadow-sm',
-        feature: 'p-8 shadow-sm relative overflow-hidden before:absolute before:top-0 before:left-0 before:right-0 before:h-1 before:bg-gradient-to-r before:from-brand-500 before:to-brand-400 before:scale-x-0 hover:before:scale-x-100 before:transition-transform before:duration-300',
-        kpi: 'p-6 bg-gradient-to-br from-surface-default to-bg-tertiary shadow-sm'
+        default: 'p-6',
+        feature: 'p-8 relative',
+        kpi: 'p-6',
+        glass: 'p-6 bg-white/70 backdrop-blur-2xl',
+        dark: 'p-6 bg-slate-900 border-slate-700/50',
     };
 
     const hoverStyles = hoverable
-        ? 'hover:border-border-hover hover:shadow-md hover:-translate-y-1'
+        ? 'cursor-pointer'
         : '';
 
-    const classes = `${baseStyles} ${variants[variant]} ${hoverStyles} ${className}`;
+    const classes = `${baseStyles} ${variants[variant] || variants.default} ${hoverStyles} ${className}`;
 
     if (hoverable) {
         return (
             <motion.div
                 className={classes}
-                whileHover={{ y: -4 }}
-                transition={{ duration: 0.2 }}
+                whileHover={{ y: -2, scale: 1.002 }}
+                transition={{ duration: 0.2, ease: 'easeOut' }}
                 {...props}
             >
                 {children}

@@ -7,6 +7,112 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [3.0.0] - 2026-02-21
+
+### 🎨 Major Release: Enterprise Visual Identity & Brand Unification (Phase 12 & 13)
+
+This release delivers a complete visual overhaul, unifying the brand identity across all pages — from the public landing/auth pages to every authenticated dashboard and tool — with a premium glassmorphism aesthetic, a new SVG logo, and an enhanced global background effect system.
+
+---
+
+### ✨ Added
+
+#### New Components
+
+- **`AdaptIQLogo.jsx`** (`frontend/src/components/ui/AdaptIQLogo.jsx`)
+  - Custom SVG logotype featuring a stylized AI brain/network icon
+  - Uses `#00D9FF` and `#4A9EFF` color tokens with internal gradient definitions
+  - Scalable via `className` prop, animatable, replaces static `logo.png` in all locations
+
+- **`RainbowMeshCursor.jsx`** (`frontend/src/components/ui/RainbowMeshCursor.jsx`) _(Rewritten)_
+  - Multi-layer DOM-based cursor tracking blob system (3 overlapping blobs):
+    - **Primary Blob** (800px): smooth 7% linear interpolation toward cursor position
+    - **Ambient Blob** (600px): slow drift animation via CSS `@keyframes ambient-drift`
+    - **Accent Blob** (500px): reverse-direction drift in top-right corner
+  - Visible on both dark (Auth/Landing) and light (Enterprise Dashboard) themes
+  - Zero performance impact via `requestAnimationFrame` + `will-change: transform`
+
+- **`AnimatedText.jsx`** (`frontend/src/components/ui/AnimatedText.jsx`)
+  - Cycles through rotating brand headlines with Framer Motion `AnimatePresence`
+  - Uses a multi-color gradient text effect per cycle
+  - Integrated into `AuthLayout.jsx` left panel
+
+#### CSS Utilities (added to `frontend/src/index.css`)
+
+- **`.card-premium`** — Enterprise glassmorphism card:
+  - `background: rgba(255,255,255,0.92)`, `backdrop-filter: blur(16px)`
+  - Gradient top-line border (`#4A9EFF → #B794F6 → transparent`)
+  - Hover: blue glow shadow + `-1px` Y-lift transition
+
+- **`.dark-autofill`** — Fixes Chrome/WebKit autofill black-text-on-dark-input bug:
+  - Overrides `-webkit-box-shadow` to use `#1C2333` fill
+  - Forces `-webkit-text-fill-color: white !important`
+
+- **`.stat-badge-glow`** with `.success`, `.info`, `.warning` variants:
+  - Glowing badge style with color-coded backgrounds and box-shadows
+
+- **`.page-title-premium`** — Gradient slate-to-slate-600 text for page headings
+
+---
+
+### 🔄 Changed
+
+#### Layout & Navigation
+
+- **`Sidebar.jsx`** (`frontend/src/components/layout/Sidebar.jsx`)
+  - Replaced `<img src='/logo.png' />` with `<AdaptIQLogo />` SVG component
+  - Added `AdaptIQ` wordmark + `AI` badge pill for brand premium feel
+  - Background changed to `bg-white/95 backdrop-blur-xl` (glassmorphism)
+  - Per-page colored active nav indicators using Framer Motion `layoutId`:
+    - Each item has its own accent color (Dashboard=`#4A9EFF`, Analysis=`#B794F6`, Monitor=`#4ADE80`, etc.)
+    - Animated left border bar + radial glow on active page
+    - Active indicator dot on right side
+  - User footer upgraded: gradient avatar, green online dot, smooth enter/exit animations
+
+- **`Layout.jsx`** (`frontend/src/components/layout/Layout.jsx`)
+  - Outer container background: `linear-gradient(135deg, #f8fafc, #f0f4ff, #f8fffe)` replacing flat `bg-bg-primary`
+  - Main content area: semi-transparent gradient overlay, enabling rainbow mesh visibility
+
+- **`Header.jsx`** (`frontend/src/components/layout/Header.jsx`)
+  - Background changed to `rgba(255,255,255,0.85)` + `backdrop-filter: blur(20px)` (glassmorphism)
+  - Border lightened to `border-slate-200/80`
+
+- **`Card.jsx`** (`frontend/src/components/ui/Card.jsx`)
+  - Upgraded base styles to use `.card-premium` CSS class by default
+  - Added new `glass` and `dark` variants
+  - Refined hover animation: `y: -2` + `scale: 1.002` (reduced aggressiveness)
+
+#### Authentication Pages
+
+- **`AuthLayout.jsx`** (`frontend/src/components/auth/AuthLayout.jsx`)
+  - Integrated `<RainbowMeshCursor />` in background layer for auth pages
+  - Replaced `logo.png` img with `<AdaptIQLogo />` SVG
+  - Updated left-panel brand section with `<AnimatedText />` cycling headlines
+
+- **`AuthPage.jsx`** (`frontend/src/pages/auth/AuthPage.jsx`)
+  - Added `dark-autofill !text-white` to all input fields to prevent browser autofill color override
+  - Ensures white text on dark `#1C2333` input backgrounds even with Chrome autofill
+
+---
+
+### 🐛 Fixed
+
+- **Auth Input Text Invisible (Autofill Bug)**: WebKit's `-webkit-autofill` pseudo-state was injecting a white box-shadow over the `#1C2333` dark input background, rendering typed/autofilled text invisible. Fixed via `.dark-autofill` CSS utility.
+
+- **RainbowMeshCursor Not Visible in Light Theme**: The original implementation used `rgba` with very low opacity (`0.08`) mapped to CSS variables. On the bright Enterprise Light theme, this was completely invisible. Rewrote the component with DOM blobs at `0.18` opacity and moved from CSS `@property` approach to direct `style.transform` on the blob element.
+
+- **`.rainbow-mesh` CSS Class Missing**: The component referenced a CSS class that was never defined. Added the class definition to `index.css`.
+
+---
+
+### 📝 Documentation Updated
+
+- `CHANGELOG.md` — This entry
+- `docs/UI_UX_DOCUMENTATION.md` — New Phase 12/13 sections for Logo, Sidebar, Cards, and Mesh Cursor
+- `frontend/COMPONENT_INDEX.md` — Added `AdaptIQLogo`, `RainbowMeshCursor`, `AnimatedText` entries
+
+---
+
 ## [2.0.0] - 2026-02-18
 
 ### 🎯 Major Release: Enterprise Transformation & Training Pipeline Fix

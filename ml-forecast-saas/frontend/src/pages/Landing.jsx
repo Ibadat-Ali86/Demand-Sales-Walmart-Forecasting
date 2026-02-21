@@ -12,6 +12,8 @@ import NavigationUnderline from '../components/landing/NavigationUnderline';
 import Button from '../components/ui/Button';
 import Card from '../components/ui/Card';
 import Badge from '../components/ui/Badge';
+import AdaptIQLogo from '../components/ui/AdaptIQLogo';
+import AnimatedText from '../components/auth/AnimatedText';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -229,13 +231,15 @@ const Landing = () => {
             <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? 'bg-white/80 backdrop-blur-md shadow-sm border-b border-white/20' : 'bg-transparent'}`}>
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex justify-between items-center h-20">
-                        <Link to="/" className="flex items-center gap-3 group">
-                            <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-gradient-to-br from-brand-500 to-accent-500 shadow-lg group-hover:shadow-brand-500/30 transition-shadow">
-                                <TrendingUp className="w-6 h-6 text-white" />
+                        {/* Logo */}
+                        <div className="flex items-center gap-2 group cursor-pointer" onClick={() => navigate('/')}>
+                            <div className="w-10 h-10 flex-shrink-0 flex items-center justify-center transition-transform group-hover:scale-105">
+                                <AdaptIQLogo className="w-10 h-10 drop-shadow-sm" />
                             </div>
-                            <span className="text-xl font-bold font-display tracking-tight text-text-primary">AdaptIQ</span>
-                        </Link>
-
+                            <span className="text-xl font-bold tracking-tight text-text-primary font-display hidden sm:block drop-shadow-sm">
+                                AdaptIQ
+                            </span>
+                        </div>
                         <div className="hidden lg:flex items-center gap-8">
                             <NavigationUnderline
                                 items={navItems}
@@ -276,19 +280,18 @@ const Landing = () => {
                                     <span className="relative inline-flex rounded-full h-2 w-2 bg-success-500"></span>
                                 </span>
                                 <span className="text-sm font-medium text-text-secondary tracking-wide">
-                                    v3.0 Now Available
+                                    AdaptIQ v3.0 Early Access
                                 </span>
                             </div>
 
-                            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-extrabold font-display text-text-primary mb-8 leading-[1.1] tracking-tight">
-                                <TextReveal className="block">Transform data</TextReveal>
-                                <TextReveal className="block">into{' '}</TextReveal>
-                                <span className="transparent-text bg-clip-text bg-gradient-to-r from-brand-600 via-accent-500 to-brand-600 animate-shimmer bg-[length:200%_100%]">
-                                    <TextReveal>intelligence</TextReveal>
+                            <h1 className="text-5xl sm:text-6xl lg:text-[4.5rem] font-bold text-text-primary leading-[1.1] mb-8 tracking-tight font-display">
+                                <div className="mb-2">Access Your Data's</div>
+                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-600 via-indigo-500 to-accent-600 relative inline-block pb-2 animate-gradient-x">
+                                    <AnimatedText />
                                 </span>
                             </h1>
 
-                            <p className="hero-fade text-xl text-text-secondary mb-10 leading-relaxed max-w-xl mx-auto lg:mx-0 font-light">
+                            <p className="hero-fade text-lg sm:text-xl text-text-secondary mb-10 max-w-2xl mx-auto lg:mx-0 leading-relaxed font-medium">
                                 Enterprise-grade demand forecasting that helps businesses reduce stockouts by 80% and save millions in operational costs.
                             </p>
 

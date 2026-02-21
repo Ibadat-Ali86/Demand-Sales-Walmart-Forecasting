@@ -1,77 +1,15 @@
 /**
- * Font Declarations for ForecastAI Enterprise Theme
- * Self-hosted fonts for PWA offline capability
+ * Font Declarations for AdaptIQ Enterprise Theme
+ * Uses Google Fonts CDN for reliable delivery with font-display: swap
  */
 
 /* ====================================
-   INTER - Variable Font for Performance
-   Primary UI Font
+   INTER - Primary UI Font
    ==================================== */
-
-/* Inter Regular (400) */
-@font-face {
-    font-family: 'Inter';
-    src: url('https://fonts.gstatic.com/s/inter/v13/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuLyfAZ9hiA.woff2') format('woff2');
-    font-weight: 400;
-    font-style: normal;
-    font-display: swap;
-}
-
-/* Inter Medium (500) */
-@font-face {
-    font-family: 'Inter';
-    src: url('https://fonts.gstatic.com/s/inter/v13/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuI6fAZ9hiA.woff2') format('woff2');
-    font-weight: 500;
-    font-style: normal;
-    font-display: swap;
-}
-
-/* Inter SemiBold (600) */
-@font-face {
-    font-family: 'Inter';
-    src: url('https://fonts.gstatic.com/s/inter/v13/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuGKYAZ9hiA.woff2') format('woff2');
-    font-weight: 600;
-    font-style: normal;
-    font-display: swap;
-}
-
-/* Inter Bold (700) */
-@font-face {
-    font-family: 'Inter';
-    src: url('https://fonts.gstatic.com/s/inter/v13/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuFuYAZ9hiA.woff2') format('woff2');
-    font-weight: 700;
-    font-style: normal;
-    font-display: swap;
-}
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
 /* ====================================
    JETBRAINS MONO - Monospace for Data
-   For metrics, code, and data display
+   For metrics, percentages, code display
    ==================================== */
-
-/* JetBrains Mono Regular (400) */
-@font-face {
-    font-family: 'JetBrains Mono';
-    src: url('https://fonts.gstatic.com/s/jetbrainsmono/v18/tDbY2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKxjPVmUsaaDhw.woff2') format('woff2');
-    font-weight: 400;
-    font-style: normal;
-    font-display: swap;
-}
-
-/* JetBrains Mono Medium (500) */
-@font-face {
-    font-family: 'JetBrains Mono';
-    src: url('https://fonts.gstatic.com/s/jetbrainsmono/v18/tDbY2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKxTPlmUsaaDhw.woff2') format('woff2');
-    font-weight: 500;
-    font-style: normal;
-    font-display: swap;
-}
-
-/* JetBrains Mono SemiBold (600) */
-@font-face {
-    font-family: 'JetBrains Mono';
-    src: url('https://fonts.gstatic.com/s/jetbrainsmono/v18/tDbY2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKw5OVmUsaaDhw.woff2') format('woff2');
-    font-weight: 600;
-    font-style: normal;
-    font-display: swap;
-}
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap');

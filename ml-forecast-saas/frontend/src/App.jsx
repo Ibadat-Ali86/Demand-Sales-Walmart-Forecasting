@@ -1,4 +1,4 @@
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, useLocation } from 'react-router-dom'
 import { AuthProvider } from './context/AuthContext'
 import { ThemeProvider } from './context/ThemeContext'
 import { FlowProvider } from './context/FlowContext'
@@ -6,6 +6,7 @@ import { ToastProvider } from './context/ToastContext'
 import ProtectedRoute from './components/common/ProtectedRoute'
 import { useState, useEffect, lazy, Suspense } from 'react'
 import { WifiOff, Loader2 } from 'lucide-react'
+import { AnimatePresence } from 'framer-motion'
 
 // Eager load critical pages
 import Landing from './pages/Landing'
@@ -32,6 +33,7 @@ import PWAInstallPrompt from './components/pwa/PWAInstallPrompt'
 import PWAStatus from './components/pwa/PWAStatus'
 import PageTransition from './components/animations/PageTransition'
 import EnterpriseErrorBoundary from './components/common/EnterpriseErrorBoundary'
+import ApiErrorListener from './components/common/ApiErrorListener'
 
 // Loading Fallback
 const PageLoader = () => (
@@ -44,6 +46,7 @@ const PageLoader = () => (
 );
 
 function App() {
+  const location = useLocation();
   const [isOffline, setIsOffline] = useState(!navigator.onLine);
 
   useEffect(() => {
@@ -66,35 +69,41 @@ function App() {
           <ToastProvider>
             <EnterpriseErrorBoundary>
               <div className="App premium-bg pb-20 md:pb-0">
+                <a href="#main-content" className="skip-link">
+                  Skip to main content
+                </a>
                 <ReloadPrompt />
                 <MobileNav />
 
-                {/* Phase 1: PWA Components */}
+                {/* Phase 1: PWA Components & Global Listeners */}
+                <ApiErrorListener />
                 <PWAStatus />
                 <PWAInstallPrompt />
 
                 <Suspense fallback={<PageLoader />}>
-                  <Routes>
-                    <Route path="/" element={<PageTransition><Landing /></PageTransition>} />
-                    <Route path="/login" element={<PageTransition><AuthPage /></PageTransition>} />
-                    <Route path="/register" element={<PageTransition><AuthPage /></PageTransition>} />
-                    <Route path="/auth" element={<PageTransition><AuthPage /></PageTransition>} />
-                    <Route path="/auth/callback" element={<AuthCallback />} />
+                  <AnimatePresence mode="wait">
+                    <Routes location={location} key={location.pathname}>
+                      <Route path="/" element={<PageTransition><Landing /></PageTransition>} />
+                      <Route path="/login" element={<PageTransition><AuthPage /></PageTransition>} />
+                      <Route path="/register" element={<PageTransition><AuthPage /></PageTransition>} />
+                      <Route path="/auth" element={<PageTransition><AuthPage /></PageTransition>} />
+                      <Route path="/auth/callback" element={<AuthCallback />} />
 
-                    <Route element={<ProtectedRoute><BusinessLayout /></ProtectedRoute>}>
-                      <Route path="/dashboard" element={<PageTransition><Dashboard /></PageTransition>} />
-                      <Route path="/upload" element={<PageTransition><DataUpload /></PageTransition>} />
-                      <Route path="/analysis" element={<PageTransition><AnalysisDashboard /></PageTransition>} />
-                      <Route path="/forecast-explorer" element={<PageTransition><ForecastExplorer /></PageTransition>} />
-                      <Route path="/scenario-simulator" element={<PageTransition><ScenarioSimulator /></PageTransition>} />
-                      <Route path="/reports" element={<PageTransition><Reports /></PageTransition>} />
-                      <Route path="/executive" element={<PageTransition><ExecutiveDashboard /></PageTransition>} />
-                      <Route path="/scenario-planning" element={<PageTransition><ScenarioPlanningStudio /></PageTransition>} />
-                      <Route path="/monitoring" element={<PageTransition><MonitoringDashboard /></PageTransition>} />
-                      <Route path="/settings" element={<PageTransition><Settings /></PageTransition>} />
-                      <Route path="/profile" element={<PageTransition><Profile /></PageTransition>} />
-                    </Route>
-                  </Routes>
+                      <Route element={<ProtectedRoute><BusinessLayout /></ProtectedRoute>}>
+                        <Route path="/dashboard" element={<PageTransition><Dashboard /></PageTransition>} />
+                        <Route path="/upload" element={<PageTransition><DataUpload /></PageTransition>} />
+                        <Route path="/analysis" element={<PageTransition><AnalysisDashboard /></PageTransition>} />
+                        <Route path="/forecast-explorer" element={<PageTransition><ForecastExplorer /></PageTransition>} />
+                        <Route path="/scenario-simulator" element={<PageTransition><ScenarioSimulator /></PageTransition>} />
+                        <Route path="/reports" element={<PageTransition><Reports /></PageTransition>} />
+                        <Route path="/executive" element={<PageTransition><ExecutiveDashboard /></PageTransition>} />
+                        <Route path="/scenario-planning" element={<PageTransition><ScenarioPlanningStudio /></PageTransition>} />
+                        <Route path="/monitoring" element={<PageTransition><MonitoringDashboard /></PageTransition>} />
+                        <Route path="/settings" element={<PageTransition><Settings /></PageTransition>} />
+                        <Route path="/profile" element={<PageTransition><Profile /></PageTransition>} />
+                      </Route>
+                    </Routes>
+                  </AnimatePresence>
                 </Suspense>
               </div>
             </EnterpriseErrorBoundary>

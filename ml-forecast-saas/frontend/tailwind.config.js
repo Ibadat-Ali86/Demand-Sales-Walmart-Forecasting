@@ -11,7 +11,7 @@ export default {
                 // Professional typography for business platform
                 sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'],
                 display: ['Plus Jakarta Sans', 'Inter', 'sans-serif'],
-                mono: ['SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', 'monospace'],
+                mono: ['JetBrains Mono', 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', 'Courier New', 'monospace'],
             },
             colors: {
                 // Brand - Primary Brand Color (Business Indigo)
@@ -48,16 +48,21 @@ export default {
                 },
                 // Backgrounds
                 bg: {
-                    primary: 'var(--bg-page)',
-                    secondary: 'var(--bg-card)',
-                    tertiary: 'var(--bg-hover)',
+                    primary: 'var(--bg-primary)',
+                    secondary: 'var(--bg-secondary)',
+                    tertiary: 'var(--bg-tertiary)',
                     elevated: 'var(--bg-elevated)',
+                },
+                surface: {
+                    default: 'var(--bg-secondary)',
+                    subtle: 'var(--bg-tertiary)',
                 },
                 // Text
                 text: {
                     primary: 'var(--text-primary)',
                     secondary: 'var(--text-secondary)',
                     tertiary: 'var(--text-tertiary)',
+                    inverse: 'var(--text-inverse)',
                 },
                 // Neutrals
                 gray: {
@@ -74,9 +79,9 @@ export default {
                 },
                 // Semantic Colors
                 success: {
-                    50: 'var(--secondary-50)', // reuse emerald scale
-                    500: 'var(--secondary-500)',
-                    600: 'var(--secondary-600)',
+                    50: 'var(--success-50)',
+                    500: 'var(--success-500)',
+                    600: 'var(--success-600)',
                 },
                 warning: {
                     50: 'var(--warning-50)',
@@ -92,10 +97,12 @@ export default {
                 },
                 // Border
                 border: {
-                    primary: 'var(--gray-200)',
+                    default: 'var(--border-default)',
+                    subtle: 'var(--gray-700)',
+                    primary: 'var(--border-default)',
                     secondary: 'var(--gray-300)',
-                    focus: 'var(--primary-500)',
-                    error: 'var(--danger-500)',
+                    focus: 'var(--border-focus)',
+                    error: 'var(--accent-danger)',
                 }
             },
             spacing: {

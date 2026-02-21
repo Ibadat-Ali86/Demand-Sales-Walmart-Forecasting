@@ -38,17 +38,21 @@ import Input from '@/components/ui/Input';
 
 #### Card
 **Path:** `src/components/ui/Card.jsx`  
-**Variants:** default, feature, kpi  
-**Subcomponents:** Card.Header, Card.Title, Card.Body, Card.Footer
+**Variants:** `default`, `feature`, `kpi`, `glass`, `dark`  
+**Subcomponents:** `Card.Header`, `Card.Title`, `Card.Body`, `Card.Footer`  
+**Phase 13:** Now uses `.card-premium` glassmorphism style by default — frosted white glass with gradient top-line border.
 
 ```jsx
 import Card from '@/components/ui/Card';
-<Card variant="feature" hoverable>
+<Card variant="default" hoverable>   {/* Glassmorphism by default */}
   <Card.Header>
     <Card.Title>Title</Card.Title>
   </Card.Header>
   <Card.Body>Content</Card.Body>
 </Card>
+
+<Card variant="glass">              {/* Extra frosted for overlays */}
+<Card variant="dark">               {/* Dark slate for dark sections */}
 ```
 
 ---
@@ -344,4 +348,73 @@ All components use Tailwind's responsive utilities:
 
 ---
 
-*Last Updated: February 18, 2026*
+## 🎨 Phase 13: Brand Unification Components (v3.0)
+
+### AdaptIQLogo
+**Path:** `src/components/ui/AdaptIQLogo.jsx`  
+**Added:** Phase 13 — February 2026  
+**Features:** Custom SVG logotype, internal gradient defs (`#00D9FF→#4A9EFF`), scalable via `className` prop
+
+```jsx
+import AdaptIQLogo from '@/components/ui/AdaptIQLogo';
+<AdaptIQLogo className="w-9 h-9" />   // Sidebar size
+<AdaptIQLogo className="w-12 h-12" /> // Auth panel size
+```
+
+---
+
+### RainbowMeshCursor
+**Path:** `src/components/ui/RainbowMeshCursor.jsx`  
+**Added:** Phase 13 (rewritten from Phase 12 stub) — February 2026  
+**Features:** 3-layer gradient blob cursor tracking system. Uses `requestAnimationFrame` for smooth 7% lerp. Visible on both dark auth and light dashboard themes.
+
+```jsx
+import RainbowMeshCursor from '@/components/ui/RainbowMeshCursor';
+// Mounted inside Layout.jsx and AuthLayout.jsx
+<div className="fixed inset-0 pointer-events-none z-0">
+  <RainbowMeshCursor />
+</div>
+```
+
+---
+
+### AnimatedText
+**Path:** `src/components/ui/AnimatedText.jsx`  
+**Added:** Phase 13 — February 2026  
+**Features:** Cycles through an array of text strings using Framer Motion `AnimatePresence`. Each string appears with a gradient color. Used in `AuthLayout.jsx` left panel for rotating brand headlines.
+
+```jsx
+import AnimatedText from '@/components/ui/AnimatedText';
+<AnimatedText
+  texts={["Sales Prediction", "Demand Forecasting", "Revenue Intelligence"]}
+  className="text-5xl font-bold"
+/>
+```
+
+---
+
+### AuthLayout
+**Path:** `src/components/auth/AuthLayout.jsx`  
+**Added:** Phase 12 — February 2026  
+**Features:** Two-panel auth wrapper (55% dark brand panel + 45% form panel). Integrates `<RainbowMeshCursor />`, `<AdaptIQLogo />`, and `<AnimatedText />`. The left panel has animated gradient blobs and feature highlights.
+
+```jsx
+import AuthLayout from '@/components/auth/AuthLayout';
+<AuthLayout>
+  <LoginForm />
+</AuthLayout>
+```
+
+---
+
+## 📦 Total Components (v3.0)
+
+**22 Components** (+4 Phase 13 additions)  
+**3 Hooks**  
+**1 Validation Library**  
+**1 Animation Library**  
+**4 Style Files + Phase 13 CSS Utilities**
+
+---
+
+*Last Updated: February 21, 2026 — v3.0 Enterprise Brand Unification*

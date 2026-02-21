@@ -1,6 +1,7 @@
 import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import * as XLSX from 'xlsx';
+import { translateMetricsToBusiness } from './BusinessTranslator';
 
 /**
  * Generate Comprehensive Business Intelligence Report
@@ -82,6 +83,20 @@ export const generatePDFReport = (data) => {
 
         doc.addPage();
         yPos = 30;
+
+        // --- SECTION 0.5: AI BUSINESS NARRATIVE (Blueprint §4.3) ---
+        if (data.forecast && data.metrics) {
+            try {
+                const narrative = translateMetricsToBusiness(data.forecast, data.metrics, 0, 25);
+                addHeader('AI-Generated Executive Briefing', 14);
+                addText(narrative.headline, 12);
+                yPos += 3;
+                addText(narrative.detailedSummary, 10);
+                yPos += 8;
+            } catch (e) {
+                // Narrative generation is non-critical, skip on error
+            }
+        }
 
         // --- SECTION 1: PROBLEM FORMULATION & EXECUTIVE SUMMARY ---
         addHeader('1. Executive Summary & Problem Formulation');
@@ -222,14 +237,83 @@ export const generateForecastCSV = (data) => {
 export const generateExcelReport = (analysisData) => {
     try {
         const wb = XLSX.utils.book_new();
+        const metrics = analysisData?.metrics || {};
+        const forecast = analysisData?.forecast || {};
+        const insights = analysisData?.insights || {};
 
-        // Detailed Excel logic can be added here or preserved from previous version
-        // For brevity in this fix, we focus on PDF which was the main request
-        const ws = XLSX.utils.json_to_sheet([{ info: "Please use PDF for full report" }]);
-        XLSX.utils.book_append_sheet(wb, ws, "Summary");
+        // Sheet 1: Executive Summary
+        let summary = [
+            ['AdaptIQ — Forecast Business Intelligence Report'],
+            ['Generated:', new Date().toLocaleString()],
+            [],
+            ['METRIC', 'VALUE'],
+            ['Model Type', metrics.modelType || 'Ensemble'],
+            ['MAPE (%)', (metrics.mape || 0).toFixed(2)],
+            ['RMSE', (metrics.rmse || 0).toFixed(2)],
+            ['MAE', (metrics.mae || 0).toFixed(2)],
+            ['R² Score', (metrics.r2 || 0).toFixed(3)],
+            ['Training Samples', metrics.training_samples || 'N/A'],
+        ];
 
-        XLSX.writeFile(wb, `AdaptIQ_Data_${new Date().toISOString().split('T')[0]}.xlsx`);
+        // Add AI narrative if possible
+        if (forecast.predictions) {
+            try {
+                const narrative = translateMetricsToBusiness(forecast, metrics, 0, 25);
+                summary.push([], ['AI HEADLINE', narrative.headline]);
+                summary.push(['SUMMARY', narrative.detailedSummary]);
+                summary.push(['REVENUE IMPACT', narrative.revenue.formattedRevenue]);
+                summary.push(['CONFIDENCE LEVEL', narrative.accuracy.title]);
+                summary.push(['RISK LEVEL', narrative.risk.level]);
+            } catch (_) { }
+        }
+        const wsSummary = XLSX.utils.aoa_to_sheet(summary);
+        XLSX.utils.book_append_sheet(wb, wsSummary, 'Executive Summary');
+
+        // Sheet 2: Forecast Data
+        if (forecast.dates && forecast.predictions) {
+            const forecastRows = [['Date', 'Forecast (Units)', 'Lower Bound', 'Upper Bound']];
+            forecast.dates.forEach((date, i) => {
+                forecastRows.push([
+                    date,
+                    (forecast.predictions[i] || 0).toFixed(2),
+                    (forecast.lower_bound?.[i] || forecast.lowerBound?.[i] || 0).toFixed(2),
+                    (forecast.upper_bound?.[i] || forecast.upperBound?.[i] || 0).toFixed(2),
+                ]);
+            });
+            const wsForecast = XLSX.utils.aoa_to_sheet(forecastRows);
+            XLSX.utils.book_append_sheet(wb, wsForecast, 'Forecast Data');
+        }
+
+        // Sheet 3: Risk Assessment
+        if (insights.risk_assessment?.identified_risks) {
+            const riskRows = [['Risk Type', 'Level', 'Description', 'Mitigation']];
+            insights.risk_assessment.identified_risks.forEach(r => {
+                riskRows.push([
+                    r.type?.replace(/_/g, ' ') || 'Unknown',
+                    r.level || 'N/A',
+                    r.description || '',
+                    r.mitigation || '',
+                ]);
+            });
+            const wsRisk = XLSX.utils.aoa_to_sheet(riskRows);
+            XLSX.utils.book_append_sheet(wb, wsRisk, 'Risk Assessment');
+        }
+
+        // Sheet 4: Action Plan
+        if (insights.action_plan) {
+            const actionRows = [['Timeframe', 'Action']];
+            insights.action_plan.forEach(phase => {
+                (phase.actions || []).forEach(action => {
+                    actionRows.push([phase.timeframe, action]);
+                });
+            });
+            const wsAction = XLSX.utils.aoa_to_sheet(actionRows);
+            XLSX.utils.book_append_sheet(wb, wsAction, 'Action Plan');
+        }
+
+        XLSX.writeFile(wb, `AdaptIQ_Report_${new Date().toISOString().split('T')[0]}.xlsx`);
     } catch (e) {
-        console.error("Excel Export Error", e);
+        console.error('Excel Export Error', e);
+        alert(`Excel export failed: ${e.message}`);
     }
 };

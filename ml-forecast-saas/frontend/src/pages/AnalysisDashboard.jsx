@@ -283,6 +283,33 @@ const AnalysisDashboard = () => {
                     {/* Step 5: Results */}
                     {currentStep === 5 && (
                         <motion.div key="results" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}>
+                            {/* Success Banner with View Forecast CTA */}
+                            <div className="mb-6 rounded-2xl overflow-hidden bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-600 p-6 text-white flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                                <div>
+                                    <div className="flex items-center gap-2 mb-1">
+                                        <CheckCircle className="w-5 h-5 text-green-300" />
+                                        <span className="font-bold text-white text-lg">Analysis Complete!</span>
+                                    </div>
+                                    <p className="text-white/75 text-sm">Model trained successfully. View results below or explore the forecast explorer.</p>
+                                </div>
+                                <div className="flex gap-3 flex-shrink-0">
+                                    <button
+                                        onClick={() => navigate('/forecast-explorer')}
+                                        className="flex items-center gap-2 px-5 py-2.5 bg-white text-brand-700 font-bold rounded-xl shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all text-sm"
+                                    >
+                                        <BarChart3 className="w-4 h-4" />
+                                        View Forecast
+                                    </button>
+                                    <button
+                                        onClick={() => navigate('/executive')}
+                                        className="flex items-center gap-2 px-5 py-2.5 bg-white/20 border border-white/30 text-white font-semibold rounded-xl hover:bg-white/30 transition-all text-sm"
+                                    >
+                                        <TrendingUp className="w-4 h-4" />
+                                        Executive Report
+                                    </button>
+                                </div>
+                            </div>
+
                             {/* Tabs */}
                             <div className="flex gap-2 mb-6 border-b border-border-default overflow-x-auto">
                                 {[

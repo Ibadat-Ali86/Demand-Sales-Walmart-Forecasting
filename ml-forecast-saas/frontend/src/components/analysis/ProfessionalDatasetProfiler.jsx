@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
     TrendingUp,
@@ -18,13 +18,38 @@ import { useSmoothScroll } from '../../hooks/useSmoothScroll';
 
 /**
  * ProfessionalDatasetProfiler - High-fidelity analysis dashboard
- * Features 3D tilt canrds, glassmorphism, and staggered animations.
+ * AUTO-PROCEEDS to preprocessing after 4 seconds of showing the profile.
  */
 const ProfessionalDatasetProfiler = ({ data, onProfileComplete, externalProfile }) => {
     const [isProcessing, setIsProcessing] = useState(false);
+    const [countdown, setCountdown] = useState(4);
+    const [autoProceed, setAutoProceed] = useState(false);
 
     // Use external profile or generate one
     const profile = externalProfile || generateProfile(data);
+
+    // Auto-proceed countdown
+    useEffect(() => {
+        let interval;
+        let timeout;
+        if (profile && onProfileComplete) {
+            interval = setInterval(() => {
+                setCountdown(prev => {
+                    if (prev <= 1) {
+                        clearInterval(interval);
+                        return 0;
+                    }
+                    return prev - 1;
+                });
+            }, 1000);
+            timeout = setTimeout(() => {
+                setAutoProceed(true);
+                onProfileComplete && onProfileComplete(profile);
+            }, 4000);
+        }
+        return () => { clearInterval(interval); clearTimeout(timeout); };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     // Staggered animation variants
     const container = {
@@ -173,8 +198,8 @@ const ProfessionalDatasetProfiler = ({ data, onProfileComplete, externalProfile 
                 <motion.div variants={item} className="space-y-6">
                     {/* Readiness Score Card */}
                     <div className={`p-6 rounded-2xl border ${profile.forecastingReadiness.ready
-                            ? 'bg-gradient-to-br from-white to-green-50 border-green-100'
-                            : 'bg-gradient-to-br from-white to-amber-50 border-amber-100'
+                        ? 'bg-gradient-to-br from-white to-green-50 border-green-100'
+                        : 'bg-gradient-to-br from-white to-amber-50 border-amber-100'
                         } shadow-lg shadow-slate-200/50`}>
                         <div className="flex items-center justify-between mb-4">
                             <h3 className="font-bold text-slate-900">Readiness Score</h3>
@@ -206,35 +231,29 @@ const ProfessionalDatasetProfiler = ({ data, onProfileComplete, externalProfile 
                             </ul>
                         </div>
 
-                        <button
-                            onClick={async () => {
-                                setIsProcessing(true);
-                                try {
-                                    if (onProfileComplete) {
-                                        await onProfileComplete(profile);
-                                    }
-                                } catch (err) {
-                                    console.error(err);
-                                } finally {
-                                    setIsProcessing(false);
-                                }
-                            }}
-                            disabled={isProcessing}
-                            className={`w-full py-4 rounded-xl font-bold text-white shadow-lg shadow-blue-200 transform transition-all active:scale-95 flex items-center justify-center gap-2 group ${isProcessing ? 'bg-slate-400 cursor-not-allowed' : 'bg-gradient-to-r from-blue-600 to-indigo-600 hover:shadow-xl hover:-translate-y-0.5'
-                                }`}
-                        >
-                            {isProcessing ? (
-                                <>
-                                    <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                                    <span>Processing...</span>
-                                </>
+                        {/* Auto-proceed countdown */}
+                        <div className="flex items-center justify-between pt-4 border-t border-slate-100">
+                            {autoProceed ? (
+                                <div className="flex items-center gap-2 text-emerald-600 text-sm font-medium">
+                                    <div className="w-4 h-4 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin" />
+                                    Processing your data…
+                                </div>
                             ) : (
-                                <>
-                                    <span>Proceed to Preprocessing</span>
-                                    <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                                </>
+                                <div className="flex items-center gap-3">
+                                    <div className="w-7 h-7 rounded-full bg-brand-600 text-white text-xs font-bold flex items-center justify-center">
+                                        {countdown}
+                                    </div>
+                                    <span className="text-sm text-slate-500">Auto-proceeding to preprocessing in {countdown}s…</span>
+                                </div>
                             )}
-                        </button>
+                            <button
+                                onClick={() => { onProfileComplete && onProfileComplete(profile); }}
+                                disabled={autoProceed}
+                                className="px-4 py-2 text-sm font-semibold text-brand-600 bg-brand-50 border border-brand-200 rounded-xl hover:bg-brand-100 transition-all disabled:opacity-50"
+                            >
+                                Proceed Now →
+                            </button>
+                        </div>
                     </div>
 
                     {/* Quick Stats or Tips */}

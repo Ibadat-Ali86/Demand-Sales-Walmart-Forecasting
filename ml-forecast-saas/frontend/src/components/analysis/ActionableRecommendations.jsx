@@ -409,33 +409,83 @@ const ExportSection = ({ analysisData }) => {
  */
 const generateRecommendations = (forecastData, metrics) => {
     const bi = metrics?.insights || metrics?.business_insights;
+
+    // Calculate dynamic inventory based on actual forecast data
+    let dynamicInventory = [];
+    if (forecastData?.predictions?.length > 0) {
+        // Aggregate next 7 days (or first 25% of forecast horizon)
+        const horizon = Math.min(7, forecastData.predictions.length);
+        let recommendedStock = 0;
+        let upperBoundSum = 0;
+
+        for (let i = 0; i < horizon; i++) {
+            recommendedStock += forecastData.predictions[i];
+            upperBoundSum += (forecastData.upper_bound?.[i] || forecastData.predictions[i] * 1.15);
+        }
+
+        // Safety stock is the difference between upper bound and prediction 
+        const safetyStock = Math.max((upperBoundSum - recommendedStock), recommendedStock * 0.10);
+        const reorderPoint = recommendedStock * 0.5 + safetyStock;
+
+        const avgVariance = safetyStock / (recommendedStock || 1);
+        let risk = 'Low';
+        if (avgVariance > 0.3) risk = 'High';
+        else if (avgVariance > 0.15) risk = 'Medium';
+
+        dynamicInventory = [
+            {
+                category: 'Primary Forecast Category',
+                recommendedStock: Math.round(recommendedStock),
+                safetyStock: Math.round(safetyStock),
+                reorderPoint: Math.round(reorderPoint),
+                risk
+            }
+        ];
+    } else {
+        // Fallback
+        dynamicInventory = [
+            { category: 'Enterprise Demo', recommendedStock: 2500, safetyStock: 375, reorderPoint: 625, risk: 'Low' },
+            { category: 'Core Product', recommendedStock: 4200, safetyStock: 630, reorderPoint: 1050, risk: 'Medium' }
+        ];
+    }
+
     if (bi && !bi.error && Object.keys(bi).length > 0) {
         return {
             strategies: (bi.strategic_recommendations || []).map(rec => ({
                 name: rec.title || 'Strategic Initiative',
                 description: rec.description,
-                budget: 'TBD',
+                budget: rec.priority === 'high' ? '$25K - $50K' : '$5K - $15K',
                 roi: rec.priority === 'high' ? 'High' : rec.priority === 'medium' ? 'Medium' : 'Low',
-                channels: [(rec.category || 'General').toUpperCase()],
-                tactics: [rec.expected_impact || 'Positive ROI']
+                channels: [(rec.category || 'Operations').toUpperCase(), 'SUPPLY CHAIN'],
+                tactics: [rec.expected_impact || 'Positive ROI', 'Minimize Overstock', 'Ensure Fulfillment']
             })),
-            inventory: [
-                { category: 'Enterprise Demo', recommendedStock: 2500, safetyStock: 375, reorderPoint: 625, risk: 'Low' },
-                { category: 'Core Product', recommendedStock: 4200, safetyStock: 630, reorderPoint: 1050, risk: 'Medium' }
-            ],
+            inventory: dynamicInventory,
             actions: {
-                immediate: (bi.action_plan?.[0]?.actions || []).map(a => ({ action: a, department: 'Operations', impact: 'High' })),
-                shortTerm: (bi.action_plan?.[1]?.actions || []).map(a => ({ action: a, department: 'Strategy', impact: 'Medium' })),
-                strategic: (bi.action_plan?.[2]?.actions || []).map(a => ({ action: a, department: 'Leadership', impact: 'High' }))
+                immediate: (bi.action_plan?.[0]?.actions || ['Review forecast bounds']).map(a => ({ action: a, department: 'Operations', impact: 'High' })),
+                shortTerm: (bi.action_plan?.[1]?.actions || ['Align inventory policies']).map(a => ({ action: a, department: 'Strategy', impact: 'Medium' })),
+                strategic: (bi.action_plan?.[2]?.actions || ['Evaluate long-term vendor contracts']).map(a => ({ action: a, department: 'Leadership', impact: 'High' }))
             }
         };
     }
 
     // Fallback if no backend insights provided
     return {
-        strategies: [],
-        inventory: [],
-        actions: { immediate: [], shortTerm: [], strategic: [] }
+        strategies: [
+            {
+                name: 'Data-Driven Procurement',
+                description: 'Leverage the recent ML forecasts to automate procurement processes and reduce manual overhead.',
+                budget: '$10K - $20K',
+                roi: 'High',
+                channels: ['OPERATIONS', 'SUPPLY CHAIN'],
+                tactics: ['Automate PO generation', 'Set dynamic safety stock', 'Review weekly variance']
+            }
+        ],
+        inventory: dynamicInventory,
+        actions: {
+            immediate: [{ action: 'Review generated forecast against current inventory', department: 'Operations', impact: 'High' }],
+            shortTerm: [{ action: 'Adjust safety stock levels based on ML variance', department: 'Supply Chain', impact: 'Medium' }],
+            strategic: [{ action: 'Integrate ML pipeline with ERP system', department: 'IT / Operations', impact: 'High' }]
+        }
     };
 };
 

@@ -11,6 +11,7 @@ import {
     AlertCircle
 } from 'lucide-react';
 import { useFlow } from '../context/FlowContext';
+import { useToast } from '../context/ToastContext';
 import { API_BASE_URL } from '../utils/constants';
 import ColumnMapper from '../components/pipeline/ColumnMapper';
 import GapAnalysisReport from '../components/pipeline/GapAnalysisReport';
@@ -124,16 +125,67 @@ const DataUpload = () => {
     // Removed handleFiles and simulateUpload as they were redundant/conflicting
     // Replaced with direct processing logic
 
+    const { showToast } = useToast();
+
     const processFile = async (file) => {
         try {
+            // Validate file size manually (50MB) just in case
+            if (file.size > 50 * 1024 * 1024) {
+                showToast('File exceeds 50MB. Please split your dataset or contact support.', 'error', 6000);
+                setUploadSuccess(false);
+                return;
+            }
+
             // Read file content for preview/parsing
             const text = await file.text();
             const { headers, data } = parseCSV(text);
 
             // Guard against empty files
-            if (headers.length === 0 || data.length === 0) {
+            if (headers.length === 0) {
                 setUploadSuccess(false);
-                alert(`Error: The CSV file appears to be empty or incorrectly formatted.`);
+                showToast('Error: The CSV file appears to be empty or incorrectly formatted.', 'error', 5000);
+                return;
+            }
+
+            // Validate minimum row count (50 rows)
+            if (data.length < 50) {
+                setUploadSuccess(false);
+                showToast(`Your dataset has only ${data.length} rows. Minimum 50 required for reliable forecasting.`, 'error', 6000);
+                return;
+            }
+
+            // Quick heuristic check for columns on the first 10 rows
+            const sampleRows = data.slice(0, 10);
+            let hasDateColumn = false;
+            let hasNumericColumn = false;
+
+            // Simple date regex for YYYY-MM-DD, MM/DD/YYYY, etc.
+            const dateRegex = /^(\d{4}[-/]\d{2}[-/]\d{2}|\d{1,2}[-/]\d{1,2}[-/]\d{2,4})$/;
+
+            headers.forEach(header => {
+                let isNumericCount = .0;
+                let isDateCount = .0;
+
+                sampleRows.forEach(row => {
+                    const val = String(row[header] || '').trim();
+                    if (val && !isNaN(Number(val))) isNumericCount++;
+                    if (val && dateRegex.test(val)) isDateCount++;
+                    else if (val && !isNaN(Date.parse(val))) isDateCount++; // fallback native parse
+                });
+
+                if (isDateCount > sampleRows.length * 0.5) hasDateColumn = true;
+                if (isNumericCount > sampleRows.length * 0.5) hasNumericColumn = true;
+            });
+
+            if (!hasDateColumn) {
+                setUploadSuccess(false);
+                showToast('Date column could not be parsed. Supported formats: YYYY-MM-DD, MM/DD/YYYY.', 'error', 6000);
+                return;
+            }
+
+            if (!hasNumericColumn) {
+                setUploadSuccess(false);
+                showToast('Target column not found. Expecting numeric values for forecasting.', 'error', 6000);
                 return;
             }
 
@@ -371,17 +423,17 @@ const DataUpload = () => {
                     <AnimatePresence>
                         {uploadSuccess && (
                             <motion.div
-                                initial={{ opacity: 0, y: 10 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                className="bg-emerald-50 border border-emerald-200 rounded-xl p-6 flex flex-col sm:flex-row items-center justify-between gap-4"
+                                initial={{ opacity: 0, scale: 0.95, y: 10 }}
+                                animate={{ opacity: 1, scale: 1, y: 0 }}
+                                className="bg-gradient-to-r from-emerald-50 to-emerald-100/50 border border-emerald-200 rounded-xl p-6 flex flex-col sm:flex-row items-center justify-between gap-6 shadow-sm"
                             >
                                 <div className="flex items-center gap-4">
-                                    <div className="p-3 rounded-full bg-emerald-100 text-emerald-600">
+                                    <div className="p-3.5 rounded-2xl bg-emerald-500 text-white shadow-md shadow-emerald-500/20">
                                         <CheckCircle className="w-6 h-6" />
                                     </div>
                                     <div>
-                                        <h3 className="text-lg font-bold text-emerald-900">Upload Complete</h3>
-                                        <p className="text-emerald-700 text-sm">
+                                        <h3 className="text-lg font-bold text-emerald-950 mb-0.5">Upload Complete</h3>
+                                        <p className="text-emerald-700/90 text-sm font-medium">
                                             {uploadedSessionId
                                                 ? `Session ready: ${uploadedSessionId.slice(0, 16)}...`
                                                 : 'Your dataset is ready for analysis.'}
@@ -395,7 +447,7 @@ const DataUpload = () => {
                                     variant="primary"
                                     icon={ArrowRight}
                                     iconPosition="right"
-                                    className="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700 border-none ring-emerald-200"
+                                    className="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700 border-none shadow-md shadow-emerald-600/20 transition-all hover:shadow-lg hover:-translate-y-0.5"
                                 >
                                     Proceed to Analysis
                                 </Button>
@@ -435,15 +487,19 @@ const DataUpload = () => {
                         <h3 className="font-bold text-text-primary mb-3">Recent Uploads</h3>
                         <div className="space-y-3">
                             {datasets.slice(0, 3).map(ds => (
-                                <div key={ds.id} className="flex items-center gap-3 p-2 rounded-lg hover:bg-bg-tertiary transition-colors cursor-pointer group">
-                                    <div className="w-8 h-8 rounded bg-bg-secondary flex items-center justify-center text-text-tertiary group-hover:text-brand-600 group-hover:bg-brand-50 transition-colors">
-                                        <FileText className="w-4 h-4" />
+                                <motion.div
+                                    key={ds.id}
+                                    whileHover={{ scale: 1.01 }}
+                                    className="flex items-center gap-3 p-3 rounded-xl hover:bg-surface-default hover:shadow-sm border border-transparent hover:border-border-default transition-all cursor-pointer group"
+                                >
+                                    <div className="w-10 h-10 rounded-lg bg-bg-tertiary flex items-center justify-center text-text-tertiary group-hover:text-brand-600 group-hover:bg-brand-50 transition-colors">
+                                        <FileText className="w-5 h-5" />
                                     </div>
                                     <div className="flex-1 min-w-0">
-                                        <p className="text-sm font-medium text-text-primary truncate">{ds.name}</p>
-                                        <p className="text-xs text-text-tertiary">{ds.uploaded}</p>
+                                        <p className="text-sm font-semibold text-text-primary truncate">{ds.name}</p>
+                                        <p className="text-xs text-text-tertiary mt-0.5">{ds.uploaded}</p>
                                     </div>
-                                </div>
+                                </motion.div>
                             ))}
                         </div>
                     </Card>

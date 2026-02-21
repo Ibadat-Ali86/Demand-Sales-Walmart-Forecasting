@@ -12,6 +12,7 @@ const Button = ({
     variant = 'primary',
     size = 'md',
     isLoading = false,
+    isSuccess = false,
     disabled = false,
     className = '',
     icon: Icon,
@@ -36,12 +37,15 @@ const Button = ({
 
     const classes = `${baseStyles} ${variants[variant]} ${sizes[size]} ${className}`;
 
+    const state = isSuccess ? 'success' : isLoading ? 'loading' : undefined;
+
     return (
         <motion.button
             className={classes}
-            disabled={disabled || isLoading}
-            whileHover={{ scale: disabled ? 1 : 1.02 }}
-            whileTap={{ scale: disabled ? 1 : 0.98 }}
+            disabled={disabled || isLoading || isSuccess}
+            data-state={state}
+            whileHover={{ scale: disabled || isLoading || isSuccess ? 1 : 1.02 }}
+            whileTap={{ scale: disabled || isLoading || isSuccess ? 1 : 0.98 }}
             {...props}
         >
             {isLoading ? (

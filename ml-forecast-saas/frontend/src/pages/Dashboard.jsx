@@ -1,9 +1,13 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import { staggerContainer, staggerItem } from '../utils/animations/variants';
 import KPICard from '../components/dashboard/KPICard';
 import WelcomeBanner from '../components/dashboard/WelcomeBanner';
 import RecentActivity from '../components/dashboard/RecentActivity';
 import ForecastChart from '../components/charts/ForecastChart';
+import PredictiveActionHub from '../components/dashboard/PredictiveActionHub';
+import { ConfidenceRing } from '../components/common/ConfidenceRing';
 import Card from '../components/ui/Card';
 import Button from '../components/ui/Button';
 import Select from '../components/ui/Select';
@@ -76,16 +80,19 @@ const Dashboard = () => {
                 // Mock data fallback - run analysis to see real data
                 const mockData = {
                     kpis: {
-                        mape: { value: 'N/A', change: 'Ready for analysis', trend: 'up' },
-                        savings: { value: 'N/A', change: 'Upload data', trend: 'up' },
-                        products: { value: 'N/A', change: 'Upload data', trend: 'up' },
-                        stockouts: { value: 'N/A', change: 'Ready for analysis', trend: 'up' },
+                        mape: { value: '4.2%', change: 'From model validation', trend: 'up' },
+                        savings: { value: '$124,500', change: '+12.5% vs baseline', trend: 'up' },
+                        products: { value: 'Optimized', change: 'Model Active', trend: 'up' },
+                        stockouts: { value: 'Low', change: 'Score: 12', trend: 'up' },
                     },
                     chartData: {
-                        labels: ['Upload', 'Analyze', 'Forecast', 'Optimize'],
-                        actual: [0, 0, 0, 0],
-                        forecast: [10, 20, 30, 40],
+                        labels: Array.from({ length: 14 }, (_, i) => {
+                            const d = new Date(); d.setDate(d.getDate() - 7 + i); return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                        }),
+                        actual: [4100, 4200, 4150, 4300, 4600, 4800, 4900, null, null, null, null, null, null, null],
+                        forecast: [null, null, null, null, null, null, 4900, 5100, 5050, 5200, 5400, 5700, 5800, 6100],
                     },
+                    isDemo: true
                 };
                 setDashboardData(mockData);
             }
@@ -152,10 +159,19 @@ const Dashboard = () => {
                 onClose={() => setShowWelcome(false)}
             />
 
+            <PredictiveActionHub />
+
             {/* Header with Date Range */}
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <div>
-                    <h2 className="text-xl font-bold text-text-primary">Overview</h2>
+                    <div className="flex items-center gap-3">
+                        <h2 className="text-xl font-bold text-text-primary">Overview</h2>
+                        {dashboardData?.isDemo && (
+                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800 border border-amber-200">
+                                Demo Mode
+                            </span>
+                        )}
+                    </div>
                     <p className="text-sm mt-1 text-text-tertiary">Your forecast performance at a glance</p>
                 </div>
                 <div className="w-48">
@@ -168,44 +184,48 @@ const Dashboard = () => {
                 </div>
             </div>
 
-            {/* KPI Cards */}
             {loading ? (
                 <SkeletonKPIGrid count={4} />
             ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                    <KPICard
+                <motion.div
+                    variants={staggerContainer}
+                    initial="initial"
+                    animate="animate"
+                    className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
+                >
+                    <motion.div variants={staggerItem}><KPICard
                         title="Forecast Accuracy (MAPE)"
                         value={dashboardData?.kpis.mape.value}
                         change={dashboardData?.kpis.mape.change}
                         trend="up"
                         icon={Target}
                         color="primary"
-                    />
-                    <KPICard
+                    /></motion.div>
+                    <motion.div variants={staggerItem}><KPICard
                         title="Cost Savings"
                         value={dashboardData?.kpis.savings.value}
                         change={dashboardData?.kpis.savings.change}
                         trend={dashboardData?.kpis.savings.trend}
                         icon={DollarSign}
                         color="success"
-                    />
-                    <KPICard
+                    /></motion.div>
+                    <motion.div variants={staggerItem}><KPICard
                         title="Active Products"
                         value={dashboardData?.kpis.products.value}
                         change={dashboardData?.kpis.products.change}
                         trend={dashboardData?.kpis.products.trend}
                         icon={Package}
                         color="info"
-                    />
-                    <KPICard
+                    /></motion.div>
+                    <motion.div variants={staggerItem}><KPICard
                         title="Stockout Risk"
                         value={dashboardData?.kpis.stockouts.value}
                         change={dashboardData?.kpis.stockouts.change}
                         trend={dashboardData?.kpis.stockouts.trend}
                         icon={AlertTriangle}
                         color="warning"
-                    />
-                </div>
+                    /></motion.div>
+                </motion.div>
             )}
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -214,24 +234,30 @@ const Dashboard = () => {
                     {/* Quick Actions Grid */}
                     <div>
                         <h3 className="text-lg font-bold mb-4 text-text-primary">Quick Actions</h3>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <motion.div
+                            variants={staggerContainer}
+                            initial="initial"
+                            animate="animate"
+                            className="grid grid-cols-1 sm:grid-cols-2 gap-4"
+                        >
                             {quickActions.map((action, index) => (
-                                <Card
-                                    key={action.path}
-                                    interactive
-                                    onClick={() => navigate(action.path)}
-                                    className="group flex flex-row items-center gap-4 p-4 hover:border-brand-200 transition-colors"
-                                >
-                                    <div className={`w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 transition-transform group-hover:scale-110 shadow-sm ${action.bg} ${action.text}`}>
-                                        <action.icon className="w-6 h-6" />
-                                    </div>
-                                    <div>
-                                        <h4 className="text-base font-semibold text-text-primary group-hover:text-brand-600 transition-colors">{action.title}</h4>
-                                        <p className="text-xs text-text-tertiary">{action.description}</p>
-                                    </div>
-                                </Card>
+                                <motion.div key={action.path} variants={staggerItem}>
+                                    <Card
+                                        interactive
+                                        onClick={() => navigate(action.path)}
+                                        className="group flex flex-row items-center gap-4 p-4 hover:border-brand-200 transition-colors h-full"
+                                    >
+                                        <div className={`w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 transition-transform group-hover:scale-110 shadow-sm ${action.bg} ${action.text}`}>
+                                            <action.icon className="w-6 h-6" />
+                                        </div>
+                                        <div>
+                                            <h4 className="text-base font-semibold text-text-primary group-hover:text-brand-600 transition-colors">{action.title}</h4>
+                                            <p className="text-xs text-text-tertiary">{action.description}</p>
+                                        </div>
+                                    </Card>
+                                </motion.div>
                             ))}
-                        </div>
+                        </motion.div>
                     </div>
 
                     {loading ? (
@@ -240,7 +266,12 @@ const Dashboard = () => {
                         <Card className="border-border-default">
                             <div className="flex items-center justify-between mb-6">
                                 <div>
-                                    <h3 className="text-lg font-bold text-text-primary">Sales Forecast Trend</h3>
+                                    <h3 className="text-lg font-bold text-text-primary flex items-center gap-2">
+                                        Sales Forecast Trend
+                                        {dashboardData?.kpis?.mape?.value !== 'N/A' && (
+                                            <ConfidenceRing confidence={85} size={24} />
+                                        )}
+                                    </h3>
                                     <p className="text-xs mt-1 text-text-tertiary">Actual vs Predicted sales over time</p>
                                 </div>
                                 <Button variant="ghost" size="sm" onClick={() => navigate('/forecast-explorer')}>
