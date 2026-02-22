@@ -26,6 +26,8 @@ class Settings(BaseSettings):
     GOOGLE_CLIENT_SECRET: Optional[str] = None
     GITHUB_CLIENT_ID: Optional[str] = None
     GITHUB_CLIENT_SECRET: Optional[str] = None
+    MICROSOFT_CLIENT_ID: Optional[str] = None
+    MICROSOFT_CLIENT_SECRET: Optional[str] = None
     
     # Frontend URL for Redirects
     FRONTEND_URL: str = "http://localhost:3000"
@@ -36,6 +38,8 @@ class Settings(BaseSettings):
         "http://localhost:5173",
         "http://localhost:5174",
         "https://*.vercel.app",
+        "https://ibadatali-walmart-sales-forecasting-saas.hf.space",
+        "https://*.hf.space",
     ]
     
     # ML Models

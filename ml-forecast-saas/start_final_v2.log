@@ -1,0 +1,559 @@
+🚀 Starting ML Forecast SaaS Application...
+📦 Starting Backend API on port 8000...
+✅ Virtual environment activated
+INFO:     Will watch for changes in these directories: ['/media/ibadat/NewVolume/DATA SCIENCE/ML/DATASCIENCE PROJECTS/Demand Sales Walmart Forecasting/ml-forecast-saas/backend']
+INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+INFO:     Started reloader process [1408299] using WatchFiles
+⚛️  Starting Frontend on port 5173...
+
+✅ Application started successfully!
+   Frontend: http://localhost:5173
+   Backend:  http://localhost:8000
+   API Docs: http://localhost:8000/docs
+   Health:   http://localhost:8000/health
+
+Press Ctrl+C to stop both servers
+
+> frontend@0.0.0 dev
+> vite
+
+
+  VITE v7.3.1  ready in 565 ms
+
+  ➜  Local:   http://localhost:5173/
+  ➜  Network: use --host to expose
+2026-02-19 06:44:16,077 - prophet.plot - ERROR - Importing plotly failed. Interactive plots will not work.
+2026-02-19 06:44:22,908 - app.api.analysis - INFO - Loaded 36 jobs from disk. Total in memory: 36 (was 0)
+2026-02-19 06:44:28,360 - app.main - WARNING - Static directory not found at /media/ibadat/NewVolume/DATA SCIENCE/ML/DATASCIENCE PROJECTS/Demand Sales Walmart Forecasting/ml-forecast-saas/backend/app/static. Frontend will not be served.
+INFO:     Started server process [1408302]
+INFO:     Waiting for application startup.
+2026-02-19 06:44:28,362 - app.main - INFO - 🚀 Starting ML Forecast SaaS v2.0.0
+2026-02-19 06:44:28,362 - app.main - INFO - 📦 Environment: development
+2026-02-19 06:44:28,362 - app.main - INFO - 🌐 CORS Origins: ['http://localhost:3000', 'http://localhost:5173', 'http://localhost:5174', 'https://*.vercel.app']
+2026-02-19 06:44:28,370 - app.main - INFO - ✅ Local SQLite database initialized
+2026-02-19 06:44:28,384 - app.utils.init_db - INFO - ✅ Default admin user already exists.
+2026-02-19 06:44:28,386 - app.services.maintenance - INFO - System cleanup completed successfully
+2026-02-19 06:44:28,386 - app.main - INFO - 🧹 System cleanup completed on startup
+INFO:     Application startup complete.
+The request id "/media/ibadat/NewVolume/DATA SCIENCE/ML/DATASCIENCE PROJECTS/Demand Sales Walmart Forecasting/ml-forecast-saas/frontend/.env" is outside of Vite serving allow list.
+
+- /media/ibadat/NewVolume/DATA SCIENCE/ML/DATASCIENCE PROJECTS/Demand Sales Walmart Forecasting/ml-forecast-saas/frontend
+
+Refer to docs https://vite.dev/config/server-options.html#server-fs-allow for configurations and more details.
+
+2026-02-19 14:31:58,299 - app.main - INFO - 👉 Request: POST http://localhost:8000/api/auth/login | Origin: http://localhost:5173
+2026-02-19 14:31:58,304 - app.main - INFO - 👈 Response: 422
+INFO:     127.0.0.1:42870 - "POST /api/auth/login HTTP/1.1" 422 Unprocessable Content
+2026-02-19 15:09:02,414 - app.main - INFO - 👉 Request: POST http://localhost:8000/api/auth/login | Origin: http://localhost:5173
+2026-02-19 15:09:02,417 - app.api.auth - INFO - 🔑 Login attempt for user: admin@forecast.ai
+2026-02-19 15:09:02,452 - app.api.auth - WARNING - ❌ Login failed: Invalid credentials for admin@forecast.ai
+2026-02-19 15:09:02,453 - app.main - INFO - 👈 Response: 401
+INFO:     127.0.0.1:41680 - "POST /api/auth/login HTTP/1.1" 401 Unauthorized
+2026-02-19 15:30:58,308 - app.main - INFO - 👉 Request: OPTIONS http://localhost:8000/api/auth/login | Origin: http://localhost:5173
+2026-02-19 15:30:58,309 - app.main - INFO - 👈 Response: 200
+INFO:     127.0.0.1:53804 - "OPTIONS /api/auth/login HTTP/1.1" 200 OK
+2026-02-19 15:30:58,313 - app.main - INFO - 👉 Request: POST http://localhost:8000/api/auth/login | Origin: http://localhost:5173
+2026-02-19 15:30:58,314 - app.main - INFO - 👈 Response: 422
+INFO:     127.0.0.1:53806 - "POST /api/auth/login HTTP/1.1" 422 Unprocessable Content
+2026-02-19 15:34:00,036 - app.main - INFO - 👉 Request: POST http://localhost:8000/api/auth/login | Origin: http://localhost:5173
+2026-02-19 15:34:00,038 - app.main - INFO - 👈 Response: 422
+INFO:     127.0.0.1:36328 - "POST /api/auth/login HTTP/1.1" 422 Unprocessable Content
+2026-02-19 15:37:40,221 - app.main - INFO - 👉 Request: POST http://localhost:8000/api/auth/login | Origin: http://localhost:5173
+2026-02-19 15:37:40,222 - app.api.auth - INFO - 🔑 Login attempt for user: admin@forecast.ai
+2026-02-19 15:37:40,266 - app.api.auth - WARNING - ❌ Login failed: Invalid credentials for admin@forecast.ai
+2026-02-19 15:37:40,268 - app.main - INFO - 👈 Response: 401
+INFO:     127.0.0.1:52934 - "POST /api/auth/login HTTP/1.1" 401 Unauthorized
+WARNING:  WatchFiles detected changes in 'app/services/monitoring_service.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+2026-02-19 17:15:04,798 - app.main - INFO - 👋 Shutting down...
+INFO:     Application shutdown complete.
+INFO:     Finished server process [1408302]
+2026-02-19 17:15:08,699 - prophet.plot - ERROR - Importing plotly failed. Interactive plots will not work.
+2026-02-19 17:15:12,051 - app.api.analysis - INFO - Loaded 36 jobs from disk. Total in memory: 36 (was 0)
+2026-02-19 17:15:13,919 - app.main - WARNING - Static directory not found at /media/ibadat/NewVolume/DATA SCIENCE/ML/DATASCIENCE PROJECTS/Demand Sales Walmart Forecasting/ml-forecast-saas/backend/app/static. Frontend will not be served.
+INFO:     Started server process [1424605]
+INFO:     Waiting for application startup.
+2026-02-19 17:15:13,921 - app.main - INFO - 🚀 Starting ML Forecast SaaS v2.0.0
+2026-02-19 17:15:13,921 - app.main - INFO - 📦 Environment: development
+2026-02-19 17:15:13,921 - app.main - INFO - 🌐 CORS Origins: ['http://localhost:3000', 'http://localhost:5173', 'http://localhost:5174', 'https://*.vercel.app']
+2026-02-19 17:15:13,926 - app.main - INFO - ✅ Local SQLite database initialized
+2026-02-19 17:15:13,936 - app.utils.init_db - INFO - ✅ Default admin user already exists.
+2026-02-19 17:15:13,938 - app.services.maintenance - INFO - System cleanup completed successfully
+2026-02-19 17:15:13,938 - app.main - INFO - 🧹 System cleanup completed on startup
+INFO:     Application startup complete.
+WARNING:  WatchFiles detected changes in 'app/api/analysis.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+2026-02-19 17:15:38,213 - app.main - INFO - 👋 Shutting down...
+INFO:     Application shutdown complete.
+INFO:     Finished server process [1424605]
+2026-02-19 17:15:43,065 - prophet.plot - ERROR - Importing plotly failed. Interactive plots will not work.
+2026-02-19 17:15:45,440 - app.api.analysis - INFO - Loaded 36 jobs from disk. Total in memory: 36 (was 0)
+2026-02-19 17:15:48,292 - app.main - WARNING - Static directory not found at /media/ibadat/NewVolume/DATA SCIENCE/ML/DATASCIENCE PROJECTS/Demand Sales Walmart Forecasting/ml-forecast-saas/backend/app/static. Frontend will not be served.
+INFO:     Started server process [1424728]
+INFO:     Waiting for application startup.
+2026-02-19 17:15:48,293 - app.main - INFO - 🚀 Starting ML Forecast SaaS v2.0.0
+2026-02-19 17:15:48,293 - app.main - INFO - 📦 Environment: development
+2026-02-19 17:15:48,293 - app.main - INFO - 🌐 CORS Origins: ['http://localhost:3000', 'http://localhost:5173', 'http://localhost:5174', 'https://*.vercel.app']
+2026-02-19 17:15:48,299 - app.main - INFO - ✅ Local SQLite database initialized
+2026-02-19 17:15:48,310 - app.utils.init_db - INFO - ✅ Default admin user already exists.
+2026-02-19 17:15:48,311 - app.services.maintenance - INFO - System cleanup completed successfully
+2026-02-19 17:15:48,312 - app.main - INFO - 🧹 System cleanup completed on startup
+INFO:     Application startup complete.
+5:18:31 PM [vite] (client) hmr update /src/index.css
+2026-02-19 17:18:54,558 - app.main - INFO - 👉 Request: GET http://localhost:8000/health | Origin: None
+2026-02-19 17:18:54,561 - app.main - INFO - 👈 Response: 200
+INFO:     127.0.0.1:60600 - "GET /health HTTP/1.1" 200 OK
+2026-02-19 17:19:28,393 - app.main - INFO - 👉 Request: GET http://localhost:8000/api/analysis/templates/sales | Origin: None
+2026-02-19 17:19:28,394 - app.main - INFO - 👈 Response: 404
+INFO:     127.0.0.1:34618 - "GET /api/analysis/templates/sales HTTP/1.1" 404 Not Found
+2026-02-19 17:19:28,397 - app.main - INFO - 👉 Request: POST http://localhost:8000/api/analysis/upload | Origin: None
+2026-02-19 17:19:28,402 - app.api.analysis - INFO - 📥 Upload request received: Filename=test.txt, Content-Type=text/plain
+2026-02-19 17:19:28,402 - app.api.analysis - WARNING - ❌ Invalid file type rejected: test.txt
+2026-02-19 17:19:28,403 - app.main - INFO - 👈 Response: 400
+INFO:     127.0.0.1:34632 - "POST /api/analysis/upload HTTP/1.1" 400 Bad Request
+2026-02-19 17:19:28,413 - app.main - INFO - 👉 Request: POST http://localhost:8000/api/analysis/upload | Origin: None
+2026-02-19 17:19:28,416 - app.api.analysis - INFO - 📥 Upload request received: Filename=test_data.csv, Content-Type=text/csv
+2026-02-19 17:19:28,416 - app.api.analysis - INFO - Successfully decoded file using utf-8 encoding
+2026-02-19 17:19:28,429 - app.api.analysis - INFO - 📊 Data adapted: {'date': {'column': 'Date', 'confidence': 1.0}, 'sales': {'column': 'Sales', 'confidence': 1.0}, 'store': {'column': 'Date', 'confidence': 0.67}, 'product': {'column': 'Date', 'confidence': 0.55}, 'category': {'column': 'Date', 'confidence': 0.75}, 'price': {'column': 'Sales', 'confidence': 0.8}, 'customer': {'column': 'Date', 'confidence': 0.5}}
+2026-02-19 17:19:28,430 - app.api.analysis - ERROR - ❌ Upload validation failed: Insufficient data: only 5 rows found
+2026-02-19 17:19:28,430 - app.main - INFO - 👈 Response: 400
+INFO:     127.0.0.1:34634 - "POST /api/analysis/upload HTTP/1.1" 400 Bad Request
+2026-02-19 17:19:46,835 - app.main - INFO - 👉 Request: GET http://localhost:8000/api/analysis/templates/sales | Origin: None
+2026-02-19 17:19:46,836 - app.main - INFO - 👈 Response: 404
+INFO:     127.0.0.1:35818 - "GET /api/analysis/templates/sales HTTP/1.1" 404 Not Found
+2026-02-19 17:19:46,853 - app.main - INFO - 👉 Request: GET http://localhost:8000/docs | Origin: None
+2026-02-19 17:19:46,854 - app.main - INFO - 👈 Response: 200
+INFO:     127.0.0.1:35830 - "GET /docs HTTP/1.1" 200 OK
+WARNING:  WatchFiles detected changes in 'tests/verify_upload_pipeline.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+2026-02-19 17:20:32,410 - app.main - INFO - 👋 Shutting down...
+INFO:     Application shutdown complete.
+INFO:     Finished server process [1424728]
+2026-02-19 17:20:37,335 - prophet.plot - ERROR - Importing plotly failed. Interactive plots will not work.
+2026-02-19 17:20:39,638 - app.api.analysis - INFO - Loaded 36 jobs from disk. Total in memory: 36 (was 0)
+2026-02-19 17:20:42,587 - app.main - WARNING - Static directory not found at /media/ibadat/NewVolume/DATA SCIENCE/ML/DATASCIENCE PROJECTS/Demand Sales Walmart Forecasting/ml-forecast-saas/backend/app/static. Frontend will not be served.
+INFO:     Started server process [1425458]
+INFO:     Waiting for application startup.
+2026-02-19 17:20:42,589 - app.main - INFO - 🚀 Starting ML Forecast SaaS v2.0.0
+2026-02-19 17:20:42,589 - app.main - INFO - 📦 Environment: development
+2026-02-19 17:20:42,589 - app.main - INFO - 🌐 CORS Origins: ['http://localhost:3000', 'http://localhost:5173', 'http://localhost:5174', 'https://*.vercel.app']
+2026-02-19 17:20:42,594 - app.main - INFO - ✅ Local SQLite database initialized
+2026-02-19 17:20:42,605 - app.utils.init_db - INFO - ✅ Default admin user already exists.
+2026-02-19 17:20:42,607 - app.services.maintenance - INFO - System cleanup completed successfully
+2026-02-19 17:20:42,607 - app.main - INFO - 🧹 System cleanup completed on startup
+INFO:     Application startup complete.
+2026-02-19 17:20:42,706 - app.main - INFO - 👉 Request: GET http://localhost:8000/health | Origin: None
+2026-02-19 17:20:42,708 - app.main - INFO - 👈 Response: 200
+INFO:     127.0.0.1:54152 - "GET /health HTTP/1.1" 200 OK
+2026-02-19 17:20:42,711 - app.main - INFO - 👉 Request: GET http://localhost:8000/api/reports/templates/sales | Origin: None
+2026-02-19 17:20:42,712 - app.main - INFO - 👈 Response: 404
+INFO:     127.0.0.1:54164 - "GET /api/reports/templates/sales HTTP/1.1" 404 Not Found
+2026-02-19 17:20:42,714 - app.main - INFO - 👉 Request: POST http://localhost:8000/api/analysis/upload | Origin: None
+2026-02-19 17:20:42,719 - app.api.analysis - INFO - 📥 Upload request received: Filename=test.txt, Content-Type=text/plain
+2026-02-19 17:20:42,720 - app.api.analysis - WARNING - ❌ Invalid file type rejected: test.txt
+2026-02-19 17:20:42,720 - app.main - INFO - 👈 Response: 400
+INFO:     127.0.0.1:54170 - "POST /api/analysis/upload HTTP/1.1" 400 Bad Request
+2026-02-19 17:20:42,730 - app.main - INFO - 👉 Request: POST http://localhost:8000/api/analysis/upload | Origin: None
+2026-02-19 17:20:42,731 - app.api.analysis - INFO - 📥 Upload request received: Filename=test_data.csv, Content-Type=text/csv
+2026-02-19 17:20:42,732 - app.api.analysis - INFO - Successfully decoded file using utf-8 encoding
+2026-02-19 17:20:42,745 - app.api.analysis - INFO - 📊 Data adapted: {'date': {'column': 'Date', 'confidence': 1.0}, 'sales': {'column': 'Sales', 'confidence': 1.0}, 'store': {'column': 'Store', 'confidence': 1.0}, 'product': {'column': 'Date', 'confidence': 0.55}, 'category': {'column': 'Date', 'confidence': 0.75}, 'price': {'column': 'Sales', 'confidence': 0.8}, 'customer': {'column': 'Store', 'confidence': 0.8}}
+2026-02-19 17:20:42,745 - app.api.analysis - INFO - ✅ Upload validation passed: {'row_count': 50, 'column_count': 3}
+2026-02-19 17:20:42,745 - app.api.analysis - INFO - 📤 New upload session created: 182cab28-d93b-42d8-a054-5f90a384a214 (test_data.csv)
+2026-02-19 17:20:43,657 - app.api.analysis - INFO - ✅ Session 182cab28-d93b-42d8-a054-5f90a384a214 saved successfully. Total sessions: 37
+2026-02-19 17:20:43,663 - app.main - INFO - 👈 Response: 200
+INFO:     127.0.0.1:54176 - "POST /api/analysis/upload HTTP/1.1" 200 OK
+2026-02-19 17:20:43,666 - app.main - INFO - 👉 Request: GET http://localhost:8000/api/monitoring/health | Origin: None
+2026-02-19 17:20:43,668 - app.main - INFO - 👈 Response: 401
+INFO:     127.0.0.1:54190 - "GET /api/monitoring/health HTTP/1.1" 401 Unauthorized
+2026-02-19 17:20:43,670 - app.main - INFO - 👉 Request: GET http://localhost:8000/api/monitoring/metrics | Origin: None
+2026-02-19 17:20:43,671 - app.main - INFO - 👈 Response: 401
+INFO:     127.0.0.1:54192 - "GET /api/monitoring/metrics HTTP/1.1" 401 Unauthorized
+2026-02-19 19:13:49,379 - app.main - INFO - 👉 Request: OPTIONS http://localhost:8000/api/monitoring/health | Origin: http://localhost:5173
+INFO:     127.0.0.1:51438 - "WebSocket /ws/user%3A36n8qmosn" [accepted]
+2026-02-19 19:13:49,384 - app.services.websocket_manager - INFO - 👤 WebSocket connected for user: 36n8qmosn
+2026-02-19 19:13:49,385 - app.main - INFO - 👉 Request: OPTIONS http://localhost:8000/api/monitoring/metrics | Origin: http://localhost:5173
+2026-02-19 19:13:49,386 - app.main - INFO - 👈 Response: 200
+INFO:     127.0.0.1:51432 - "OPTIONS /api/monitoring/health HTTP/1.1" 200 OK
+INFO:     connection open
+2026-02-19 19:13:49,389 - app.main - INFO - 👉 Request: OPTIONS http://localhost:8000/api/monitoring/alerts?limit=5 | Origin: http://localhost:5173
+2026-02-19 19:13:49,390 - app.main - INFO - 👉 Request: OPTIONS http://localhost:8000/api/monitoring/health | Origin: http://localhost:5173
+2026-02-19 19:13:49,390 - app.main - INFO - 👈 Response: 200
+INFO:     127.0.0.1:51442 - "OPTIONS /api/monitoring/metrics HTTP/1.1" 200 OK
+2026-02-19 19:13:49,392 - app.main - INFO - 👉 Request: OPTIONS http://localhost:8000/api/monitoring/metrics | Origin: http://localhost:5173
+2026-02-19 19:13:49,393 - app.main - INFO - 👈 Response: 200
+INFO:     127.0.0.1:51454 - "OPTIONS /api/monitoring/alerts?limit=5 HTTP/1.1" 200 OK
+2026-02-19 19:13:49,394 - app.main - INFO - 👉 Request: OPTIONS http://localhost:8000/api/monitoring/alerts?limit=5 | Origin: http://localhost:5173
+2026-02-19 19:13:49,394 - app.main - INFO - 👈 Response: 200
+INFO:     127.0.0.1:51468 - "OPTIONS /api/monitoring/health HTTP/1.1" 200 OK
+2026-02-19 19:13:49,395 - app.main - INFO - 👈 Response: 200
+INFO:     127.0.0.1:51470 - "OPTIONS /api/monitoring/metrics HTTP/1.1" 200 OK
+2026-02-19 19:13:49,396 - app.main - INFO - 👈 Response: 200
+INFO:     127.0.0.1:51476 - "OPTIONS /api/monitoring/alerts?limit=5 HTTP/1.1" 200 OK
+2026-02-19 19:13:49,409 - app.main - INFO - 👉 Request: GET http://localhost:8000/api/monitoring/health | Origin: http://localhost:5173
+2026-02-19 19:13:49,409 - app.main - INFO - 👉 Request: GET http://localhost:8000/api/monitoring/metrics | Origin: http://localhost:5173
+2026-02-19 19:13:49,410 - app.main - INFO - 👉 Request: GET http://localhost:8000/api/monitoring/alerts?limit=5 | Origin: http://localhost:5173
+INFO:     127.0.0.1:51478 - "WebSocket /ws/user%3A67iw6fit5" [accepted]
+2026-02-19 19:13:49,412 - app.services.websocket_manager - INFO - 👤 WebSocket connected for user: 67iw6fit5
+INFO:     connection open
+2026-02-19 19:13:49,416 - app.main - INFO - 👈 Response: 401
+INFO:     127.0.0.1:51454 - "GET /api/monitoring/alerts?limit=5 HTTP/1.1" 401 Unauthorized
+2026-02-19 19:13:49,416 - app.main - INFO - 👈 Response: 401
+INFO:     127.0.0.1:51442 - "GET /api/monitoring/metrics HTTP/1.1" 401 Unauthorized
+2026-02-19 19:13:49,417 - app.main - INFO - 👈 Response: 401
+INFO:     127.0.0.1:51432 - "GET /api/monitoring/health HTTP/1.1" 401 Unauthorized
+2026-02-19 19:13:49,422 - app.main - INFO - 👉 Request: GET http://localhost:8000/api/monitoring/metrics | Origin: http://localhost:5173
+2026-02-19 19:13:49,424 - app.main - INFO - 👉 Request: GET http://localhost:8000/api/monitoring/alerts?limit=5 | Origin: http://localhost:5173
+2026-02-19 19:13:49,425 - app.main - INFO - 👉 Request: GET http://localhost:8000/api/monitoring/health | Origin: http://localhost:5173
+2026-02-19 19:13:49,427 - app.main - INFO - 👈 Response: 401
+INFO:     127.0.0.1:51468 - "GET /api/monitoring/health HTTP/1.1" 401 Unauthorized
+2026-02-19 19:13:49,428 - app.main - INFO - 👈 Response: 401
+INFO:     127.0.0.1:51476 - "GET /api/monitoring/metrics HTTP/1.1" 401 Unauthorized
+2026-02-19 19:13:49,428 - app.main - INFO - 👈 Response: 401
+INFO:     127.0.0.1:51470 - "GET /api/monitoring/alerts?limit=5 HTTP/1.1" 401 Unauthorized
+2026-02-19 19:13:49,436 - app.services.websocket_manager - INFO - 🔌 WebSocket disconnected (Session: None, User: 36n8qmosn)
+INFO:     connection closed
+2026-02-19 19:14:19,382 - app.main - INFO - 👉 Request: GET http://localhost:8000/api/monitoring/health | Origin: http://localhost:5173
+2026-02-19 19:14:19,383 - app.main - INFO - 👉 Request: GET http://localhost:8000/api/monitoring/metrics | Origin: http://localhost:5173
+2026-02-19 19:14:19,383 - app.main - INFO - 👉 Request: GET http://localhost:8000/api/monitoring/alerts?limit=5 | Origin: http://localhost:5173
+2026-02-19 19:14:19,389 - app.main - INFO - 👈 Response: 401
+INFO:     127.0.0.1:36910 - "GET /api/monitoring/health HTTP/1.1" 401 Unauthorized
+2026-02-19 19:14:19,390 - app.main - INFO - 👈 Response: 401
+INFO:     127.0.0.1:36926 - "GET /api/monitoring/metrics HTTP/1.1" 401 Unauthorized
+2026-02-19 19:14:19,391 - app.main - INFO - 👈 Response: 401
+INFO:     127.0.0.1:36930 - "GET /api/monitoring/alerts?limit=5 HTTP/1.1" 401 Unauthorized
+2026-02-19 19:14:49,381 - app.main - INFO - 👉 Request: GET http://localhost:8000/api/monitoring/health | Origin: http://localhost:5173
+2026-02-19 19:14:49,382 - app.main - INFO - 👉 Request: GET http://localhost:8000/api/monitoring/metrics | Origin: http://localhost:5173
+2026-02-19 19:14:49,382 - app.main - INFO - 👉 Request: GET http://localhost:8000/api/monitoring/alerts?limit=5 | Origin: http://localhost:5173
+2026-02-19 19:14:49,384 - app.main - INFO - 👈 Response: 401
+INFO:     127.0.0.1:50168 - "GET /api/monitoring/health HTTP/1.1" 401 Unauthorized
+2026-02-19 19:14:49,387 - app.main - INFO - 👈 Response: 401
+INFO:     127.0.0.1:50178 - "GET /api/monitoring/alerts?limit=5 HTTP/1.1" 401 Unauthorized
+2026-02-19 19:14:49,388 - app.main - INFO - 👈 Response: 401
+INFO:     127.0.0.1:50176 - "GET /api/monitoring/metrics HTTP/1.1" 401 Unauthorized
+2026-02-19 19:15:19,384 - app.main - INFO - 👉 Request: GET http://localhost:8000/api/monitoring/health | Origin: http://localhost:5173
+2026-02-19 19:15:19,387 - app.main - INFO - 👉 Request: GET http://localhost:8000/api/monitoring/metrics | Origin: http://localhost:5173
+2026-02-19 19:15:19,399 - app.main - INFO - 👉 Request: GET http://localhost:8000/api/monitoring/alerts?limit=5 | Origin: http://localhost:5173
+2026-02-19 19:15:19,409 - app.main - INFO - 👈 Response: 401
+INFO:     127.0.0.1:52706 - "GET /api/monitoring/alerts?limit=5 HTTP/1.1" 401 Unauthorized
+2026-02-19 19:15:19,412 - app.main - INFO - 👈 Response: 401
+INFO:     127.0.0.1:52692 - "GET /api/monitoring/metrics HTTP/1.1" 401 Unauthorized
+2026-02-19 19:15:19,416 - app.main - INFO - 👈 Response: 401
+INFO:     127.0.0.1:52680 - "GET /api/monitoring/health HTTP/1.1" 401 Unauthorized
+2026-02-19 19:15:49,381 - app.main - INFO - 👉 Request: GET http://localhost:8000/api/monitoring/health | Origin: http://localhost:5173
+2026-02-19 19:15:49,383 - app.main - INFO - 👉 Request: GET http://localhost:8000/api/monitoring/metrics | Origin: http://localhost:5173
+2026-02-19 19:15:49,384 - app.main - INFO - 👉 Request: GET http://localhost:8000/api/monitoring/alerts?limit=5 | Origin: http://localhost:5173
+2026-02-19 19:15:49,386 - app.main - INFO - 👈 Response: 401
+INFO:     127.0.0.1:51620 - "GET /api/monitoring/health HTTP/1.1" 401 Unauthorized
+2026-02-19 19:15:49,387 - app.main - INFO - 👈 Response: 401
+INFO:     127.0.0.1:51626 - "GET /api/monitoring/metrics HTTP/1.1" 401 Unauthorized
+2026-02-19 19:15:49,387 - app.main - INFO - 👈 Response: 401
+INFO:     127.0.0.1:51640 - "GET /api/monitoring/alerts?limit=5 HTTP/1.1" 401 Unauthorized
+2026-02-19 19:16:19,385 - app.main - INFO - 👉 Request: GET http://localhost:8000/api/monitoring/health | Origin: http://localhost:5173
+2026-02-19 19:16:19,386 - app.main - INFO - 👉 Request: GET http://localhost:8000/api/monitoring/metrics | Origin: http://localhost:5173
+2026-02-19 19:16:19,386 - app.main - INFO - 👉 Request: GET http://localhost:8000/api/monitoring/alerts?limit=5 | Origin: http://localhost:5173
+2026-02-19 19:16:19,392 - app.main - INFO - 👈 Response: 401
+INFO:     127.0.0.1:41618 - "GET /api/monitoring/metrics HTTP/1.1" 401 Unauthorized
+2026-02-19 19:16:19,393 - app.main - INFO - 👈 Response: 401
+INFO:     127.0.0.1:41634 - "GET /api/monitoring/alerts?limit=5 HTTP/1.1" 401 Unauthorized
+2026-02-19 19:16:19,393 - app.main - INFO - 👈 Response: 401
+INFO:     127.0.0.1:41604 - "GET /api/monitoring/health HTTP/1.1" 401 Unauthorized
+2026-02-19 19:16:40,105 - app.services.websocket_manager - INFO - 🔌 WebSocket disconnected (Session: None, User: 67iw6fit5)
+INFO:     connection closed
+2026-02-19 19:21:41,473 - app.main - INFO - 👉 Request: GET http://localhost:8000/health | Origin: None
+2026-02-19 19:21:41,474 - app.main - INFO - 👈 Response: 200
+INFO:     127.0.0.1:57238 - "GET /health HTTP/1.1" 200 OK
+WARNING:  WatchFiles detected changes in 'create_test_data.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+2026-02-20 00:44:06,044 - app.main - INFO - 👋 Shutting down...
+INFO:     Application shutdown complete.
+INFO:     Finished server process [1425458]
+2026-02-20 00:44:12,092 - prophet.plot - ERROR - Importing plotly failed. Interactive plots will not work.
+2026-02-20 00:44:16,411 - app.api.analysis - INFO - Loaded 37 jobs from disk. Total in memory: 37 (was 0)
+2026-02-20 00:44:18,699 - app.main - WARNING - Static directory not found at /media/ibadat/NewVolume/DATA SCIENCE/ML/DATASCIENCE PROJECTS/Demand Sales Walmart Forecasting/ml-forecast-saas/backend/app/static. Frontend will not be served.
+INFO:     Started server process [1448023]
+INFO:     Waiting for application startup.
+2026-02-20 00:44:18,701 - app.main - INFO - 🚀 Starting ML Forecast SaaS v2.0.0
+2026-02-20 00:44:18,701 - app.main - INFO - 📦 Environment: development
+2026-02-20 00:44:18,702 - app.main - INFO - 🌐 CORS Origins: ['http://localhost:3000', 'http://localhost:5173', 'http://localhost:5174', 'https://*.vercel.app']
+2026-02-20 00:44:18,710 - app.main - INFO - ✅ Local SQLite database initialized
+2026-02-20 00:44:18,726 - app.utils.init_db - INFO - ✅ Default admin user already exists.
+2026-02-20 00:44:18,729 - app.services.maintenance - INFO - System cleanup completed successfully
+2026-02-20 00:44:18,729 - app.main - INFO - 🧹 System cleanup completed on startup
+INFO:     Application startup complete.
+2026-02-20 00:47:55,204 - app.main - INFO - 👉 Request: POST http://localhost:8000/api/analysis/upload | Origin: http://localhost:5173
+2026-02-20 00:47:55,212 - app.api.analysis - INFO - 📥 Upload request received: Filename=market_sales.csv, Content-Type=text/csv
+2026-02-20 00:47:55,212 - app.api.analysis - INFO - Successfully decoded file using utf-8 encoding
+2026-02-20 00:47:55,250 - app.api.analysis - INFO - 📊 Data adapted: {'date': {'column': 'date', 'confidence': 1.0}, 'sales': {'column': 'sales', 'confidence': 1.0}, 'store': {'column': 'product_id', 'confidence': 0.71}, 'product': {'column': 'product_id', 'confidence': 1.0}, 'category': {'column': 'product_id', 'confidence': 0.8}, 'price': {'column': 'sales', 'confidence': 0.8}, 'customer': {'column': 'product_id', 'confidence': 0.62}}
+2026-02-20 00:47:55,250 - app.api.analysis - INFO - ✅ Upload validation passed: {'row_count': 1800, 'column_count': 3}
+2026-02-20 00:47:55,250 - app.api.analysis - INFO - 📤 New upload session created: 83c5e161-aba6-40c7-8952-6b63e30c8829 (market_sales.csv)
+2026-02-20 00:47:57,163 - app.api.analysis - INFO - ✅ Session 83c5e161-aba6-40c7-8952-6b63e30c8829 saved successfully. Total sessions: 38
+2026-02-20 00:47:57,176 - app.main - INFO - 👈 Response: 200
+INFO:     127.0.0.1:42826 - "POST /api/analysis/upload HTTP/1.1" 200 OK
+2026-02-20 00:48:58,728 - app.main - INFO - 👉 Request: OPTIONS http://localhost:8000/api/monitoring/health | Origin: http://localhost:5173
+2026-02-20 00:48:58,732 - app.main - INFO - 👈 Response: 200
+INFO:     127.0.0.1:50700 - "OPTIONS /api/monitoring/health HTTP/1.1" 200 OK
+2026-02-20 00:48:58,739 - app.main - INFO - 👉 Request: OPTIONS http://localhost:8000/api/monitoring/metrics | Origin: http://localhost:5173
+2026-02-20 00:48:58,741 - app.main - INFO - 👉 Request: OPTIONS http://localhost:8000/api/monitoring/alerts?limit=5 | Origin: http://localhost:5173
+INFO:     127.0.0.1:50716 - "WebSocket /ws/user%3Ap65xr1zv6" [accepted]
+2026-02-20 00:48:58,751 - app.services.websocket_manager - INFO - 👤 WebSocket connected for user: p65xr1zv6
+2026-02-20 00:48:58,753 - app.main - INFO - 👉 Request: OPTIONS http://localhost:8000/api/monitoring/health | Origin: http://localhost:5173
+INFO:     connection open
+2026-02-20 00:48:58,756 - app.main - INFO - 👉 Request: GET http://localhost:8000/api/monitoring/health | Origin: http://localhost:5173
+2026-02-20 00:48:58,756 - app.main - INFO - 👉 Request: OPTIONS http://localhost:8000/api/monitoring/metrics | Origin: http://localhost:5173
+2026-02-20 00:48:58,757 - app.main - INFO - 👈 Response: 200
+INFO:     127.0.0.1:50732 - "OPTIONS /api/monitoring/metrics HTTP/1.1" 200 OK
+2026-02-20 00:48:58,759 - app.main - INFO - 👈 Response: 200
+INFO:     127.0.0.1:50748 - "OPTIONS /api/monitoring/alerts?limit=5 HTTP/1.1" 200 OK
+2026-02-20 00:48:58,762 - app.main - INFO - 👉 Request: OPTIONS http://localhost:8000/api/monitoring/alerts?limit=5 | Origin: http://localhost:5173
+2026-02-20 00:48:58,763 - app.main - INFO - 👈 Response: 200
+INFO:     127.0.0.1:50750 - "OPTIONS /api/monitoring/health HTTP/1.1" 200 OK
+2026-02-20 00:48:58,766 - app.main - INFO - 👈 Response: 200
+INFO:     127.0.0.1:50756 - "OPTIONS /api/monitoring/metrics HTTP/1.1" 200 OK
+2026-02-20 00:48:58,767 - app.main - INFO - 👈 Response: 200
+INFO:     127.0.0.1:50764 - "OPTIONS /api/monitoring/alerts?limit=5 HTTP/1.1" 200 OK
+2026-02-20 00:48:58,769 - app.main - INFO - 👈 Response: 401
+INFO:     127.0.0.1:50700 - "GET /api/monitoring/health HTTP/1.1" 401 Unauthorized
+2026-02-20 00:48:58,786 - app.main - INFO - 👉 Request: GET http://localhost:8000/api/monitoring/alerts?limit=5 | Origin: http://localhost:5173
+2026-02-20 00:48:58,792 - app.main - INFO - 👉 Request: GET http://localhost:8000/api/monitoring/metrics | Origin: http://localhost:5173
+2026-02-20 00:48:58,795 - app.main - INFO - 👉 Request: GET http://localhost:8000/api/monitoring/health | Origin: http://localhost:5173
+INFO:     127.0.0.1:50774 - "WebSocket /ws/user%3Aafohjfc1x" [accepted]
+2026-02-20 00:48:58,800 - app.services.websocket_manager - INFO - 👤 WebSocket connected for user: afohjfc1x
+INFO:     connection open
+2026-02-20 00:48:58,808 - app.services.websocket_manager - INFO - 🔌 WebSocket disconnected (Session: None, User: p65xr1zv6)
+INFO:     connection closed
+2026-02-20 00:48:58,813 - app.main - INFO - 👈 Response: 401
+INFO:     127.0.0.1:50748 - "GET /api/monitoring/alerts?limit=5 HTTP/1.1" 401 Unauthorized
+2026-02-20 00:48:58,814 - app.main - INFO - 👈 Response: 401
+INFO:     127.0.0.1:50750 - "GET /api/monitoring/health HTTP/1.1" 401 Unauthorized
+2026-02-20 00:48:58,815 - app.main - INFO - 👈 Response: 401
+INFO:     127.0.0.1:50732 - "GET /api/monitoring/metrics HTTP/1.1" 401 Unauthorized
+2026-02-20 00:48:58,817 - app.main - INFO - 👉 Request: GET http://localhost:8000/api/monitoring/alerts?limit=5 | Origin: http://localhost:5173
+2026-02-20 00:48:58,819 - app.main - INFO - 👈 Response: 401
+INFO:     127.0.0.1:50700 - "GET /api/monitoring/alerts?limit=5 HTTP/1.1" 401 Unauthorized
+2026-02-20 00:48:58,821 - app.main - INFO - 👉 Request: GET http://localhost:8000/api/monitoring/metrics | Origin: http://localhost:5173
+2026-02-20 00:48:58,823 - app.main - INFO - 👈 Response: 401
+INFO:     127.0.0.1:50748 - "GET /api/monitoring/metrics HTTP/1.1" 401 Unauthorized
+2026-02-20 00:49:28,728 - app.main - INFO - 👉 Request: GET http://localhost:8000/api/monitoring/health | Origin: http://localhost:5173
+2026-02-20 00:49:28,730 - app.main - INFO - 👉 Request: GET http://localhost:8000/api/monitoring/metrics | Origin: http://localhost:5173
+2026-02-20 00:49:28,731 - app.main - INFO - 👉 Request: GET http://localhost:8000/api/monitoring/alerts?limit=5 | Origin: http://localhost:5173
+2026-02-20 00:49:28,734 - app.main - INFO - 👈 Response: 401
+INFO:     127.0.0.1:38212 - "GET /api/monitoring/health HTTP/1.1" 401 Unauthorized
+2026-02-20 00:49:28,736 - app.main - INFO - 👈 Response: 401
+INFO:     127.0.0.1:38240 - "GET /api/monitoring/alerts?limit=5 HTTP/1.1" 401 Unauthorized
+2026-02-20 00:49:28,739 - app.main - INFO - 👈 Response: 401
+INFO:     127.0.0.1:38228 - "GET /api/monitoring/metrics HTTP/1.1" 401 Unauthorized
+2026-02-20 00:49:39,054 - app.services.websocket_manager - INFO - 🔌 WebSocket disconnected (Session: None, User: afohjfc1x)
+INFO:     connection closed
+2026-02-20 00:52:50,564 - app.main - INFO - 👉 Request: GET http://localhost:8000/api/monitoring/health | Origin: http://localhost:5173
+2026-02-20 00:52:50,566 - app.main - INFO - 👉 Request: GET http://localhost:8000/api/monitoring/metrics | Origin: http://localhost:5173
+2026-02-20 00:52:50,567 - app.main - INFO - 👉 Request: GET http://localhost:8000/api/monitoring/alerts?limit=5 | Origin: http://localhost:5173
+INFO:     127.0.0.1:60472 - "WebSocket /ws/user%3A54tvbmhbf" [accepted]
+2026-02-20 00:52:50,570 - app.services.websocket_manager - INFO - 👤 WebSocket connected for user: 54tvbmhbf
+INFO:     connection open
+INFO:     connection closed
+2026-02-20 00:52:50,574 - app.services.websocket_manager - INFO - 🔌 WebSocket disconnected (Session: None, User: 54tvbmhbf)
+2026-02-20 00:52:50,576 - app.main - INFO - 👈 Response: 401
+INFO:     127.0.0.1:60444 - "GET /api/monitoring/health HTTP/1.1" 401 Unauthorized
+2026-02-20 00:52:50,577 - app.main - INFO - 👈 Response: 401
+INFO:     127.0.0.1:60460 - "GET /api/monitoring/metrics HTTP/1.1" 401 Unauthorized
+2026-02-20 00:52:50,578 - app.main - INFO - 👈 Response: 401
+INFO:     127.0.0.1:60488 - "GET /api/monitoring/alerts?limit=5 HTTP/1.1" 401 Unauthorized
+2026-02-20 00:52:50,583 - app.main - INFO - 👉 Request: GET http://localhost:8000/api/monitoring/health | Origin: http://localhost:5173
+2026-02-20 00:52:50,584 - app.main - INFO - 👉 Request: GET http://localhost:8000/api/monitoring/metrics | Origin: http://localhost:5173
+2026-02-20 00:52:50,585 - app.main - INFO - 👉 Request: GET http://localhost:8000/api/monitoring/alerts?limit=5 | Origin: http://localhost:5173
+INFO:     127.0.0.1:60524 - "WebSocket /ws/user%3Aj8gga17i8" [accepted]
+2026-02-20 00:52:50,587 - app.services.websocket_manager - INFO - 👤 WebSocket connected for user: j8gga17i8
+INFO:     connection open
+2026-02-20 00:52:50,592 - app.main - INFO - 👈 Response: 401
+INFO:     127.0.0.1:60490 - "GET /api/monitoring/health HTTP/1.1" 401 Unauthorized
+2026-02-20 00:52:50,593 - app.main - INFO - 👈 Response: 401
+INFO:     127.0.0.1:60504 - "GET /api/monitoring/metrics HTTP/1.1" 401 Unauthorized
+2026-02-20 00:52:50,595 - app.main - INFO - 👈 Response: 401
+INFO:     127.0.0.1:60508 - "GET /api/monitoring/alerts?limit=5 HTTP/1.1" 401 Unauthorized
+2026-02-20 00:53:12,310 - app.main - INFO - 👉 Request: OPTIONS http://localhost:8000/api/monitoring/check-drift | Origin: http://localhost:5173
+2026-02-20 00:53:12,311 - app.main - INFO - 👈 Response: 200
+INFO:     127.0.0.1:34650 - "OPTIONS /api/monitoring/check-drift HTTP/1.1" 200 OK
+2026-02-20 00:53:12,317 - app.main - INFO - 👉 Request: POST http://localhost:8000/api/monitoring/check-drift | Origin: http://localhost:5173
+2026-02-20 00:53:12,320 - app.main - INFO - 👈 Response: 401
+INFO:     127.0.0.1:34656 - "POST /api/monitoring/check-drift HTTP/1.1" 401 Unauthorized
+2026-02-20 00:53:12,335 - app.main - INFO - 👉 Request: GET http://localhost:8000/api/monitoring/health | Origin: http://localhost:5173
+2026-02-20 00:53:12,336 - app.main - INFO - 👉 Request: GET http://localhost:8000/api/monitoring/metrics | Origin: http://localhost:5173
+2026-02-20 00:53:12,336 - app.main - INFO - 👉 Request: GET http://localhost:8000/api/monitoring/alerts?limit=5 | Origin: http://localhost:5173
+2026-02-20 00:53:12,341 - app.main - INFO - 👈 Response: 401
+INFO:     127.0.0.1:34672 - "GET /api/monitoring/alerts?limit=5 HTTP/1.1" 401 Unauthorized
+2026-02-20 00:53:12,344 - app.main - INFO - 👈 Response: 401
+INFO:     127.0.0.1:34656 - "GET /api/monitoring/health HTTP/1.1" 401 Unauthorized
+2026-02-20 00:53:12,346 - app.main - INFO - 👈 Response: 401
+INFO:     127.0.0.1:34650 - "GET /api/monitoring/metrics HTTP/1.1" 401 Unauthorized
+2026-02-20 00:53:20,568 - app.main - INFO - 👉 Request: GET http://localhost:8000/api/monitoring/health | Origin: http://localhost:5173
+2026-02-20 00:53:20,570 - app.main - INFO - 👈 Response: 401
+INFO:     127.0.0.1:51826 - "GET /api/monitoring/health HTTP/1.1" 401 Unauthorized
+2026-02-20 00:53:20,572 - app.main - INFO - 👉 Request: GET http://localhost:8000/api/monitoring/metrics | Origin: http://localhost:5173
+2026-02-20 00:53:20,575 - app.main - INFO - 👉 Request: GET http://localhost:8000/api/monitoring/alerts?limit=5 | Origin: http://localhost:5173
+2026-02-20 00:53:20,578 - app.main - INFO - 👈 Response: 401
+INFO:     127.0.0.1:51826 - "GET /api/monitoring/alerts?limit=5 HTTP/1.1" 401 Unauthorized
+2026-02-20 00:53:20,579 - app.main - INFO - 👈 Response: 401
+INFO:     127.0.0.1:51840 - "GET /api/monitoring/metrics HTTP/1.1" 401 Unauthorized
+2026-02-20 00:53:50,570 - app.main - INFO - 👉 Request: GET http://localhost:8000/api/monitoring/health | Origin: http://localhost:5173
+2026-02-20 00:53:50,572 - app.main - INFO - 👉 Request: GET http://localhost:8000/api/monitoring/metrics | Origin: http://localhost:5173
+2026-02-20 00:53:50,572 - app.main - INFO - 👉 Request: GET http://localhost:8000/api/monitoring/alerts?limit=5 | Origin: http://localhost:5173
+2026-02-20 00:53:50,575 - app.main - INFO - 👈 Response: 401
+INFO:     127.0.0.1:58596 - "GET /api/monitoring/alerts?limit=5 HTTP/1.1" 401 Unauthorized
+2026-02-20 00:53:50,578 - app.main - INFO - 👈 Response: 401
+INFO:     127.0.0.1:58580 - "GET /api/monitoring/health HTTP/1.1" 401 Unauthorized
+2026-02-20 00:53:50,580 - app.main - INFO - 👈 Response: 401
+INFO:     127.0.0.1:58584 - "GET /api/monitoring/metrics HTTP/1.1" 401 Unauthorized
+2026-02-20 00:54:09,475 - app.main - INFO - 👉 Request: GET http://localhost:8000/api/monitoring/health | Origin: http://localhost:5173
+2026-02-20 00:54:09,477 - app.main - INFO - 👈 Response: 401
+INFO:     127.0.0.1:43104 - "GET /api/monitoring/health HTTP/1.1" 401 Unauthorized
+2026-02-20 00:54:20,571 - app.main - INFO - 👉 Request: GET http://localhost:8000/api/monitoring/health | Origin: http://localhost:5173
+2026-02-20 00:54:20,572 - app.main - INFO - 👉 Request: GET http://localhost:8000/api/monitoring/metrics | Origin: http://localhost:5173
+2026-02-20 00:54:20,573 - app.main - INFO - 👉 Request: GET http://localhost:8000/api/monitoring/alerts?limit=5 | Origin: http://localhost:5173
+2026-02-20 00:54:20,577 - app.main - INFO - 👈 Response: 401
+INFO:     127.0.0.1:58920 - "GET /api/monitoring/alerts?limit=5 HTTP/1.1" 401 Unauthorized
+2026-02-20 00:54:20,580 - app.main - INFO - 👈 Response: 401
+INFO:     127.0.0.1:58918 - "GET /api/monitoring/metrics HTTP/1.1" 401 Unauthorized
+2026-02-20 00:54:20,581 - app.main - INFO - 👈 Response: 401
+INFO:     127.0.0.1:58906 - "GET /api/monitoring/health HTTP/1.1" 401 Unauthorized
+2026-02-20 00:54:50,578 - app.main - INFO - 👉 Request: GET http://localhost:8000/api/monitoring/health | Origin: http://localhost:5173
+2026-02-20 00:54:50,581 - app.main - INFO - 👈 Response: 401
+INFO:     127.0.0.1:42314 - "GET /api/monitoring/health HTTP/1.1" 401 Unauthorized
+2026-02-20 00:54:50,583 - app.main - INFO - 👉 Request: GET http://localhost:8000/api/monitoring/metrics | Origin: http://localhost:5173
+2026-02-20 00:54:50,585 - app.main - INFO - 👉 Request: GET http://localhost:8000/api/monitoring/alerts?limit=5 | Origin: http://localhost:5173
+2026-02-20 00:54:50,597 - app.main - INFO - 👈 Response: 401
+INFO:     127.0.0.1:42328 - "GET /api/monitoring/metrics HTTP/1.1" 401 Unauthorized
+2026-02-20 00:54:50,607 - app.main - INFO - 👈 Response: 401
+INFO:     127.0.0.1:42344 - "GET /api/monitoring/alerts?limit=5 HTTP/1.1" 401 Unauthorized
+2026-02-20 00:55:20,569 - app.main - INFO - 👉 Request: GET http://localhost:8000/api/monitoring/health | Origin: http://localhost:5173
+2026-02-20 00:55:20,570 - app.main - INFO - 👉 Request: GET http://localhost:8000/api/monitoring/metrics | Origin: http://localhost:5173
+2026-02-20 00:55:20,570 - app.main - INFO - 👉 Request: GET http://localhost:8000/api/monitoring/alerts?limit=5 | Origin: http://localhost:5173
+2026-02-20 00:55:20,573 - app.main - INFO - 👈 Response: 401
+INFO:     127.0.0.1:36428 - "GET /api/monitoring/alerts?limit=5 HTTP/1.1" 401 Unauthorized
+2026-02-20 00:55:20,574 - app.main - INFO - 👈 Response: 401
+INFO:     127.0.0.1:36408 - "GET /api/monitoring/health HTTP/1.1" 401 Unauthorized
+2026-02-20 00:55:20,574 - app.main - INFO - 👈 Response: 401
+INFO:     127.0.0.1:36424 - "GET /api/monitoring/metrics HTTP/1.1" 401 Unauthorized
+2026-02-20 00:55:50,569 - app.main - INFO - 👉 Request: GET http://localhost:8000/api/monitoring/health | Origin: http://localhost:5173
+2026-02-20 00:55:50,572 - app.main - INFO - 👉 Request: GET http://localhost:8000/api/monitoring/metrics | Origin: http://localhost:5173
+2026-02-20 00:55:50,573 - app.main - INFO - 👉 Request: GET http://localhost:8000/api/monitoring/alerts?limit=5 | Origin: http://localhost:5173
+2026-02-20 00:55:50,576 - app.main - INFO - 👈 Response: 401
+INFO:     127.0.0.1:47120 - "GET /api/monitoring/health HTTP/1.1" 401 Unauthorized
+2026-02-20 00:55:50,577 - app.main - INFO - 👈 Response: 401
+INFO:     127.0.0.1:47126 - "GET /api/monitoring/metrics HTTP/1.1" 401 Unauthorized
+2026-02-20 00:55:50,578 - app.main - INFO - 👈 Response: 401
+INFO:     127.0.0.1:47132 - "GET /api/monitoring/alerts?limit=5 HTTP/1.1" 401 Unauthorized
+2026-02-20 00:56:20,567 - app.main - INFO - 👉 Request: GET http://localhost:8000/api/monitoring/health | Origin: http://localhost:5173
+2026-02-20 00:56:20,569 - app.main - INFO - 👉 Request: GET http://localhost:8000/api/monitoring/metrics | Origin: http://localhost:5173
+2026-02-20 00:56:20,569 - app.main - INFO - 👉 Request: GET http://localhost:8000/api/monitoring/alerts?limit=5 | Origin: http://localhost:5173
+2026-02-20 00:56:20,573 - app.main - INFO - 👈 Response: 401
+INFO:     127.0.0.1:40998 - "GET /api/monitoring/alerts?limit=5 HTTP/1.1" 401 Unauthorized
+2026-02-20 00:56:20,574 - app.main - INFO - 👈 Response: 401
+INFO:     127.0.0.1:40974 - "GET /api/monitoring/health HTTP/1.1" 401 Unauthorized
+2026-02-20 00:56:20,575 - app.main - INFO - 👈 Response: 401
+INFO:     127.0.0.1:40984 - "GET /api/monitoring/metrics HTTP/1.1" 401 Unauthorized
+2026-02-20 00:56:47,983 - app.services.websocket_manager - INFO - 🔌 WebSocket disconnected (Session: None, User: j8gga17i8)
+INFO:     connection closed
+2026-02-20 00:56:55,199 - app.main - INFO - 👉 Request: POST http://localhost:8000/api/analysis/detect-columns | Origin: http://localhost:5173
+2026-02-20 00:56:55,214 - app.api.analysis - INFO - 🔍 Column detection request: market_sales.csv
+2026-02-20 00:56:55,251 - app.api.analysis - INFO - ✅ Column detection complete: 3 columns, quality=100.0
+2026-02-20 00:56:55,253 - app.main - INFO - 👈 Response: 200
+INFO:     127.0.0.1:49196 - "POST /api/analysis/detect-columns HTTP/1.1" 200 OK
+2026-02-20 00:56:57,670 - app.main - INFO - 👉 Request: POST http://localhost:8000/api/analysis/upload | Origin: http://localhost:5173
+2026-02-20 00:56:57,673 - app.api.analysis - INFO - 📥 Upload request received: Filename=market_sales.csv, Content-Type=text/csv
+2026-02-20 00:56:57,674 - app.api.analysis - INFO - Successfully decoded file using utf-8 encoding
+2026-02-20 00:56:57,724 - app.api.analysis - INFO - 📊 Data adapted: {'date': {'column': 'date', 'confidence': 1.0}, 'sales': {'column': 'sales', 'confidence': 1.0}, 'store': {'column': 'product_id', 'confidence': 0.71}, 'product': {'column': 'product_id', 'confidence': 1.0}, 'category': {'column': 'product_id', 'confidence': 0.8}, 'price': {'column': 'sales', 'confidence': 0.8}, 'customer': {'column': 'product_id', 'confidence': 0.62}}
+2026-02-20 00:56:57,725 - app.api.analysis - INFO - ✅ Upload validation passed: {'row_count': 1800, 'column_count': 3}
+2026-02-20 00:56:57,726 - app.api.analysis - INFO - 📤 New upload session created: dde036bc-841a-47e8-95f9-7e471741be77 (market_sales.csv)
+2026-02-20 00:57:00,278 - app.api.analysis - INFO - ✅ Session dde036bc-841a-47e8-95f9-7e471741be77 saved successfully. Total sessions: 39
+2026-02-20 00:57:00,303 - app.main - INFO - 👈 Response: 200
+INFO:     127.0.0.1:49196 - "POST /api/analysis/upload HTTP/1.1" 200 OK
+2026-02-20 01:15:01,830 - app.main - INFO - 👉 Request: OPTIONS http://localhost:8000/api/auth/me | Origin: http://localhost:5173
+2026-02-20 01:15:01,831 - app.main - INFO - 👉 Request: OPTIONS http://localhost:8000/api/auth/me | Origin: http://localhost:5173
+2026-02-20 01:15:01,831 - app.main - INFO - 👈 Response: 200
+INFO:     127.0.0.1:36196 - "OPTIONS /api/auth/me HTTP/1.1" 200 OK
+2026-02-20 01:15:01,833 - app.main - INFO - 👈 Response: 200
+INFO:     127.0.0.1:36208 - "OPTIONS /api/auth/me HTTP/1.1" 200 OK
+2026-02-20 01:15:01,838 - app.main - INFO - 👉 Request: GET http://localhost:8000/api/auth/me | Origin: http://localhost:5173
+2026-02-20 01:15:01,894 - app.main - INFO - 👈 Response: 401
+INFO:     127.0.0.1:36212 - "GET /api/auth/me HTTP/1.1" 401 Unauthorized
+2026-02-20 01:15:01,900 - app.main - INFO - 👉 Request: GET http://localhost:8000/api/auth/me | Origin: http://localhost:5173
+2026-02-20 01:15:01,905 - app.main - INFO - 👈 Response: 401
+INFO:     127.0.0.1:36208 - "GET /api/auth/me HTTP/1.1" 401 Unauthorized
+2026-02-20 01:15:02,117 - app.main - INFO - 👉 Request: GET http://localhost:8000/api/auth/me | Origin: http://localhost:5173
+2026-02-20 01:15:02,125 - app.main - INFO - 👈 Response: 401
+INFO:     127.0.0.1:36208 - "GET /api/auth/me HTTP/1.1" 401 Unauthorized
+2026-02-20 01:15:02,140 - app.main - INFO - 👉 Request: GET http://localhost:8000/api/auth/me | Origin: http://localhost:5173
+2026-02-20 01:15:02,143 - app.main - INFO - 👈 Response: 401
+INFO:     127.0.0.1:36212 - "GET /api/auth/me HTTP/1.1" 401 Unauthorized
+2026-02-20 01:15:09,919 - app.main - INFO - 👉 Request: POST http://localhost:8000/api/auth/login | Origin: http://localhost:5173
+2026-02-20 01:15:09,923 - app.api.auth - INFO - 🔑 Login attempt for user: saad@gmail.com
+2026-02-20 01:15:09,953 - app.api.auth - INFO - ✅ Login successful for: saad@gmail.com
+2026-02-20 01:15:09,967 - app.main - INFO - 👈 Response: 200
+INFO:     127.0.0.1:55064 - "POST /api/auth/login HTTP/1.1" 200 OK
+2026-02-20 01:15:18,240 - app.main - INFO - 👉 Request: POST http://localhost:8000/api/analysis/detect-columns | Origin: http://localhost:5173
+2026-02-20 01:15:18,243 - app.api.analysis - INFO - 🔍 Column detection request: market_sales.csv
+2026-02-20 01:15:18,274 - app.api.analysis - INFO - ✅ Column detection complete: 3 columns, quality=100.0
+2026-02-20 01:15:18,277 - app.main - INFO - 👈 Response: 200
+INFO:     127.0.0.1:55068 - "POST /api/analysis/detect-columns HTTP/1.1" 200 OK
+2026-02-20 01:15:20,211 - app.main - INFO - 👉 Request: POST http://localhost:8000/api/analysis/upload | Origin: http://localhost:5173
+2026-02-20 01:15:20,219 - app.api.analysis - INFO - 📥 Upload request received: Filename=market_sales.csv, Content-Type=text/csv
+2026-02-20 01:15:20,220 - app.api.analysis - INFO - Successfully decoded file using utf-8 encoding
+2026-02-20 01:15:20,257 - app.api.analysis - INFO - 📊 Data adapted: {'date': {'column': 'date', 'confidence': 1.0}, 'sales': {'column': 'sales', 'confidence': 1.0}, 'store': {'column': 'product_id', 'confidence': 0.71}, 'product': {'column': 'product_id', 'confidence': 1.0}, 'category': {'column': 'product_id', 'confidence': 0.8}, 'price': {'column': 'sales', 'confidence': 0.8}, 'customer': {'column': 'product_id', 'confidence': 0.62}}
+2026-02-20 01:15:20,264 - app.api.analysis - INFO - ✅ Upload validation passed: {'row_count': 1800, 'column_count': 3}
+2026-02-20 01:15:20,265 - app.api.analysis - INFO - 📤 New upload session created: 8fd23bbf-9c7c-4316-b454-08fdc9441b8e (market_sales.csv)
+2026-02-20 01:15:22,435 - app.api.analysis - INFO - ✅ Session 8fd23bbf-9c7c-4316-b454-08fdc9441b8e saved successfully. Total sessions: 40
+2026-02-20 01:15:22,447 - app.main - INFO - 👈 Response: 200
+INFO:     127.0.0.1:55068 - "POST /api/analysis/upload HTTP/1.1" 200 OK
+2026-02-20 01:15:31,867 - app.main - INFO - 👉 Request: POST http://localhost:8000/api/analysis/preprocess/8fd23bbf-9c7c-4316-b454-08fdc9441b8e | Origin: http://localhost:5173
+2026-02-20 01:15:31,873 - app.api.analysis - ERROR - Preprocessing failed: 'DataAdapter' object has no attribute 'normalize_dataset'
+2026-02-20 01:15:31,873 - app.main - INFO - 👈 Response: 500
+INFO:     127.0.0.1:55596 - "POST /api/analysis/preprocess/8fd23bbf-9c7c-4316-b454-08fdc9441b8e HTTP/1.1" 500 Internal Server Error
+WARNING:  WatchFiles detected changes in 'app/utils/data_adapter.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+2026-02-20 01:18:15,685 - app.main - INFO - 👋 Shutting down...
+INFO:     Application shutdown complete.
+INFO:     Finished server process [1448023]
+2026-02-20 01:18:22,223 - prophet.plot - ERROR - Importing plotly failed. Interactive plots will not work.
+2026-02-20 01:18:26,716 - app.api.analysis - INFO - Loaded 40 jobs from disk. Total in memory: 40 (was 0)
+2026-02-20 01:18:29,089 - app.main - WARNING - Static directory not found at /media/ibadat/NewVolume/DATA SCIENCE/ML/DATASCIENCE PROJECTS/Demand Sales Walmart Forecasting/ml-forecast-saas/backend/app/static. Frontend will not be served.
+INFO:     Started server process [1455851]
+INFO:     Waiting for application startup.
+2026-02-20 01:18:29,092 - app.main - INFO - 🚀 Starting ML Forecast SaaS v2.0.0
+2026-02-20 01:18:29,092 - app.main - INFO - 📦 Environment: development
+2026-02-20 01:18:29,092 - app.main - INFO - 🌐 CORS Origins: ['http://localhost:3000', 'http://localhost:5173', 'http://localhost:5174', 'https://*.vercel.app']
+2026-02-20 01:18:29,103 - app.main - INFO - ✅ Local SQLite database initialized
+2026-02-20 01:18:29,119 - app.utils.init_db - INFO - ✅ Default admin user already exists.
+2026-02-20 01:18:29,122 - app.services.maintenance - INFO - System cleanup completed successfully
+2026-02-20 01:18:29,122 - app.main - INFO - 🧹 System cleanup completed on startup
+INFO:     Application startup complete.
+WARNING:  WatchFiles detected changes in 'app/utils/data_adapter.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+2026-02-20 01:19:37,752 - app.main - INFO - 👋 Shutting down...
+INFO:     Application shutdown complete.
+INFO:     Finished server process [1455851]
+2026-02-20 01:19:43,778 - prophet.plot - ERROR - Importing plotly failed. Interactive plots will not work.
+2026-02-20 01:19:48,049 - app.api.analysis - INFO - Loaded 40 jobs from disk. Total in memory: 40 (was 0)
+2026-02-20 01:19:50,479 - app.main - WARNING - Static directory not found at /media/ibadat/NewVolume/DATA SCIENCE/ML/DATASCIENCE PROJECTS/Demand Sales Walmart Forecasting/ml-forecast-saas/backend/app/static. Frontend will not be served.
+INFO:     Started server process [1456263]
+INFO:     Waiting for application startup.
+2026-02-20 01:19:50,483 - app.main - INFO - 🚀 Starting ML Forecast SaaS v2.0.0
+2026-02-20 01:19:50,483 - app.main - INFO - 📦 Environment: development
+2026-02-20 01:19:50,484 - app.main - INFO - 🌐 CORS Origins: ['http://localhost:3000', 'http://localhost:5173', 'http://localhost:5174', 'https://*.vercel.app']
+2026-02-20 01:19:50,490 - app.main - INFO - ✅ Local SQLite database initialized
+2026-02-20 01:19:50,507 - app.utils.init_db - INFO - ✅ Default admin user already exists.
+2026-02-20 01:19:50,509 - app.services.maintenance - INFO - System cleanup completed successfully
+2026-02-20 01:19:50,509 - app.main - INFO - 🧹 System cleanup completed on startup
+INFO:     Application startup complete.
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+2026-02-20 01:24:47,383 - app.main - INFO - 👋 Shutting down...
+INFO:     Application shutdown complete.
+INFO:     Finished server process [1456263]
+INFO:     Stopping reloader process [1408299]
+./start.sh: line 45: unexpected EOF while looking for matching `"'

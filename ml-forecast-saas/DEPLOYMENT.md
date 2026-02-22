@@ -26,6 +26,8 @@ GOOGLE_CLIENT_ID=your_google_oauth_client_id
 GOOGLE_CLIENT_SECRET=your_google_oauth_secret
 GITHUB_CLIENT_ID=your_github_oauth_client_id
 GITHUB_CLIENT_SECRET=your_github_oauth_secret
+MICROSOFT_CLIENT_ID=your_microsoft_oauth_client_id
+MICROSOFT_CLIENT_SECRET=your_microsoft_oauth_secret
 
 # Application Secrets
 SECRET_KEY=your_long_random_secret_key_here
@@ -48,7 +50,7 @@ DATABASE_URL=postgresql://user:password@host:port/dbname
 3. Edit your OAuth 2.0 Client ID
 4. Add authorized redirect URI:
    ```
-   https://ibadat-ali86-forecastai-enterprise.hf.space/api/auth/callback/google
+   https://your-space-name.hf.space/api/auth/callback/google
    ```
 
 ### GitHub OAuth App
@@ -56,8 +58,23 @@ DATABASE_URL=postgresql://user:password@host:port/dbname
 2. Edit your OAuth App
 3. Update "Authorization callback URL":
    ```
-   https://ibadat-ali86-forecastai-enterprise.hf.space/api/auth/callback/github
+   https://your-space-name.hf.space/api/auth/callback/github
    ```
+
+### Microsoft Azure AD App Registration
+1. Go to [Azure Portal](https://portal.azure.com)
+2. Navigate to "App registrations" → "New registration"
+3. Configure:
+   - **Name**: ForecastAI Enterprise
+   - **Supported account types**: Accounts in any organizational directory (Any Azure AD directory - Multitenant) and personal Microsoft accounts
+   - **Redirect URI**: Web → `https://your-space-name.hf.space/api/auth/callback/microsoft`
+4. After registration, go to "Certificates & secrets"
+5. Create a new client secret and copy the value
+6. Go to "API permissions" and add:
+   - Microsoft Graph → Delegated permissions → `openid`, `email`, `profile`, `User.Read`
+7. Note your:
+   - **Application (client) ID** (for MICROSOFT_CLIENT_ID)
+   - **Directory (tenant) ID** (needed for configuration)
 
 ## Step 4: Deploy to HuggingFace
 
@@ -77,7 +94,18 @@ git push huggingface main
 2. Upload your project files
 3. Ensure `Dockerfile` is in the root directory
 
-## Step 5: Verify Deployment
+## Step 5: Verify OAuth Configuration
+
+1. After setting environment variables in HuggingFace Space settings, restart your Space
+2. Visit your Space URL and navigate to the login page
+3. You should see three OAuth buttons:
+   - Continue with Google
+   - Continue with GitHub
+   - Continue with Microsoft
+4. Test each OAuth flow by clicking the buttons
+5. Verify successful authentication redirects to the dashboard
+
+## Step 6: Verify Deployment
 
 1. Wait for build to complete (check "Logs" tab)
 2. Once running, visit your Space URL

@@ -194,7 +194,7 @@ cd ml-forecast-saas
 ```bash
 cd backend
 python -m venv venv
-source venv/bin/activate  # Windows: venv\\Scripts\\activate
+source venv/bin/activate  # Windows: venv\Scripts\activate
 pip install -r requirements.txt
 uvicorn app.main:app --reload --port 8000
 ```
@@ -205,6 +205,43 @@ cd frontend
 npm install
 npm run dev
 ```
+
+### OAuth Configuration (Optional but Recommended)
+
+For production deployment with social authentication:
+
+**Environment Variables Setup:**
+```bash
+# Create .env file in backend directory
+GOOGLE_CLIENT_ID=your_google_client_id
+GOOGLE_CLIENT_SECRET=your_google_client_secret
+MICROSOFT_CLIENT_ID=your_microsoft_client_id
+MICROSOFT_CLIENT_SECRET=your_microsoft_client_secret
+GITHUB_CLIENT_ID=your_github_client_id
+GITHUB_CLIENT_SECRET=your_github_client_secret
+SECRET_KEY=your_secure_secret_key
+FRONTEND_URL=http://localhost:5173
+```
+
+**OAuth Provider Setup:**
+
+1. **Google OAuth:**
+   - Go to [Google Cloud Console](https://console.cloud.google.com)
+   - Create OAuth 2.0 credentials
+   - Add redirect URI: `http://localhost:8000/api/auth/callback/google`
+
+2. **Microsoft OAuth:**
+   - Go to [Azure Portal](https://portal.azure.com)
+   - Register new application
+   - Add redirect URI: `http://localhost:8000/api/auth/callback/microsoft`
+   - Add API permissions: `openid`, `email`, `profile`, `User.Read`
+
+3. **GitHub OAuth:**
+   - Go to [GitHub Developer Settings](https://github.com/settings/developers)
+   - Create OAuth App
+   - Add callback URL: `http://localhost:8000/api/auth/callback/github`
+
+For detailed HuggingFace deployment with OAuth, see [DEPLOYMENT.md](DEPLOYMENT.md).
 
 ---
 

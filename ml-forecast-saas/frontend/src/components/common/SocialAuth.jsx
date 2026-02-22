@@ -5,7 +5,7 @@ import MagneticButton from '../auth/MagneticButton';
  * SocialAuth Component (Enhanced)
  * Provides OAuth social login buttons with magnetic effects and brand-colored shadows
  */
-const SocialAuth = ({ onGoogleClick, onGitHubClick, isLoading = false }) => {
+const SocialAuth = ({ onGoogleClick, onGitHubClick, onMicrosoftClick, isLoading = false }) => {
     const handleGoogleLogin = () => {
         if (onGoogleClick) {
             onGoogleClick();
@@ -19,6 +19,14 @@ const SocialAuth = ({ onGoogleClick, onGitHubClick, isLoading = false }) => {
             onGitHubClick();
         } else {
             window.location.href = `${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/api/auth/login/github`;
+        }
+    };
+
+    const handleMicrosoftLogin = () => {
+        if (onMicrosoftClick) {
+            onMicrosoftClick();
+        } else {
+            window.location.href = `${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/api/auth/login/microsoft`;
         }
     };
 
@@ -52,6 +60,23 @@ const SocialAuth = ({ onGoogleClick, onGitHubClick, isLoading = false }) => {
                 </svg>
                 <span className="font-medium text-gray-700 group-hover:text-gray-900 transition-colors">
                     Continue with GitHub
+                </span>
+            </MagneticButton>
+
+            {/* Microsoft OAuth Button */}
+            <MagneticButton
+                onClick={handleMicrosoftLogin}
+                disabled={isLoading}
+                className="group w-full flex items-center justify-center space-x-3 px-4 py-3 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 hover:border-gray-400 hover:shadow-sm transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+                <svg viewBox="0 0 21 21" className="w-5 h-5" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="1" y="1" width="9" height="9" fill="#f25022" />
+                    <rect x="11" y="1" width="9" height="9" fill="#7fba00" />
+                    <rect x="1" y="11" width="9" height="9" fill="#00a4ef" />
+                    <rect x="11" y="11" width="9" height="9" fill="#ffb900" />
+                </svg>
+                <span className="font-medium text-gray-700 group-hover:text-gray-900 transition-colors">
+                    Continue with Microsoft
                 </span>
             </MagneticButton>
 
