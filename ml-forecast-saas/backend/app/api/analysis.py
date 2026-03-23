@@ -32,8 +32,10 @@ import os
 import fcntl
 import time
 
-# In-memory job storage (backed by file)
-JOBS_FILE = "training_jobs.json"
+# In-memory job storage (backed by persistent file)
+# Use /data/ which is writable in Docker/HF. Fall back to /tmp for local dev.
+_DATA_DIR = "/data" if os.path.isdir("/data") and os.access("/data", os.W_OK) else "/tmp"
+JOBS_FILE = os.path.join(_DATA_DIR, "training_jobs.json")
 training_jobs: Dict[str, Dict] = {}
 
 def load_jobs():

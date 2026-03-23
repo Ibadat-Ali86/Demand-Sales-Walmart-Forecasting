@@ -1,5 +1,6 @@
 # Stage 1: Build Frontend
-FROM node:18-alpine as frontend-build
+# Use Node 20+ required by Vite 7
+FROM node:20-alpine as frontend-build
 WORKDIR /app/frontend
 COPY frontend/package*.json ./
 RUN npm install
@@ -32,20 +33,22 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy backend code
 COPY backend/app ./app
-# Create models directory to ensure it exists, then safely copy any existing models using a wildcard
-RUN mkdir -p ./models
-COPY backend/model* ./models/
 
-# Create data directory for SQLite database (with full write permissions for Hugging Face)
-RUN mkdir -p ./data && chmod 777 ./data
+# Create models directory (no COPY — models are trained at runtime, not shipped)
+RUN mkdir -p ./models
+
+# Create data directory for SQLite database + runtime session storage.
+# Using /data at root level so it persists and is always writable.
+RUN mkdir -p /data && chmod 777 /data
 
 # Copy frontend build to static directory
-# Ensure the destination directory exists (though COPY creates it)
 COPY --from=frontend-build /app/frontend/dist ./app/static
 
 # Set environment variables
 ENV PYTHONPATH=/app
 ENV PORT=7860
+# Point database to persistent /data volume
+ENV DATABASE_URL="sqlite:////data/forecast.db"
 
 # Expose port (Hugging Face Spaces default)
 EXPOSE 7860

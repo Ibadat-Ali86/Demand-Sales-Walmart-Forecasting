@@ -1,43 +1,98 @@
-# Dependencies
+# ===== Dependencies =====
 node_modules/
 backend/venv/
 backend/.venv/
-backend/__pycache__/
-backend/*.pyc
-backend/*.pyo
+.venv/
+venv/
 
-# Environment Variables
+# ===== Python Cache =====
+__pycache__/
+**/__pycache__/
+*.py[cod]
+*.pyo
+*.pyc
+.pytest_cache/
+
+# ===== Environment Variables (NEVER commit secrets) =====
 .env
 .env.local
 .env.development.local
 .env.test.local
 .env.production.local
 
-# Build
+# ===== Build Artifacts =====
 dist/
 build/
 backend/dist/
 backend/build/
+frontend/dist/
 
-# IDE
+# ===== IDE =====
 .vscode/
 .idea/
 *.swp
 *.swo
 
-# MacOS
+# ===== MacOS =====
 .DS_Store
 
-# Logs
+# ===== Logs (large, no value in repo) =====
+*.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 backend/logs/
+start.log
+start_final.log
+start_final_v2.log
+start_full.log
+backend.log
+backend_noreload.log
 
-# Data (Sensitive user data should not be committed)
+# ===== Data Files (Large + sensitive) =====
 data/raw/
 data/processed/
+data/external/
 *.csv
+# Keep test files for CI
 !test_dataset.csv
 !test_upload.csv
+
+# ===== Large Binary Files (these break HuggingFace 10MB limit) =====
+*.mp4
+*.avi
+*.mov
+*.mkv
+*.h5        # Keras/TF model files
+*.pkl       # Pickle model files
+# Note: .json model artifacts ARE ok (xgboost_v1.json etc) — keep them
+
+# ===== PDF / Office (runtime-generated reports) =====
+*.pdf
+*.xlsx
+!backend/app/reporting/templates/**  # Keep HTML templates
+
+# ===== Runtime Data =====
 backend/training_jobs.json
+backend/training_jobs.json.bak*
+backend/data/sessions/
+backend/uploads/
+backend/temp/
+
+# ===== Conda / Large Environments =====
+.conda/
+*.conda
+Miniconda*.sh
+Anaconda*.sh
+
+# ===== Jupyter Artifacts =====
+.ipynb_checkpoints/
+
+# ===== Debug / Temp =====
+*.bak
+*.bak2
+reproduce_issue.js
+profile_*.json
+upload_*.json
+upload_log*.json
+energy_data.csv

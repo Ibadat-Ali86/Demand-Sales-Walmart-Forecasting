@@ -135,26 +135,48 @@ app.include_router(reports.router, prefix="/api/reports", tags=["Reporting"])
 # Try to find the static directory relative to the current file or working directory
 static_dir = os.path.join(os.getcwd(), "app/static")
 if os.path.exists(static_dir):
-    # Mount assets specifically (Vite build output)
-    app.mount("/assets", StaticFiles(directory=os.path.join(static_dir, "assets")), name="assets")
+    # FIX: Mount FULL static directory so all Vite build files are served:
+    # - /assets/* (JS/CSS bundles)
+    # - /sw.js, /workbox-*.js (PWA service worker)
+    # - /manifest.json, /logo.png (icons and manifest)
+    # Using a sub-app approach: serve everything under /static, then route the rest via catch-all
     
-    # Catch-all route for SPA
-    @app.get("/{full_path:path}")
-    async def serve_spa(full_path: str):
-        # Allow API routes to pass through (though they should be matched above)
-        if full_path.startswith("api"):
-             return JSONResponse(status_code=404, content={"detail": "API endpoint not found"})
-        
-        # Serve index.html for all other routes
+    # Mount /assets explicitly for the asset bundles
+    assets_dir = os.path.join(static_dir, "assets")
+    if os.path.exists(assets_dir):
+        app.mount("/assets", StaticFiles(directory=assets_dir), name="assets")
+    
+    # IMPORTANT: Register `/` BEFORE the catch-all to avoid route shadowing
+    @app.get("/")
+    async def root_ui():
+        """Serve the SPA entry point"""
         index_path = os.path.join(static_dir, "index.html")
         if os.path.exists(index_path):
             with open(index_path, "r") as f:
                 return HTMLResponse(content=f.read())
         return JSONResponse(status_code=404, content={"detail": "Frontend not found"})
+    
+    # Serve static root-level files (sw.js, manifest.json, workbox, icons etc.)
+    # These use specific file responses to avoid the catch-all intercepting them
+    @app.get("/{filename:path}")
+    async def serve_static_or_spa(filename: str):
+        """
+        Smart static file server + SPA fallback.
+        1. Check if file exists in static dir → serve it directly
+        2. If starts with 'api' → 404 (API miss)
+        3. Otherwise → serve index.html (SPA client-side routing)
+        """
+        # API misses → 404
+        if filename.startswith("api/") or filename == "api":
+            return JSONResponse(status_code=404, content={"detail": "API endpoint not found"})
         
-    # Explicit mapping for the main root route
-    @app.get("/")
-    async def root_ui():
+        # Check for exact static file match (sw.js, manifest.json, icons, etc.)
+        file_path = os.path.join(static_dir, filename)
+        if os.path.isfile(file_path):
+            from fastapi.responses import FileResponse
+            return FileResponse(file_path)
+        
+        # SPA fallback → serve index.html for all other routes
         index_path = os.path.join(static_dir, "index.html")
         if os.path.exists(index_path):
             with open(index_path, "r") as f:
@@ -174,6 +196,7 @@ else:
             "docs": "/docs",
             "health": "/health"
         }
+
 
 @app.get("/health")
 async def health_check():
